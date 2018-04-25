@@ -94,7 +94,7 @@ void UserEventMonitoring::Clear(Option_t* t)
 	}
 
 	// Machine time
-
+	mtime[0] = 0; mtime[1] = 0;
 }
 
 void UserEventMonitoring::Dump(void) const
@@ -160,6 +160,7 @@ void UserEventMonitoring::Dump(void) const
 	cerr << "scaler:"; for (UInt_t i=0; i<16; i++) { cerr << "\t" <<  scaler[i]; } cerr << endl;
 
 	// Machine time
+	cerr << " mtime:"; cerr << this->GetFullTime() << endl;
 }
 
 UShort_t* UserEventMonitoring::GetFieldByName(TString p_name)
@@ -206,10 +207,13 @@ UShort_t* UserEventMonitoring::GetFieldByName(TString p_name)
 	else if (p_name == "tMWPC")     { return tMWPC; }
 
 	// Trigger
-	////// else if (p_name == "trigger")   { return &trigger; } // We dont' need this
+	////// else if (p_name == "trigger")   { return &trigger; } // We don't need this
 
 	// Scalers
-	////// else if (p_name == "scaler")    { return scaler; } // We dont' need this
+	////// else if (p_name == "scaler")    { return scaler; } // We don't need this
+
+	// Machine time
+	else if (p_name == "mtime")     { return mtime; }
 
 	else if (p_name == "Ignore") {
 		cerr << "[WARN  ] Acquiring en event data field '" << p_name << "' which does not exist." << endl;

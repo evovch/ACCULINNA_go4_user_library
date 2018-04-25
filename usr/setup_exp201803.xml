@@ -30,13 +30,18 @@
 	module=geo
 	Module term is used by MESYTEC and geo is used by CAEN.
 
+	If there is data coming from some channel which you want to ignore, use "Ignore" detector name.
+	If you don't - the 'Learn' step of the analysis will warn you that there is data from unmapped channels.
+
 -->
 
 <setup name="exp201803" period="2018" run="3" comment="2018_April_ACCULINNA2_beamtime">
 
 <crate name="VME0" procid="100">
 
-	<mapping addr="0"	elblock="V560"	startelectrch="0"	nelectrch="16"	detector="scalers"	startdetch="0"	folder=""/>
+	<mapping addr="30"	elblock="RIO3"	startelectrch="0"	nelectrch="1"	detector="mtime"	startdetch="0"	folder="DAQ_status"/>
+
+	<mapping addr="0"	elblock="V560"	startelectrch="0"	nelectrch="16"	detector="scalers"	startdetch="0"	folder="DAQ_status"/>
 
 	<mapping addr="5"	elblock="mADC"	startelectrch="0"	nelectrch="32"	detector="SQX_L"	startdetch="0"	folder="Left_telescope"/>
 	<mapping addr="6"	elblock="mADC"	startelectrch="0"	nelectrch="32"	detector="SQX_R"	startdetch="0"	folder="Right_telescope"/>
@@ -52,7 +57,7 @@
 	<mapping addr="10"	elblock="mQDC"	startelectrch="4"	nelectrch="4"	detector="F5"	startdetch="0"	folder="Beam_detector_ToF"/>
 	<mapping addr="10"	elblock="mQDC"	startelectrch="8"	nelectrch="4"	detector="F6"	startdetch="0"	folder="Beam_detector_ToF"/>
 
-	<mapping addr="10"	elblock=""	startelectrch="16"	nelectrch="16"	detector="Ignore"	startdetch="0"	folder=""/>
+	<mapping addr="10"	elblock="mQDC"	startelectrch="16"	nelectrch="16"	detector="Ignore"	startdetch="0"	folder=""/>
 
 	<mapping addr="11"	elblock="mTDC"	startelectrch="0"	nelectrch="4"	detector="tF3"	startdetch="0"	folder="Beam_detector_ToF"/>
 	<mapping addr="11"	elblock="mTDC"	startelectrch="4"	nelectrch="4"	detector="tF5"	startdetch="0"	folder="Beam_detector_ToF"/>
@@ -60,8 +65,6 @@
 	<mapping addr="11"	elblock="mTDC"	startelectrch="12"	nelectrch="4"	detector="tMWPC"	startdetch="0"	folder="Beam_detector_MWPC"/>
 
 	<mapping addr="12"	elblock="mTDC"	startelectrch="0"	nelectrch="16"	detector="tSQ300"	startdetch="0"	folder="Left_telescope"/>
-
-	<!-- addr="0"	elblock="scaler" -->
 
 	<mapping addr="1"	elblock="V775"	startelectrch="0"	nelectrch="32"	detector="tSQX_L"	startdetch="0"	folder="Left_telescope"/>
 	<mapping addr="2"	elblock="V775"	startelectrch="0"	nelectrch="32"	detector="tSQX_R"	startdetch="0"	folder="Right_telescope"/>

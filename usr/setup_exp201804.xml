@@ -30,13 +30,18 @@
 	module=geo
 	Module term is used by MESYTEC and geo is used by CAEN.
 
+	If there is data coming from some channel which you want to ignore, use "Ignore" detector name.
+	If you don't - the 'Learn' step of the analysis will warn you that there is data from unmapped channels.
+
 -->
 
 <setup name="exp201804" period="2018" run="4" comment="2018_April_ACCULINNA2_beamtime">
 
 <crate name="VME0" procid="100">
 
-	<mapping addr="0"	elblock="V560"	startelectrch="0"	nelectrch="16"	detector="scalers"	startdetch="0"	folder=""/>
+	<mapping addr="30"	elblock="RIO3"	startelectrch="0"	nelectrch="1"	detector="mtime"	startdetch="0"	folder="DAQ_status"/>
+
+	<mapping addr="0"	elblock="V560"	startelectrch="0"	nelectrch="16"	detector="scalers"	startdetch="0"	folder="DAQ_status"/>
 
 	<mapping addr="5"	elblock="mADC"	startelectrch="0"	nelectrch="32"	detector="SQX_L"	startdetch="0"	folder="Left_telescope"/>
 	<mapping addr="6"	elblock="mADC"	startelectrch="0"	nelectrch="32"	detector="SQX_R"	startdetch="0"	folder="Right_telescope"/>

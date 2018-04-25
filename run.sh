@@ -9,11 +9,11 @@ fi
 
 # Please specify these variables to your needs ================================
 
-INPUTLMDDIR=/home/evovch/Downloads/FLNR_data/exp201805
-OUTPUTROOTDIR=/home/evovch/Downloads/FLNR_data/exp201805
+INPUTLMDDIR=/home/evovch/Downloads/FLNR_data/exp201803
+OUTPUTROOTDIR=/home/evovch/Downloads/FLNR_data/exp201803
 
-SETUPFILE=./usr/setup_exp201805.xml
-INPUTFILENAME=run05_0016.lmd
+SETUPFILE=./usr/setup_exp201803.xml
+INPUTFILENAME=run13_0037.lmd
 
 NEVENTS=10000
 

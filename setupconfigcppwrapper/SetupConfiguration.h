@@ -37,7 +37,9 @@ public:
 	 * so we can go up to 999-ch electronics blocks. Ok, at least 128...
 	 * Example returned value chUID = 10105029: procid=101, addr=05, ch=029
 	 */
-	static unsigned int GetChUID(unsigned short p_crateProcid, unsigned short p_addr, unsigned short p_elch)
+	static unsigned int GetChUID(unsigned short p_crateProcid,
+	                             unsigned short p_addr,
+	                             unsigned short p_elch)
 	{
 		return p_crateProcid * 100000 + p_addr * 1000 + p_elch;
 	}
@@ -64,12 +66,45 @@ public:
 	 * from subsubevent header, and electronics block channel from the data word,
 	 * return the mapped detector channel and write out detector name into o_detector
 	 * and folder name into o_folder.
+	 *
+	 * TODO check - in case of CAEN scalers, input parameter p_elch is misused - //TODO re-check
+	 * the raw message index is passed as channel (which corresponds to reality unfortunately)
 	 */
 	unsigned short GetOutput(unsigned short p_crateProcid,
 	                         unsigned short p_addr,
 	                         unsigned short p_elch,
-	                         TString* o_detector,
-	                         TString* o_folder) const;
+	                         TString* o_detector = NULL,
+	                         TString* o_folder = NULL,
+	                         TString* o_elblock = NULL) const;
+
+	/**
+	 * Returns true if the input tuple crate/addr/ch/messindex is mapped to one of the scalers
+	 * channels. Unfortunately, there is no nice and neat way to identify whether some message
+	 * comes from scalers or not. If we take message index as channel and compute unique channel
+	 * ID (see GetChUID() method), then we may run into non-existing values, which, if we want
+	 * to be on the safe side, should generate errors or warnings. Due to this reason, error
+	 * messages are commented in the implementation. This does not affect the functionality,
+	 * only limits verbosity.
+	 */
+	bool IsMappedToScaler(unsigned short p_crateProcid,
+	                      unsigned short p_addr,
+	                      unsigned short p_elch,
+	                      unsigned short p_messindex) const;
+
+	/**
+	 * Returns true if the input pair p_crateProcid/p_addr is mapped to machine time.
+	 * p_elch is ignored. p_messindex is checked to be 0.
+	 * Unfortunately, there is no nice and neat way to identify whether some message
+	 * comes from RIO-mathine-time-source or not. If we take message index as channel and
+	 * compute unique channel ID (see GetChUID() method), then we may run into non-existing
+	 * values, which, if we want to be on the safe side, should generate errors or warnings.
+	 * Due to this reason, error messages are commented in the implementation.
+	 * This does not affect the functionality, only limits verbosity.
+	 */
+	bool IsMappedToMachineTime(unsigned short p_crateProcid,
+	                           unsigned short p_addr,
+	                           unsigned short p_elch,
+	                           unsigned short p_messindex) const;
 
 	/**
 	 * Perform checks of the imported XML configuration.

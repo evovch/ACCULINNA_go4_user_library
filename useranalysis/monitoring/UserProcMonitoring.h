@@ -38,6 +38,11 @@ private: // methods
 	void ProcessMessageScaler(const RawMessage* p_message);
 
 	/**
+	 * Process machine time message
+	 */
+	void ProcessMachineTimeScaler(const RawMessage* p_message);
+
+	/**
 	 * Process raw CAMAC words assuming they have been produced by MWPCs
 	 */
 	void ProcessCAMACmwpcWords(const UserEventUnpacking* p_inputEvent);

@@ -142,34 +142,66 @@ void UserProcMonitoring::ProcessMessageUniversal(const RawMessage* p_message)
 		exit(EXIT_FAILURE);
 		return;
 	}
-	TString v_detector;
-	TString v_folder;
-	unsigned short v_detChannel = v_setupConfig->GetOutput(v_procid, v_addr, v_ch, &v_detector, &v_folder);
 
-	// Special case for CAEN scalers
-	if (v_detector == "scalers") {
+	if (v_setupConfig->IsMappedToScaler(v_procid, v_addr, v_ch, p_message->fMessageIndex)){
 		this->ProcessMessageScaler(p_message);
 		return;
-	}
-
-	#ifndef LOUDIGNORE
-	if (v_detector == "Ignore" || v_detector == "ignore") {
+	} else if (v_setupConfig->IsMappedToMachineTime(v_procid, v_addr, v_ch, p_message->fMessageIndex)) {
+		this->ProcessMachineTimeScaler(p_message);
 		return;
 	}
-	#endif // LOUDIGNORE
 
-	#ifdef PRINTDEBUGINFO
-	cerr << "[DEBUG ] " << v_folder << " /\t" << v_detector << "[" << v_ch << "] =\t"
-	     << p_message->fValueQA << "\t(" << p_message->fValueT << ")" << endl;
-	#endif
+	// else {
+
+	TString v_detector;
+	TString v_folder;
+	TString v_elblock;
+	unsigned short v_detChannel = v_setupConfig->GetOutput(v_procid, v_addr, v_ch, &v_detector, &v_folder, &v_elblock);
+
+	TString v_detectorLcase(v_detector);
+	v_detectorLcase.ToLower();
+
+	//TODO elaborate nice output
+	if (v_detectorLcase == "ignore") {
+		#ifdef PRINTDEBUGINFO
+		//cerr << endl;
+		#endif // PRINTDEBUGINFO
+		#ifdef LOUDIGNORE
+		//TODO
+		cerr << "[DEBUG ] " << v_folder << " /\t" << v_detector << "[" << v_ch << "] =\t"
+		     << p_message->fValueQA << "\t(" << p_message->fValueT << ")\t" << "Ignored." << endl;
+		#endif // LOUDIGNORE
+		return;
+	} else {
+		#ifdef PRINTDEBUGINFO
+		cerr << "[DEBUG ] " << v_folder << " /\t" << v_detector << "[" << v_ch << "] =\t"
+		     << p_message->fValueQA << "\t(" << p_message->fValueT << ")" << endl;
+		#endif
+	}
 
 	UShort_t* v_eventDatField = fCurrentOutputEvent->GetFieldByName(v_detector);
 
 	if (v_eventDatField != NULL) {
+
+		TString v_elblockLcase(v_elblock);
+		v_elblockLcase.ToLower();
+
+		//TODO specific actions here
+		if (v_elblockLcase == "mqdc") {
+			// Skip if out-of-range bit of mQDC == 1
+			if (((p_message->fRawWord >> 15) & 0x1) == 1) {
+				cerr << "[DEBUG ] "
+				   << "Skipping a message from mQDC with out-of-range bit." << endl;
+				return;
+			}
+		}
+
 		//TODO check that the channel has allowed value
 		//FIXME or p_message->mValueT ?
 		v_eventDatField[v_detChannel] = p_message->fValueQA;
 	}
+
+	// } // end of else
 }
 
 //TODO test
@@ -193,6 +225,27 @@ void UserProcMonitoring::ProcessMessageScaler(const RawMessage* p_message)
 	}
 
 	fCurrentOutputEvent->scaler[p_message->fMessageIndex] = p_message->fRawWord;
+}
+
+//TODO test
+void UserProcMonitoring::ProcessMachineTimeScaler(const RawMessage* p_message)
+{
+	#ifdef PRINTDEBUGINFO
+	cerr << "[DEBUG ] " << "mtime[" << p_message->fMessageIndex << "] "
+	     << support::GetBinaryRepresentation(sizeof(Int_t), &p_message->fRawWord) << "\t0x"
+	     << support::GetHexRepresentation(sizeof(Int_t), &p_message->fRawWord) << "\t"
+	     << p_message->fRawWord << endl;
+	#endif
+
+	//TODO
+	// We could do something like this:
+	// unsigned short v_detChannel = v_setupConfig->GetOutput(v_procid, v_addr, v_ch, &v_detector, &v_folder, &v_elblock);
+	// and use v_detector instead of hardcoded mtime, but as mtime is anyway hardcoded in SetupConfiguration class
+	// we can avoid useless operation.
+	UShort_t* v_eventDatField2 = fCurrentOutputEvent->GetFieldByName("mtime"); //TODO hardcode
+	v_eventDatField2[0] = (p_message->fRawWord >> 16) & 0xffff;
+	v_eventDatField2[1] = (p_message->fRawWord >> 0) & 0xffff;
+
 }
 
 void UserProcMonitoring::ProcessCAMACmwpcWords(const UserEventUnpacking* p_inputEvent)

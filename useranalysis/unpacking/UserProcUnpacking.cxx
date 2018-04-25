@@ -31,7 +31,7 @@ bool UserProcUnpacking::fInsidePackage = false;
 */
 //#define PRINTDEBUGINFO
 
-//TODO test
+//TODO check that all necessary data members are reset
 #define DORESET
 
 UserProcUnpacking::UserProcUnpacking(const char* name) :
@@ -551,13 +551,7 @@ void UserProcUnpacking::ProcessSubsubevent_MESYTEC(Int_t p_size, const Int_t* p_
 			     << endl;
 			#endif
 
-			//// IN PRINCIPLE, WE COULD WRITE THIS OUT
-			fCurMessage.fSubsubeventFooterCounter = v_eventCounter;
-
-			//// WRITE OUT HERE?
-
 			//// Also this value should be reset somewhere.
-			//// In principle one could reset it immediately right after writeout
 			#ifdef DORESET
 			fCurMessage.fSubsubeventFooterCounter = -1;
 			#endif // DORESET
@@ -645,10 +639,8 @@ void UserProcUnpacking::ProcessSubsubevent_CAEN(Int_t p_size, const Int_t* p_sta
 
 		// Common for all types of messages
 		Int_t v_type = (v_curWord >> 24) & 0x7; // 3 bits
-		Int_t v_geo = (v_curWord >> 27) & 0x1f; // 5 bits
 
-		fCurMessage.fSubsubeventGeo = v_geo;
-
+		Int_t v_geo = -1;
 		Int_t v_eventCounter = -1;
 		Int_t v_channel = -1;
 		Int_t v_value = -1;
@@ -659,6 +651,7 @@ void UserProcUnpacking::ProcessSubsubevent_CAEN(Int_t p_size, const Int_t* p_sta
 		case 2: // CAEN header
 			v_subsubeventSize = (v_curWord >> 8) & 0x3f; // 6 bits
 			v_crate = (v_curWord >> 16) & 0xff; // 8 bits
+			v_geo = (v_curWord >> 27) & 0x1f; // 5 bits
 			fInsidePackage = true;
 			fNknownWords++;
 			#ifdef PRINTDEBUGINFO
@@ -671,10 +664,14 @@ void UserProcUnpacking::ProcessSubsubevent_CAEN(Int_t p_size, const Int_t* p_sta
 			     << "\tsize=" << v_subsubeventSize
 			     << endl;
 			#endif
+
+			fCurMessage.fSubsubeventGeo = v_geo;
+
 			break;
 		case 4: // CAEN footer
 			fInsidePackage = false;
 			v_eventCounter = UserProcUnpacking::ExtractCounterFromCAENfooter(v_curWord);
+			v_geo = (v_curWord >> 27) & 0x1f; // 5 bits // This is not really needed here
 			fNknownWords++;
 			#ifdef PRINTDEBUGINFO
 			cerr << "[DEBUG ] " << support::GetHexRepresentation(sizeof(Int_t), &v_curWord) << "  ";
@@ -730,15 +727,6 @@ void UserProcUnpacking::ProcessSubsubevent_CAEN(Int_t p_size, const Int_t* p_sta
 			fCurMessage.fValueQA = v_value;
 			fCurMessage.fValueT = v_value;
 			fCurMessage.fMessageIndex = v_dataWordsCounter;
-
-			//FIXME костыль для machine time
-			// Не стоит пытаться обрезать 2 бита чтобы упихнуть 32-битное время в доступные 30 бит счётчика футера.
-			/*if (v_geo == 30) {
-				fCurMessage.mChannel = -1;
-				fCurMessage.mValueQA = -1;
-				fCurMessage.mValueT = -1;
-				fCurMessage.mSubsubeventFooterCounter = v_curWord & 0x3ffffff; // 30 bits
-			}*/
 
 			this->PushOutputRawMessage();
 
@@ -817,16 +805,19 @@ support::enu_VENDOR UserProcUnpacking::CheckNextHeader(const Int_t* p_startAddre
 		cerr << "Identified as CAEN block" << endl;
 		#endif
 		return support::enu_VENDOR::CAEN;
-	} else if (v_curWord == 0xaffeaffe) {
+	} else if ((v_curWord ^ 0xaffeaffe) == 0) {
 		//TODO this not a very nice hack
 		//// This is related to what is done in f_user.C
+		// This is not the most intuitive, but yet very correct way to check the
+		// raw representations of an int. ^ stands for binary XOR.
+		// If all bits are the same, the results will be 0x00000000.
 		#ifdef PRINTDEBUGINFO
 		cerr << "[DEBUG ] Checking "
 		     << support::GetHexRepresentation(sizeof(Int_t), &v_curWord) << "\t";
 		cerr << "Identified as AFFEAFFE block" << endl;
 		#endif
 		return support::enu_VENDOR::AFFEAFFE;
-	} else if (v_curWord == 0x06000000) {
+	} else if ((v_curWord ^ 0x06000000) == 0) {
 		//TODO this not a very nice hack
 		//// For some reason CAEN not-valid-datum words are coming outside of the
 		//// subsubevent block - not between the header and the footer

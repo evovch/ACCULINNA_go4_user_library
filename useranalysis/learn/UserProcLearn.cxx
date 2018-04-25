@@ -33,14 +33,15 @@ UserProcLearn::UserProcLearn(const char* name) :
 {
 	TGo4Analysis* a = TGo4Analysis::Instance();
 
-	const char* procids[3] = {"100", "101", "200"};
+	/*const char* procids[3] = {"100", "101", "200"};*/
 	fHistoAddrVsProcid = a->MakeTH2('D', "fHistoAddrVsProcid", "addr vs. procid;procid;addr",
 	                                3, 0., 3., 32, 0., 32.);
 
 	fFileSummary = fopen("textoutput/summaryLearn.txt", "w");
 	if (fFileSummary == NULL) {
 		//TODO error
-		cerr << "[WARN  ] " << "Could not open output text summary file '" << "summaryLearn.txt" << "'" << endl;
+		cerr << "[WARN  ] " << "Could not open output text summary file '"
+		     << "summaryLearn.txt" << "'" << endl;
 	}
 }
 
@@ -114,16 +115,39 @@ void UserProcLearn::ProcessMessage(const RawMessage* p_message)
 		v_addr = p_message->fSubsubeventGeo;
 	} else {
 		//ERROR
+		cerr << "[FATAL ] " << "" << endl;
+		exit(EXIT_FAILURE);
+		return;
 	}
 
-	unsigned int curChUID = SetupConfiguration::GetChUID(p_message->fSubeventProcID, v_addr,
-		                                             p_message->fChannel);
 
-	// Treat messages from scalers diffrently
+	if (fSetupConfig == NULL) {
+		cerr << "[FATAL ] " << "Setup configuration object is NULL." << endl;
+		exit(EXIT_FAILURE);
+		return;
+	}
+	//TString v_detector;
+	//TString v_folder;
+	///*unsigned short v_detChannel = */fSetupConfig->GetOutput(p_message->fSubeventProcID, v_addr, p_message->fChannel, &v_detector, &v_folder);
+
+	unsigned int curChUID;
+
+	// TODO special case for CAEN scalers
+	if (fSetupConfig->IsMappedToScaler(p_message->fSubeventProcID,
+	                                   v_addr, p_message->fChannel, p_message->fMessageIndex) ||
+	    fSetupConfig->IsMappedToMachineTime(p_message->fSubeventProcID,
+	                                        v_addr, p_message->fChannel, p_message->fMessageIndex))
+	{
+		curChUID = SetupConfiguration::GetChUID(p_message->fSubeventProcID,
+		                                        v_addr, p_message->fMessageIndex);
+	} else {
+		curChUID = SetupConfiguration::GetChUID(p_message->fSubeventProcID,
+		                                        v_addr, p_message->fChannel);
+	}
 
 	if (fUsedChUIDs.find(curChUID) == fUsedChUIDs.end()) {
 		fUsedChUIDs.insert(curChUID);
-		////cerr << "Adding " << curChUID << endl;
+		//cerr << "Adding " << curChUID << endl;
 	}
 
 	Short_t v_prodidBin = -1;
@@ -135,34 +159,52 @@ void UserProcLearn::ProcessMessage(const RawMessage* p_message)
 
 	fHistoAddrVsProcid->Fill(v_prodidBin, v_addr);
 
-
 }
 
 void UserProcLearn::UserPreLoop()
 {
+	// Get the all-accessible parameter-set object
+	UserParameter* v_params = (UserParameter*)GetParameter("UserParameter");
+	fSetupConfig = v_params->GetSetupConfig();
 }
 
 void UserProcLearn::UserPostLoop()
 {
-	//TODO check
-	// Get the all-accessible parameter-set object
-	UserParameter* v_params = (UserParameter*)GetParameter("UserParameter");
-	const SetupConfiguration* v_setupConfig = v_params->GetSetupConfig();
-
 	TString v_detector;
 	TString v_folder;
 
-	fprintf(fFileSummary, "========================== SUMMARY ==========================\n");
+	fprintf(fFileSummary, "=============================== SUMMARY ==============================\n");
 	fprintf(fFileSummary, "The following channels have been detected in the input file:\n");
 
 	for (auto v_chuid : fUsedChUIDs) {
 		unsigned short v_procid = v_chuid/100000;
 		unsigned short v_addr = (v_chuid%100000) / 1000;
 		unsigned short v_ch = v_chuid%1000;
-		unsigned short v_det_ch = v_setupConfig->GetOutput(v_procid, v_addr, v_ch, &v_detector, &v_folder);
+		unsigned short v_det_ch = fSetupConfig->GetOutput(v_procid, v_addr, v_ch, &v_detector, &v_folder);
 
-		fprintf(fFileSummary, "%ld: procid=%u\taddr=%u\tch=%u\tmapped to %s[%u]\tfrom %s\n",
-		        v_chuid, v_procid, v_addr, v_ch, v_detector.Data(), v_det_ch, v_folder.Data());
+		TString v_detectorLcase(v_detector);
+		v_detectorLcase.ToLower();
+
+		if (v_det_ch == 9999) {
+			fprintf(fFileSummary, "======================================================================\n");
+			fprintf(fFileSummary, "%ld: procid=%u\taddr=%u\tch=%u\tIS NOT MAPPED!\n",
+			        v_chuid, v_procid, v_addr, v_ch);
+			fprintf(fFileSummary, "======================================================================\n");
+			continue;
+		}
+
+		// TODO special case for CAEN scalers
+		if ((v_detectorLcase == "scalers") || (v_detectorLcase == "mtime")) {
+			// The difference is that the output (detector) channel = input (electronics) channel
+			// Moreover, the input (electronics) channel is not really a channel, extracted from
+			// the raw data word, but it is taken as the position of the raw data word within the
+			// subsubevent header. Sorry.
+			fprintf(fFileSummary, "%ld: procid=%u\taddr=%u\tch=%u\tmapped to %s[%u]\tfrom %s\n",
+			        v_chuid, v_procid, v_addr, v_ch, v_detector.Data(), v_ch, v_folder.Data());
+		} else {
+			fprintf(fFileSummary, "%ld: procid=%u\taddr=%u\tch=%u\tmapped to %s[%u]\tfrom %s\n",
+			        v_chuid, v_procid, v_addr, v_ch, v_detector.Data(), v_det_ch, v_folder.Data());
+		}
 
 		/*cerr << v_chuid << ": procid=" << v_procid
 		     << "\taddr=" << v_addr
@@ -172,7 +214,7 @@ void UserProcLearn::UserPostLoop()
 		     << endl;*/
 	}
 
-	fprintf(fFileSummary, "=============================================================\n");
+	fprintf(fFileSummary, "======================================================================\n");
 }
 
 ClassImp(UserProcLearn)

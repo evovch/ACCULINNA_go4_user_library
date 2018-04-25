@@ -107,6 +107,33 @@ The subsubevent header is used to identify the vendor.
 The footer is used only to separate the subsubevents.
 It can be (and currently is) used to identify the length of the subsubevent.
 
+geo and module_id
+=================
+
+MESYTEC electronics blocks have module IDs. This ID is written only once in the header for the whole subsubevent. Nice!
+
+CAEN electronics blocks have equivalent field which is called geo.
+
+These two types of value have common name addr. For MESYTEC blocks geo=-1, addr=module_id. For CAEN blocks module_id=-1, addr=geo.
+
+Unfortunately, CAEN blocks write geo in the header, in each data word and in the footer. This means that within each subsubevent this geo should be the same for all words. This seems to work fine in the analysis if the electronics does its job. However, in this particular unpacking/analysis code, only the geo from the header is taken, and all geo values from data words and the footer are ignored due to the following reason. CAEN V560 scalers do not have geo in the data words. Data from CAEN V560 looks like the following:
+
+	header
+	32-bit scaler[0] value
+	32-bit scaler[1] value
+	...
+	32-bit scaler[N] value
+	footer
+
+There is no reason to try to extract geo from data word.
+
+Another reason is that RIO machine time, which is 32-bits wide, is artificially packed inside a fake CAEN subsubevent liek that:
+
+	header
+	32-bit machine time value
+	footer
+
+A special geo value is written inside the header. At the moment of writing of this README, this special value was 30. It does not matter as long as you use setup.xml file and specify correct geo there. There is no hardcoded value.
 
 Project structure
 =================
@@ -159,6 +186,11 @@ macros
 
 Directory for user macros.
 
+
+Developer reminder
+==================
+
+When trying to change something, do 'grep TODO' over the full source code and read all the messages left there. This may help to reduce debugging time.
 
 Coding convention
 =================
@@ -275,9 +307,7 @@ https://www.gnu.org/software/make/manual/html_node/Automatic-Variables.html
 Proposals
 =========
 
-Блок CAEN ??? с гео-адресом 30 пишет машинное время в одно слово. Чтобы выходной формат соответствовал общей структуре, к этому одному слову приписывается header и footer по формату CAEN. На этапе распаковки наличие правильных header и footer сильно спасает и позволяет не писать костыль, однако для полного счастья хотелось бы, чтобы и слово можно было разбирать так же, как и все другие слова, т.е. вытаскивать из них пару (ch,val). Идентификация того, что эта пара (ch,val) не является корректной будет сделана на следующем этапе, который уже зависит от сетапа. Сырое слово таже пишется на выход, поэтому машинное время не теряется.
-
-Предлагается, раз уж header и footer приписываются вручную в f_user.C (или где-то там), продублировать  значение времени в 30-битном счётчике в footer'е. Сейчас я это делаю достаточно искуственно на этапе распаковки. Правда, похоже, машинное время имеет длину 32 бита, а счётчик - 30 бит...
+Предлагается ввести новый тип subsubevent'ов в дополнение к имеющимся CAEN и MESYTEC. Назвать его можно, например, DAQSTAT. Особенностью data-слов (между header и footer) в таких subsubevent'ах будет то, что все их 32 бита будут передаваться дальше на обработку, без попытки выделить какие-лио значения, типа номер канала, значение ADC/QDC/TDC. В эту категорию попадают сообщения от счётчиков (CAEN V560) и машинное время от RIO. Желательно, чтобы header содержал длину subsubevent'а. Для машинного времени - 1, для CAEN V560 - количество работающих счётчиков. Эти числа должны задаваться в setup.xml как кол-во каналов.
 
 TODO
 ====

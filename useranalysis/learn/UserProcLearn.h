@@ -18,6 +18,7 @@ class TGo4EventElement;
 
 class UserEventLearn;
 class RawMessage;
+class SetupConfiguration;
 
 class UserProcLearn : public TGo4EventProcessor
 {
@@ -52,6 +53,11 @@ private: // data members
 	std::set<unsigned long int> fUsedChUIDs;
 
 	TH2* fHistoAddrVsProcid;
+
+	/**
+	 * 'this' object of the UserProcLearn class does not own this pointer
+	 */
+	const SetupConfiguration* fSetupConfig;
 
 	/**
 	 * Summary stream

@@ -23,6 +23,13 @@ public:
 
 	UShort_t* GetFieldByName(TString p_name);
 
+	Int_t GetFullTime(void) const
+	{
+		Int_t v_time = mtime[0] & 0xffff; // Overkill
+		v_time = ((v_time << 16) & 0xffff0000) | (mtime[1] & 0x0000ffff);
+		return v_time;
+	}
+
 public: //TODO should be private. Made public for ER
 
 	// Left telescope
@@ -91,6 +98,9 @@ public: //TODO should be private. Made public for ER
 	UInt_t scaler[16];
 
 	// Machine time
+	//TODO temporary solution. Think better. Currently - split 32 bits into two 16-bits half-words
+	// Full time fill look like mtime[0]mtime[1]
+	UShort_t mtime[2];
 
 	// VULOM? - 96 ch. scaler?
 
