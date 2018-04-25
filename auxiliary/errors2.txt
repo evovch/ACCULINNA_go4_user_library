@@ -1,0 +1,241 @@
+evovch@evovch-laptop:~$ cd Documents/Useful/go4_5H_processor/
+
+evovch@evovch-laptop:~/Documents/Useful/go4_5H_processor$ . ./env.sh
+Configure Go4 v5.3.0 at /home/evovch/soft/go4-5.3.0
+/home/evovch/Documents/Useful/go4_5H_processor
+
+evovch@evovch-laptop:~/Documents/Useful/go4_5H_processor$ ./compile.sh
+-- The C compiler identification is GNU 5.4.0
+-- The CXX compiler identification is GNU 5.4.0
+-- Check for working C compiler: /usr/bin/cc
+-- Check for working C compiler: /usr/bin/cc -- works
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Check for working CXX compiler: /usr/bin/c++
+-- Check for working CXX compiler: /usr/bin/c++ -- works
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+Go4 found at /home/evovch/soft/go4-5.3.0
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/evovch/Documents/Useful/go4_5H_processor/build
+/usr/bin/cmake -H/home/evovch/Documents/Useful/go4_5H_processor -B/home/evovch/Documents/Useful/go4_5H_processor/build --check-build-system CMakeFiles/Makefile.cmake 0
+/usr/bin/cmake -E cmake_progress_start /home/evovch/Documents/Useful/go4_5H_processor/build/CMakeFiles /home/evovch/Documents/Useful/go4_5H_processor/build/CMakeFiles/progress.marks
+make -f CMakeFiles/Makefile2 all
+make[1]: Entering directory '/home/evovch/Documents/Useful/go4_5H_processor/build'
+make -f CMakeFiles/UserAnalysis.dir/build.make CMakeFiles/UserAnalysis.dir/depend
+make[2]: Entering directory '/home/evovch/Documents/Useful/go4_5H_processor/build'
+[ 10%] Generating G__UserAnalysis.cxx, libUserAnalysis_rdict.pcm, libUserAnalysis.rootmap
+/usr/bin/cmake -E env LD_LIBRARY_PATH=/home/evovch/soft/root_build/lib:.:/home/evovch/soft/go4-5.3.0/lib:/home/evovch/soft/root_build/lib:/home/evovch/soft/root_build/lib: /home/evovch/soft/root_build/bin/rootcling -v2 -f G__UserAnalysis.cxx -s /home/evovch/Documents/Useful/go4_5H_processor/build/libUserAnalysis.so -rml libUserAnalysis.so -rmf /home/evovch/Documents/Useful/go4_5H_processor/build/libUserAnalysis.rootmap -I/home/evovch/soft/root_build/include -I/home/evovch/soft/go4-5.3.0/include -I/home/evovch/Documents/Useful/go4_5H_processor /home/evovch/Documents/Useful/go4_5H_processor/UserAnalysis.h /home/evovch/Documents/Useful/go4_5H_processor/UserEvent.h /home/evovch/Documents/Useful/go4_5H_processor/UserProc.h /home/evovch/Documents/Useful/go4_5H_processor/UserEventStep2.h /home/evovch/Documents/Useful/go4_5H_processor/UserProcStep2.h /home/evovch/Documents/Useful/go4_5H_processor/UserAnalysisHistos.h /home/evovch/Documents/Useful/go4_5H_processor/data/BeamDetMWPCDigi.h /home/evovch/Documents/Useful/go4_5H_processor/UserAnalysisLinkDef.h
+cd /home/evovch/Documents/Useful/go4_5H_processor/build && /usr/bin/cmake -E cmake_depends "Unix Makefiles" /home/evovch/Documents/Useful/go4_5H_processor /home/evovch/Documents/Useful/go4_5H_processor /home/evovch/Documents/Useful/go4_5H_processor/build /home/evovch/Documents/Useful/go4_5H_processor/build /home/evovch/Documents/Useful/go4_5H_processor/build/CMakeFiles/UserAnalysis.dir/DependInfo.cmake --color=
+Scanning dependencies of target UserAnalysis
+make[2]: Leaving directory '/home/evovch/Documents/Useful/go4_5H_processor/build'
+make -f CMakeFiles/UserAnalysis.dir/build.make CMakeFiles/UserAnalysis.dir/build
+make[2]: Entering directory '/home/evovch/Documents/Useful/go4_5H_processor/build'
+[ 20%] Building CXX object CMakeFiles/UserAnalysis.dir/UserProcStep2.cxx.o
+[ 30%] Building CXX object CMakeFiles/UserAnalysis.dir/UserAnalysis.cxx.o
+[ 40%] Building CXX object CMakeFiles/UserAnalysis.dir/UserEventStep2.cxx.o
+[ 50%] Building CXX object CMakeFiles/UserAnalysis.dir/UserAnalysisHistos.cxx.o
+/usr/bin/c++   -DUserAnalysis_EXPORTS -I/home/evovch/soft/root_build/include -I/home/evovch/soft/go4-5.3.0/include -I/home/evovch/Documents/Useful/go4_5H_processor  -pipe -m64 -fsigned-char -fPIC -pthread -std=c++11 -fPIC   -o CMakeFiles/UserAnalysis.dir/UserProcStep2.cxx.o -c /home/evovch/Documents/Useful/go4_5H_processor/UserProcStep2.cxx
+[ 60%] Building CXX object CMakeFiles/UserAnalysis.dir/UserEvent.cxx.o
+/usr/bin/c++   -DUserAnalysis_EXPORTS -I/home/evovch/soft/root_build/include -I/home/evovch/soft/go4-5.3.0/include -I/home/evovch/Documents/Useful/go4_5H_processor  -pipe -m64 -fsigned-char -fPIC -pthread -std=c++11 -fPIC   -o CMakeFiles/UserAnalysis.dir/UserAnalysis.cxx.o -c /home/evovch/Documents/Useful/go4_5H_processor/UserAnalysis.cxx
+/usr/bin/c++   -DUserAnalysis_EXPORTS -I/home/evovch/soft/root_build/include -I/home/evovch/soft/go4-5.3.0/include -I/home/evovch/Documents/Useful/go4_5H_processor  -pipe -m64 -fsigned-char -fPIC -pthread -std=c++11 -fPIC   -o CMakeFiles/UserAnalysis.dir/UserEventStep2.cxx.o -c /home/evovch/Documents/Useful/go4_5H_processor/UserEventStep2.cxx
+/usr/bin/c++   -DUserAnalysis_EXPORTS -I/home/evovch/soft/root_build/include -I/home/evovch/soft/go4-5.3.0/include -I/home/evovch/Documents/Useful/go4_5H_processor  -pipe -m64 -fsigned-char -fPIC -pthread -std=c++11 -fPIC   -o CMakeFiles/UserAnalysis.dir/UserAnalysisHistos.cxx.o -c /home/evovch/Documents/Useful/go4_5H_processor/UserAnalysisHistos.cxx
+[ 70%] Building CXX object CMakeFiles/UserAnalysis.dir/data/BeamDetMWPCDigi.cxx.o
+/usr/bin/c++   -DUserAnalysis_EXPORTS -I/home/evovch/soft/root_build/include -I/home/evovch/soft/go4-5.3.0/include -I/home/evovch/Documents/Useful/go4_5H_processor  -pipe -m64 -fsigned-char -fPIC -pthread -std=c++11 -fPIC   -o CMakeFiles/UserAnalysis.dir/UserEvent.cxx.o -c /home/evovch/Documents/Useful/go4_5H_processor/UserEvent.cxx
+[ 80%] Building CXX object CMakeFiles/UserAnalysis.dir/UserProc.cxx.o
+/usr/bin/c++   -DUserAnalysis_EXPORTS -I/home/evovch/soft/root_build/include -I/home/evovch/soft/go4-5.3.0/include -I/home/evovch/Documents/Useful/go4_5H_processor  -pipe -m64 -fsigned-char -fPIC -pthread -std=c++11 -fPIC   -o CMakeFiles/UserAnalysis.dir/data/BeamDetMWPCDigi.cxx.o -c /home/evovch/Documents/Useful/go4_5H_processor/data/BeamDetMWPCDigi.cxx
+/usr/bin/c++   -DUserAnalysis_EXPORTS -I/home/evovch/soft/root_build/include -I/home/evovch/soft/go4-5.3.0/include -I/home/evovch/Documents/Useful/go4_5H_processor  -pipe -m64 -fsigned-char -fPIC -pthread -std=c++11 -fPIC   -o CMakeFiles/UserAnalysis.dir/UserProc.cxx.o -c /home/evovch/Documents/Useful/go4_5H_processor/UserProc.cxx
+[ 90%] Building CXX object CMakeFiles/UserAnalysis.dir/G__UserAnalysis.cxx.o
+/usr/bin/c++   -DUserAnalysis_EXPORTS -I/home/evovch/soft/root_build/include -I/home/evovch/soft/go4-5.3.0/include -I/home/evovch/Documents/Useful/go4_5H_processor  -pipe -m64 -fsigned-char -fPIC -pthread -std=c++11 -fPIC   -o CMakeFiles/UserAnalysis.dir/G__UserAnalysis.cxx.o -c /home/evovch/Documents/Useful/go4_5H_processor/build/G__UserAnalysis.cxx
+[100%] Linking CXX shared library libUserAnalysis.so
+/usr/bin/cmake -E cmake_link_script CMakeFiles/UserAnalysis.dir/link.txt --verbose=1
+/usr/bin/c++  -fPIC   -pipe -m64 -fsigned-char -fPIC -pthread -std=c++11  -shared -Wl,-soname,libUserAnalysis.so -o libUserAnalysis.so CMakeFiles/UserAnalysis.dir/G__UserAnalysis.cxx.o CMakeFiles/UserAnalysis.dir/UserAnalysis.cxx.o CMakeFiles/UserAnalysis.dir/UserEvent.cxx.o CMakeFiles/UserAnalysis.dir/UserProc.cxx.o CMakeFiles/UserAnalysis.dir/UserEventStep2.cxx.o CMakeFiles/UserAnalysis.dir/UserProcStep2.cxx.o CMakeFiles/UserAnalysis.dir/UserAnalysisHistos.cxx.o CMakeFiles/UserAnalysis.dir/data/BeamDetMWPCDigi.cxx.o  -L/home/evovch/soft/root_build/lib
+make[2]: Leaving directory '/home/evovch/Documents/Useful/go4_5H_processor/build'
+[100%] Built target UserAnalysis
+make[1]: Leaving directory '/home/evovch/Documents/Useful/go4_5H_processor/build'
+/usr/bin/cmake -E cmake_progress_start /home/evovch/Documents/Useful/go4_5H_processor/build/CMakeFiles 0
+/home/evovch/Documents/Useful/go4_5H_processor
+'build/libUserAnalysis.so' -> './libUserAnalysis.so'
+'build/libUserAnalysis_rdict.pcm' -> './libUserAnalysis_rdict.pcm'
+'build/libUserAnalysis.rootmap' -> './libUserAnalysis.rootmap'
+Finished.
+
+evovch@evovch-laptop:~/Documents/Useful/go4_5H_processor$ ./run.sh
+
+evovch@evovch-laptop:~/Documents/Useful/go4_5H_processor$ root -l output.root
+-I$ROOTSYS/include -I"/home/evovch/soft/root_build/etc" -I"/home/evovch/soft/root_build/etc/cling" -I"/home/evovch/soft/root_build/include"
+
+-I$ROOTSYS/include -I"/home/evovch/soft/root_build/etc" -I"/home/evovch/soft/root_build/etc/cling" -I"/home/evovch/soft/root_build/include" -I"/home/evovch/soft/go4-5.3.0/" -I"/home/evovch/soft/go4-5.3.0/include" -I"/home/evovch/Documents/Useful/go4_5H_processor" -I"/home/evovch/Documents/Useful/go4_5H_processor/build/"
+
+-I$ROOTSYS/include /home/evovch/soft/go4-5.3.0/include/ -I"/home/evovch/soft/root_build/etc" -I"/home/evovch/soft/root_build/etc/cling" -I"/home/evovch/soft/root_build/include" -I"/home/evovch/soft/go4-5.3.0/" -I"/home/evovch/soft/go4-5.3.0/include" -I"/home/evovch/Documents/Useful/go4_5H_processor" -I"/home/evovch/Documents/Useful/go4_5H_processor/build/"
+
+-I$ROOTSYS/include /home/evovch/soft/go4-5.3.0/include/ -I"/home/evovch/soft/root_build/etc" -I"/home/evovch/soft/root_build/etc/cling" -I"/home/evovch/soft/root_build/include" -I"/home/evovch/soft/go4-5.3.0/" -I"/home/evovch/soft/go4-5.3.0/include" -I"/home/evovch/Documents/Useful/go4_5H_processor" -I"/home/evovch/Documents/Useful/go4_5H_processor/build/" -I"/home/evovch/soft/go4-5.3.0/include/"
+
+-I$ROOTSYS/include /home/evovch/soft/go4-5.3.0/include/ -I"/home/evovch/soft/root_build/etc" -I"/home/evovch/soft/root_build/etc/cling" -I"/home/evovch/soft/root_build/include" -I"/home/evovch/soft/go4-5.3.0/" -I"/home/evovch/soft/go4-5.3.0/include" -I"/home/evovch/Documents/Useful/go4_5H_processor" -I"/home/evovch/Documents/Useful/go4_5H_processor/build/" -I"/home/evovch/soft/go4-5.3.0/include/"
+
+-I
+/home/evovch/soft/root_build/etc
+-I
+/home/evovch/soft/root_build/etc/cling
+-I
+/home/evovch/soft/root_build/include
+-cxx-isystem
+/usr/include/c++/5
+-cxx-isystem
+/usr/include/x86_64-linux-gnu/c++/5
+-cxx-isystem
+/usr/include/c++/5/backward
+-isystem
+/usr/local/include
+-isystem
+/home/evovch/soft/root_build/etc/cling/lib/clang/5.0.0/include
+-extern-c-isystem
+/usr/include/x86_64-linux-gnu
+-extern-c-isystem
+/include
+-extern-c-isystem
+/usr/include
+-I
+/home/evovch/soft/go4-5.3.0/
+-I
+/home/evovch/soft/go4-5.3.0/include
+-I
+/home/evovch/Documents/Useful/go4_5H_processor
+-I
+/home/evovch/Documents/Useful/go4_5H_processor/build/
+-I
+/home/evovch/soft/go4-5.3.0/include/
+-resource-dir
+/home/evovch/soft/root_build/etc/cling/lib/clang/5.0.0
+-nostdinc++
+
+root [0]
+Attaching file output.root as _file0...
+(TFile *) 0x3737b40
+root [1] new TBrowser
+(TBrowser *) 0x3e16360
+root [2] In file included from libUserAnalysis dictionary payload:9:
+/home/evovch/Documents/Useful/go4_5H_processor/UserProc.h:4:10: fatal error: 'TGo4EventProcessor.h' file not found
+#include <TGo4EventProcessor.h> // mother class
+         ^~~~~~~~~~~~~~~~~~~~~~
+Error in <TInterpreter::AutoParse>: Error parsing payload code for class UserEvent with content:
+
+#line 1 "libUserAnalysis dictionary payload"
+
+#ifndef G__VECTOR_HAS_CLASS_ITERATOR
+  #define G__VECTOR_HAS_CLASS_ITERATOR 1
+#endif
+
+#define _BACKWARD_BACKWARD_WARNING_H
+#include "/home/evovch/Documents/Useful/go4_5H_processor/UserAnalysis.h"
+#include "/home/evovch/Documents/Useful/go4_5H_processor/UserEvent.h"
+#include "/home/evovch/Documents/Useful/go4_5H_processor/UserProc.h"
+#include "/home/evovch/Documents/Useful/go4_5H_processor/UserEventStep2.h"
+#include "/home/evovch/Documents/Useful/go4_5H_processor/UserProcStep2.h"
+#include "/home/evovch/Documents/Useful/go4_5H_processor/UserAnalysisHistos.h"
+#include "/home/evovch/Documents/Useful/go4_5H_processor/data/BeamDetMWPCDigi.h"
+
+#undef  _BACKWARD_BACKWARD_WARNING_H
+
+Error in <TClass::LoadClassInfo>: no interpreter information for class UserEvent is available even though it has a TClass initialization routine.
+In file included from libGo4Analysis dictionary payload:37:
+/home/evovch/soft/go4-5.3.0/Go4EventServer/Go4EventServer.h:22:10: fatal error: 'TGo4EventProcessor.h' file not found
+#include "TGo4EventProcessor.h"
+         ^~~~~~~~~~~~~~~~~~~~~~
+Error in <TInterpreter::AutoParse>: Error parsing payload code for class TGo4EventElement with content:
+
+#line 1 "libGo4Analysis dictionary payload"
+
+#ifndef G__VECTOR_HAS_CLASS_ITERATOR
+  #define G__VECTOR_HAS_CLASS_ITERATOR 1
+#endif
+#ifndef Linux
+  #define Linux 1
+#endif
+
+#define _BACKWARD_BACKWARD_WARNING_H
+#include "Go4Event/TGo4EventSource.h"
+#include "Go4Event/TGo4EventCalibration.h"
+#include "Go4Event/TGo4EventStore.h"
+#include "Go4Event/TGo4CompositeProcessor.h"
+#include "Go4Event/TGo4EventProcessor.h"
+#include "Go4Event/TGo4EventFactory.h"
+#include "Go4Event/TGo4EventSourceException.h"
+#include "Go4Event/TGo4EventTimeoutException.h"
+#include "Go4Event/TGo4EventEndException.h"
+#include "Go4Event/TGo4EventErrorException.h"
+#include "Go4Event/TGo4EventElement.h"
+#include "Go4Event/TGo4CompositeEvent.h"
+#include "Go4EventServer/TGo4GSIEventHeader.h"
+#include "Go4EventServer/TGo4MbsEventServer.h"
+#include "Go4EventServer/TGo4MainTree.h"
+#include "Go4EventServer/TGo4MbsRandom.h"
+#include "Go4EventServer/Go4EventServerTypes.h"
+#include "Go4EventServer/TGo4MbsFile.h"
+#include "Go4EventServer/TGo4MbsSource.h"
+#include "Go4EventServer/TGo4FileSource.h"
+#include "Go4EventServer/TGo4SubEventHeader10.h"
+#include "Go4EventServer/TGo4RevServ.h"
+#include "Go4EventServer/TGo4StepFactory.h"
+#include "Go4EventServer/TGo4MbsTransport.h"
+#include "Go4EventServer/TGo4EventHeader10.h"
+#include "Go4EventServer/TGo4BackStore.h"
+#include "Go4EventServer/TGo4TreeStore.h"
+#include "Go4EventServer/Go4EventServer.h"
+#include "Go4EventServer/TGo4FileStore.h"
+#include "Go4EventServer/TGo4MbsEvent.h"
+#include "Go4EventServer/TGo4MbsStream.h"
+#include "Go4EventServer/TGo4EventServerFactory.h"
+#include "Go4EventServer/TGo4TreeSource.h"
+#include "Go4EventServer/TGo4MbsSubEvent.h"
+#include "Go4HistogramServer/TGo4ObjClient.h"
+#include "Go4HistogramServer/TGo4MbsHist.h"
+#include "Go4HistogramServer/TGo4ObjConnectorRunnable.h"
+#include "Go4HistogramServer/TGo4HisConnectorRunnable.h"
+#include "Go4HistogramServer/TGo4HistogramServer.h"
+#include "Go4HistogramServer/TGo4ObjConnectorTimer.h"
+#include "Go4Analysis/TGo4AnalysisWebStatus.h"
+#include "Go4Analysis/TGo4AnalysisImp.h"
+#include "Go4Analysis/TGo4AnalysisObjectManager.h"
+#include "Go4Analysis/TGo4AnalysisStepException.h"
+#include "Go4Analysis/TGo4AnalysisStep.h"
+#include "Go4Analysis/TGo4AnalysisSniffer.h"
+#include "Go4Analysis/TGo4AnalysisStepManager.h"
+#include "Go4Analysis/TGo4UserException.h"
+#include "Go4Analysis/TGo4DynamicList.h"
+#include "Go4CommandsAnalysis/TGo4ComSetProtections.h"
+#include "Go4CommandsAnalysis/TGo4ComSetPrintEvent.h"
+#include "Go4CommandsAnalysis/TGo4AnalysisCommand.h"
+#include "Go4CommandsAnalysis/TGo4ComAddTreeHistogram.h"
+#include "Go4CommandsAnalysis/TGo4AnalysisCommandList.h"
+#include "Go4CommandsAnalysis/TGo4ComSetAnalysisStatus.h"
+#include "Go4CommandsAnalysis/TGo4ComDeleteObject.h"
+#include "Go4CommandsAnalysis/TGo4ComCloseAnalysis.h"
+#include "Go4CommandsAnalysis/TGo4ComPrintHistograms.h"
+#include "Go4CommandsAnalysis/TGo4ComGetAnalysisStatus.h"
+#include "Go4CommandsAnalysis/TGo4ComSetObject.h"
+#include "Go4CommandsAnalysis/TGo4AnalysisObjectCommand.h"
+#include "Go4CommandsAnalysis/TGo4ComClearObject.h"
+#include "Go4CommandsAnalysis/TGo4ComInitAnalysis.h"
+#include "Go4CommandsAnalysis/TGo4ComGetObjectStatus.h"
+#include "Go4CommandsAnalysis/TGo4ComPrintConditions.h"
+#include "Go4CommandsAnalysis/TGo4ComPrintDynList.h"
+#include "Go4CommandsAnalysis/TGo4ComSaveAnalysisStatus.h"
+#include "Go4CommandsAnalysis/TGo4ComAutosave.h"
+#include "Go4CommandsAnalysis/TGo4ComGetCurrentEvent.h"
+#include "Go4CommandsAnalysis/TGo4ComGetEnvelope.h"
+#include "Go4CommandsAnalysis/TGo4ComGetNamesList.h"
+#include "Go4CommandsAnalysis/TGo4ComLoadAnalysisStatus.h"
+#include "Go4AnalysisClient/TGo4AnalysisClientImp.h"
+#include "Go4AnalysisClient/TGo4AnalysisWatchRunnable.h"
+#include "Go4AnalysisClient/TGo4AnalysisMainRunnable.h"
+
+#undef  _BACKWARD_BACKWARD_WARNING_H
+
+Error in <TClass::LoadClassInfo>: no interpreter information for class TGo4EventElement is available even though it has a TClass initialization routine.
+.q

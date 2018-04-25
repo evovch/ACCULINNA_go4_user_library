@@ -1,0 +1,100 @@
+<!--
+
+	This informational file can be used by the unpacker/monitoring/analysis software
+	at least to check that the received electronics channel ID is within allowed range.
+
+	Unique IDs have sense only if
+	a) electronics blocks will be physically marked (better right on the front panel);
+	b) each individual block will be listed here, not just models.
+
+-->
+
+<electronics>
+
+<elblock name="mADC"	nchannels="32"	type="ADC"	vendor="MESYTEC"	uniqueid=""/>
+<elblock name="mQDC"	nchannels="32"	type="QDC"	vendor="MESYTEC"	uniqueid=""/>
+<elblock name="mTDC"	nchannels="32"	type="TDC"	vendor="MESYTEC"	uniqueid=""/>
+<elblock name="V775"	nchannels="32"	type="TDC"	vendor="CAEN"   	uniqueid=""/>
+<elblock name="V775N"	nchannels="16"	type="TDC"	vendor="CAEN"   	uniqueid=""/>
+<elblock name="V785"	nchannels="32"	type="ADC"	vendor="CAEN"   	uniqueid=""/>
+<elblock name="V785N"	nchannels="16"	type="ADC"	vendor="CAEN"   	uniqueid=""/>
+<elblock name="V792"	nchannels="32"	type="QDC"	vendor="CAEN"   	uniqueid=""/>
+<elblock name="V792N"	nchannels="16"	type="QDC"	vendor="CAEN"   	uniqueid=""/>
+<elblock name="V862"	nchannels="32"	type="QDC"	vendor="CAEN"   	uniqueid=""/>
+<elblock name="V560"	nchannels="16"	type="scalers"	vendor="CAEN"   	uniqueid=""/>
+
+</electronics>
+
+<!--
+
+	No spaces allowed within attributes' values. Basically, for the safety reasons.
+	Who knows what ROOT would do with spaces...
+
+	At some point _L should become _1, _R should become _2, and _3 and _4 should appear.
+
+	detector id is user when building the composite-event. Currently it is hardcoded
+
+-->
+
+<detectors>
+
+<detector name="Left_telescope" id="1" classname="UserEventLeftTele">
+	<subdetector  name="CsI_L" nchannels=""/>
+	<subdetector name="tCsI_L" nchannels=""/>
+	<subdetector  name="SQX_L" nchannels=""/>
+	<subdetector name="tSQX_L" nchannels=""/>
+	<subdetector  name="SQY_L" nchannels=""/>
+	<subdetector name="tSQY_L" nchannels=""/>
+	<subdetector  name="SQ300" nchannels=""/>
+	<subdetector name="tSQ300" nchannels=""/>
+	<subdetector  name="SQ20" nchannels=""/>
+	<subdetector name="tSQ20" nchannels=""/>
+</detector>
+
+<detector name="Right_telescope" id="2" classname="UserEventRightTele">
+	<subdetector  name="CsI_R" nchannels=""/>
+	<subdetector name="tCsI_R" nchannels=""/>
+	<subdetector  name="SQX_R" nchannels=""/>
+	<subdetector name="tSQX_R" nchannels=""/>
+	<subdetector  name="SQY_R" nchannels=""/>
+	<subdetector name="tSQY_R" nchannels=""/>
+</detector>
+
+<!-- Placeholder -->
+<detector name="Telescope3" id="3" classname="UserEventTele3">
+</detector>
+
+<!-- Placeholder -->
+<detector name="Telescope4" id="4" classname="UserEventTele4">
+</detector>
+
+<detector name="Annular_telescope" id="5" classname="UserEventAnnularTele">
+	<subdetector  name="ANR" nchannels="16"/>
+	<subdetector name="tANR" nchannels="16"/>
+	<subdetector  name="ANS" nchannels="16"/>
+	<subdetector name="tANS" nchannels="16"/>
+</detector>
+
+<detector name="Neutron_detector" id="6" classname="UserEventNeutronDet">
+	<subdetector name="neutAmp" nchannels="40"/>
+	<subdetector name="neutTAC" nchannels="40"/>
+	<subdetector name="neutTDC" nchannels="40"/>
+</detector>
+
+<!-- Merge ToF and MWPC into single Beam_detector? -->
+
+<detector name="Beam_detector_ToF" id="7" classname="UserEventBeamDetTof">
+	<subdetector  name="F3" nchannels="4"/>
+	<subdetector name="tF3" nchannels="4"/>
+	<subdetector  name="F5" nchannels="4"/>
+	<subdetector name="tF5" nchannels="4"/>
+	<subdetector  name="F6" nchannels="4"/>
+	<subdetector name="tF6" nchannels="4"/>
+</detector>
+
+<detector name="Beam_detector_MWPC" id="8" classname="UserEventBeamDetMwpc">
+	<subdetector  name="MWPC" nchannels=""/>
+	<subdetector name="tMWPC" nchannels=""/>
+</detector>
+
+</detectors>

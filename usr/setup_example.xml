@@ -1,0 +1,124 @@
+<!--
+
+	//TODO write this up!!!
+
+	This XML config has to conform some very strict structure due to the fact
+	that it is expected to be read by some very primitive software, possibly
+	running on a very limited hardware.
+
+	NO SPACES ARE ALLOWED INSIDE ATTRIBUTE VALUES !!!
+	sorry for that
+
+	NO SPACES ARE ALLOWED BETWEEN THE ATTRIBUTE NAME, '=' SIGN AND THE ATTRIBUTE VALUE !!!
+	sorry for that
+
+	Thus it has to be strictly: name="value"
+
+
+	Raw message received from the electronics block CAEN V775 (elblock="V775")
+	is parsed: electronics channel 'ch' and TDC value are extracted.
+	Output ??? (how do we call this entity) is formed as if this message comes
+	from the left square telescope and contains time information.
+	This ??? is pushed into the "tSQX_L" branch of the output tree(detector="tSQX_L")
+	which will be located in the folder "Left_telescope" (folder="Left_telescope").
+
+	????????
+
+	Additional check can be implemented with the aid of a FIXED electronics description file
+	electronics.xml
+
+	module=geo
+	Module term is used by MESYTEC and geo is used by CAEN.
+
+-->
+
+<setup name="example" period="123" run="456" comment="2018_April_ACCULINNA2_beamtime">
+
+<crate name="VME0" procid="100">
+
+	<mapping addr="0"	elblock="V560"	startelectrch="0"	nelectrch="16"	detector="scalers"	startdetch="0"	folder=""/>
+
+	<mapping addr="1"	elblock="V775"	startelectrch="0"	nelectrch="32"	detector="tSQX_L"	startdetch="0"	folder="Left_telescope"/>
+	<mapping addr="5"	elblock="mADC"	startelectrch="0"	nelectrch="32"	detector="SQX_L"	startdetch="0"	folder="Left_telescope"/>
+	<mapping addr="2"	elblock="V775"	startelectrch="0"	nelectrch="32"	detector="tSQX_R"	startdetch="0"	folder="Right_telescope"/>
+	<mapping addr="6"	elblock="mADC"	startelectrch="0"	nelectrch="32"	detector="SQX_R"	startdetch="0"	folder="Right_telescope"/>
+	<mapping addr="3"	elblock="V775"	startelectrch="0"	nelectrch="16"	detector="tSQY_L"	startdetch="0"	folder="Left_telescope"/>
+	<mapping addr="3"	elblock="V775"	startelectrch="16"	nelectrch="16"	detector="tSQY_R"	startdetch="0"	folder="Right_telescope"/>
+	<mapping addr="7"	elblock="mADC"	startelectrch="0"	nelectrch="16"	detector="SQY_L"	startdetch="0"	folder="Left_telescope"/>
+	<mapping addr="7"	elblock="mADC"	startelectrch="16"	nelectrch="16"	detector="SQY_R"	startdetch="0"	folder="Right_telescope"/>
+	<mapping addr="4"	elblock="V775"	startelectrch="0"	nelectrch="16"	detector="tCsI_L"	startdetch="0"	folder="Left_telescope"/>
+	<mapping addr="4"	elblock="V775"	startelectrch="16"	nelectrch="16"	detector="tCsI_R"	startdetch="0"	folder="Right_telescope"/>
+	<mapping addr="8"	elblock="mADC"	startelectrch="0"	nelectrch="16"	detector="CsI_L"	startdetch="0"	folder="Left_telescope"/>
+	<mapping addr="8"	elblock="mADC"	startelectrch="16"	nelectrch="16"	detector="CsI_R"	startdetch="0"	folder="Right_telescope"/>
+	<mapping addr="9"	elblock="mADC"	startelectrch="0"	nelectrch="16"	detector="SQ20"	startdetch="0"	folder="Left_telescope"/>
+	<mapping addr="10"	elblock="mQDC"	startelectrch="0"	nelectrch="4"	detector="F3"	startdetch="0"	folder="Beam_detector_ToF"/>
+	<mapping addr="10"	elblock="mQDC"	startelectrch="4"	nelectrch="4"	detector="F5"	startdetch="0"	folder="Beam_detector_ToF"/>
+	<mapping addr="10"	elblock="mQDC"	startelectrch="8"	nelectrch="4"	detector="F6"	startdetch="0"	folder="Beam_detector_ToF"/>
+	<mapping addr="11"	elblock="mTDC"	startelectrch="0"	nelectrch="4"	detector="tF3"	startdetch="0"	folder="Beam_detector_ToF"/>
+	<mapping addr="11"	elblock="mTDC"	startelectrch="4"	nelectrch="4"	detector="tF5"	startdetch="0"	folder="Beam_detector_ToF"/>
+	<mapping addr="11"	elblock="mTDC"	startelectrch="8"	nelectrch="4"	detector="tF6"	startdetch="0"	folder="Beam_detector_ToF"/>
+	<mapping addr="11"	elblock="mTDC"	startelectrch="12"	nelectrch="4"	detector="tMWPC"	startdetch="0"	folder="Beam_detector_MWPC"/>
+	<mapping addr="12"	elblock="mTDC"	startelectrch="0"	nelectrch="16"	detector="tSQ20"	startdetch="0"	folder="Left_telescope"/>
+
+</crate>
+
+<crate name="VME1" procid="200">
+
+	<mapping addr="0"	elblock="V785"	startelectrch="0"	nelectrch="32"	stepelecrtch="2"	detector="neutAmp"	startdetch="0"	folder="Neutron_detector"/>
+	<mapping addr="0"	elblock="V785"	startelectrch="1"	nelectrch="32"	stepelecrtch="2"	detector="neutTAC"	startdetch="0"	folder="Neutron_detector"/>
+	<mapping addr="1"	elblock="V785"	startelectrch="0"	nelectrch="32"	stepelecrtch="2"	detector="neutAmp"	startdetch="16"	folder="Neutron_detector"/>
+	<mapping addr="1"	elblock="V785"	startelectrch="1"	nelectrch="32"	stepelecrtch="2"	detector="neutTAC"	startdetch="16"	folder="Neutron_detector"/>
+	<mapping addr="2"	elblock="mTDC"	startelectrch="0"	nelectrch="32"	stepelecrtch="1"	detector="neutTDC"	startdetch="0"	folder="Neutron_detector"/>
+
+</crate>
+
+<crate name="CAMAC" procid="101">
+<!-- not parsed -->
+</crate>
+
+</setup>
+
+<!--
+
+	XML reminder
+	============
+
+	'Standard' combination consists of an opening tag which starts with the '<' sign
+	and the closing tag which starts with the '</' sign. Both end with the '>' sign.
+	A closing tag should have no attributes.
+
+	<tag attribute1="value">
+	</tag>
+
+	Self-closing tag starts with the '<' sign and ends with the '/>' sign.
+	Obviously, it needs no closing tag.
+
+	<tag attribute1="value" attribute2="value"/>
+
+	Attributes are separated by spaces or tabs (no commas!)
+
+	Double-quotes around the attribute value are necessary.
+
+	Order or attributes does not matter - it is ignored by any clever (=correctly) developed software.
+
+	There can be missing attributes if the reading software covers such situations.
+	In our particular case 'stepelecrtch' attribute can be omitted while all the other are necessary.
+	If omitted, stepelecrtch=1
+
+	comment start: less-exclamation-minus-minus
+	comment end: minus-minus-more
+
+	Neutron detector readout
+	========================
+
+	PMT 1-4 => MPD4 №1 => MADC №1 ch 1-8
+	PMT 5-8 => MPD4 №2 => MADC №1 ch 9-16
+	PMT 9-12 => MPD4 №3 => MADC №1 ch 17-24
+	PMT 13-16 => MPD4 №4 => MADC №1 ch 25-32
+
+	PMT 17-20 => MPD4 №5 => MADC №2 ch 1-8
+	PMT 21-24 => MPD4 №6 => MADC №2 ch 9-16
+	PMT 25-28 => MPD4 №7 => MADC №2 ch 17-24
+	PMT 29-32 => MPD4 №8 => MADC №2 ch 25-32
+
+-->
