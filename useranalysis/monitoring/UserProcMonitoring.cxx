@@ -197,7 +197,11 @@ void UserProcMonitoring::ProcessMessageUniversal(const RawMessage* p_message)
 		}
 
 		//TODO check that the channel has allowed value
-		//FIXME or p_message->mValueT ?
+		//TODO specific actions here
+		if (v_elblockLcase == "mtdc") {
+			v_eventDatField[v_detChannel] = p_message->fValueT;
+			return;
+		}
 		v_eventDatField[v_detChannel] = p_message->fValueQA;
 	}
 
