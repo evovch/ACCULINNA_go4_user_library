@@ -15,7 +15,7 @@ OUTPUTROOTDIR=/home/evovch/Downloads/FLNR_data/exp201803
 SETUPFILE=./usr/setup_exp201803.xml
 INPUTFILENAME=run13_0037.lmd
 
-NEVENTS=10000
+NEVENTS=0 # Specify 0 to process the full file
 
 TEXTERRFILE=textoutput/err.txt  # Default: textoutput/err.txt
 #TEXTERRFILE=/dev/null    # suppress error stream. Saves a little bit of hdd space
@@ -61,9 +61,10 @@ echo -e "\e[1m\e[34m${ANARUNINFO}\e[0m"
 
 echo -e "\e[1m\e[32mAnalysis started.\e[0m"
 
-# if NEVENT == 0 ...
-
-${GO4SYS}/bin/go4analysis -v -lib libUserAnalysis.so -number ${NEVENTS} -asf ${AUTOSAVEFILE} -file ${INPUTFILE} -args ${OUTPUTFILE} ${SETUPFILE} >> ${TEXTOUTFILE} 2> ${TEXTERRFILE}
-# -number 1000
+if [ ${NEVENTS} -eq 0 ]; then
+	${GO4SYS}/bin/go4analysis -v -lib libUserAnalysis.so -asf ${AUTOSAVEFILE} -file ${INPUTFILE} -args ${OUTPUTFILE} ${SETUPFILE} >> ${TEXTOUTFILE} 2> ${TEXTERRFILE}
+else
+	${GO4SYS}/bin/go4analysis -v -lib libUserAnalysis.so -number ${NEVENTS} -asf ${AUTOSAVEFILE} -file ${INPUTFILE} -args ${OUTPUTFILE} ${SETUPFILE} >> ${TEXTOUTFILE} 2> ${TEXTERRFILE}
+fi
 
 echo -e "\e[1m\e[32mAnalysis finished.\e[0m"
