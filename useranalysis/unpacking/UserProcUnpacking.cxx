@@ -817,7 +817,7 @@ support::enu_VENDOR UserProcUnpacking::CheckNextHeader(const Int_t* p_startAddre
 		cerr << "Identified as AFFEAFFE block" << endl;
 		#endif
 		return support::enu_VENDOR::AFFEAFFE;
-	} else if ((v_curWord ^ 0x06000000) == 0) {
+	} else if (((v_curWord >> 24) & 0x7) == 6) {
 		//TODO this not a very nice hack
 		//// For some reason CAEN not-valid-datum words are coming outside of the
 		//// subsubevent block - not between the header and the footer

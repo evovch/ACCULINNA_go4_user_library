@@ -47,7 +47,7 @@ void analyse(TString inFilename, UInt_t nEvents = 10)
 
 	UInt_t nEventsTotal = inBranch->GetEntries();
 
-	if (nEvents == 0) nEvents = nEventsTotal
+	if (nEvents == 0) { nEvents = nEventsTotal; }
 
 	// Loop over the events
 	for (UInt_t iEvent=0; iEvent<nEvents; iEvent++)
