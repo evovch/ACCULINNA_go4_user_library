@@ -2,6 +2,11 @@
 
 	@class UserProcLearn
 
+	Processor class which analyses unpacked input stream and builds the summary.
+	It's goal it to detector if there are:
+	mapped channels without data or
+	unmapped channels with data.
+
 */
 
 #ifndef USERPROCLEARN_H
@@ -38,6 +43,8 @@ public: // methods
 	void ProcessMessage(const RawMessage* p_message);
 
 private: // methods
+
+	void ProcessUnmappedChannels(void) const;
 
 private: // data members
 	/**

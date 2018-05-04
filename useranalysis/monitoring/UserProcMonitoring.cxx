@@ -13,8 +13,9 @@ using std::endl;
 // Project
 #include "Support.h"
 #include "UserParameter.h"
-#include "UserEventMonitoring.h"
-//#include "data_events/UserEventNew.h"
+//#include "UserEventMonitoring.h"
+#include "data/DetEventFull.h"
+#include "data/DetEventCommon.h"
 #include "UserHistosMonitoring.h"
 #include "data/RawMessage.h"
 #include "unpacking/UserEventUnpacking.h"
@@ -26,7 +27,7 @@ using std::endl;
   This option produces A LOT OF DATA - run your analysis with a
   small number of events (~10-100)
 */
-//#define PRINTDEBUGINFO
+#define PRINTDEBUGINFO
 
 /**
   Uncomment this if you want to see the WARN messages while processing
@@ -57,8 +58,8 @@ UserProcMonitoring::~UserProcMonitoring()
 Bool_t UserProcMonitoring::BuildEvent(TGo4EventElement* p_dest)
 {
 	Bool_t v_isValid = kFALSE;
-	UserEventMonitoring* v_outputEvent = (UserEventMonitoring*)p_dest;
-	//UserEventNew* v_outputEvent = (UserEventNew*)p_dest;
+	//UserEventMonitoring* v_outputEvent = (UserEventMonitoring*)p_dest;
+	DetEventFull* v_outputEvent = (DetEventFull*)p_dest;
 
 	UserEventUnpacking* v_input = (UserEventUnpacking*)GetInputEvent("stepUnpackedProvider1");
 	if (v_input == NULL)
@@ -76,6 +77,8 @@ Bool_t UserProcMonitoring::BuildEvent(TGo4EventElement* p_dest)
 	#endif
 
 	fCurrentOutputEvent = v_outputEvent;
+	DetEventFull& v_outputEvRef = *fCurrentOutputEvent;
+	DetEventCommon* v_evCommon = dynamic_cast<DetEventCommon*>(&v_outputEvRef[100]); // id=100
 
 	// Clear the output event!!!
 	//TODO check that this is not done by the framework
@@ -98,7 +101,7 @@ Bool_t UserProcMonitoring::BuildEvent(TGo4EventElement* p_dest)
 
 		//TODO check
 		// Process trigger
-		fCurrentOutputEvent->trigger = v_input->fTrigger;
+		v_evCommon->trigger = v_input->fTrigger;
 
 		v_messCounter++;
 	} // end of while
@@ -179,7 +182,7 @@ void UserProcMonitoring::ProcessMessageUniversal(const RawMessage* p_message)
 		#endif
 	}
 
-	UShort_t* v_eventDatField = fCurrentOutputEvent->GetFieldByName(v_detector);
+	UShort_t* v_eventDatField = NULL; // fCurrentOutputEvent->GetFieldByName(v_detector);
 
 	if (v_eventDatField != NULL) {
 
@@ -218,6 +221,9 @@ void UserProcMonitoring::ProcessMessageScaler(const RawMessage* p_message)
 	     << p_message->fRawWord << endl;
 	#endif
 
+	DetEventFull& v_outputEvRef = *fCurrentOutputEvent;
+	DetEventCommon* v_evCommon = dynamic_cast<DetEventCommon*>(&v_outputEvRef[100]); // id=100
+
 	//TODO obsolete?
 	//TODO check that scalers channel (which is p_message->fMessageIndex) is whithin the allowed range
 	// fSetupConfiguration != NULL - check done in ProcessMessageUniversal
@@ -228,7 +234,7 @@ void UserProcMonitoring::ProcessMessageScaler(const RawMessage* p_message)
 		return;
 	}
 
-	fCurrentOutputEvent->scaler[p_message->fMessageIndex] = p_message->fRawWord;
+	v_evCommon->scaler[p_message->fMessageIndex] = p_message->fRawWord;
 }
 
 //TODO test
@@ -241,19 +247,29 @@ void UserProcMonitoring::ProcessMachineTimeScaler(const RawMessage* p_message)
 	     << p_message->fRawWord << endl;
 	#endif
 
+	DetEventFull& v_outputEvRef = *fCurrentOutputEvent;
+	DetEventCommon* v_evCommon = dynamic_cast<DetEventCommon*>(&v_outputEvRef[100]); // id=100
+
 	//TODO
 	// We could do something like this:
 	// unsigned short v_detChannel = v_setupConfig->GetOutput(v_procid, v_addr, v_ch, &v_detector, &v_folder, &v_elblock);
 	// and use v_detector instead of hardcoded mtime, but as mtime is anyway hardcoded in SetupConfiguration class
 	// we can avoid useless operation.
+	/*
 	UShort_t* v_eventDatField2 = fCurrentOutputEvent->GetFieldByName("mtime"); //TODO hardcode
 	v_eventDatField2[0] = (p_message->fRawWord >> 16) & 0xffff;
 	v_eventDatField2[1] = (p_message->fRawWord >> 0) & 0xffff;
+	*/
+	v_evCommon->mtime[0] = (p_message->fRawWord >> 16) & 0xffff;
+	v_evCommon->mtime[1] = (p_message->fRawWord >> 0) & 0xffff;
 
 }
 
 void UserProcMonitoring::ProcessCAMACmwpcWords(const UserEventUnpacking* p_inputEvent)
 {
+	DetEventFull& v_outputEvRef = *fCurrentOutputEvent;
+	DetEventCommon* v_evCommon = dynamic_cast<DetEventCommon*>(&v_outputEvRef[100]); // id=100
+
 	const Short_t* v_inputCAMAC = p_inputEvent->fCAMAC;
 /*
 	// Just print - shorts
@@ -281,10 +297,10 @@ void UserProcMonitoring::ProcessCAMACmwpcWords(const UserEventUnpacking* p_input
 	v_line[3] = ((v_inputCAMAC[7] << 16) & 0xffff0000) |
 	            ((v_inputCAMAC[6] << 0)  & 0x0000ffff);
 
-	fCurrentOutputEvent->rx1 = v_line[0];
-	fCurrentOutputEvent->ry1 = v_line[1];
-	fCurrentOutputEvent->rx2 = v_line[2];
-	fCurrentOutputEvent->ry2 = v_line[3];
+	v_evCommon->rx1 = v_line[0];
+	v_evCommon->ry1 = v_line[1];
+	v_evCommon->rx2 = v_line[2];
+	v_evCommon->ry2 = v_line[3];
 
 	// Just print - ints
 	#ifdef PRINTDEBUGINFO
@@ -324,18 +340,18 @@ void UserProcMonitoring::ProcessCAMACmwpcWords(const UserEventUnpacking* p_input
 	// Store counters' addresses in an array
 	UChar_t* v_countersAddrs[4];
 	// Here we define the order of words
-	v_countersAddrs[0] = &(fCurrentOutputEvent->nx1);
-	v_countersAddrs[1] = &(fCurrentOutputEvent->ny1);
-	v_countersAddrs[2] = &(fCurrentOutputEvent->nx2);
-	v_countersAddrs[3] = &(fCurrentOutputEvent->ny2);
+	v_countersAddrs[0] = &(v_evCommon->nx1);
+	v_countersAddrs[1] = &(v_evCommon->ny1);
+	v_countersAddrs[2] = &(v_evCommon->nx2);
+	v_countersAddrs[3] = &(v_evCommon->ny2);
 
 	// Store arrays' addresses in an array // sorry
 	UChar_t* v_arrayAddrs[4];
 	// Here we define the order of words
-	v_arrayAddrs[0] = &(fCurrentOutputEvent->x1[0]);
-	v_arrayAddrs[1] = &(fCurrentOutputEvent->y1[0]);
-	v_arrayAddrs[2] = &(fCurrentOutputEvent->x2[0]);
-	v_arrayAddrs[3] = &(fCurrentOutputEvent->y2[0]);
+	v_arrayAddrs[0] = &(v_evCommon->x1[0]);
+	v_arrayAddrs[1] = &(v_evCommon->y1[0]);
+	v_arrayAddrs[2] = &(v_evCommon->x2[0]);
+	v_arrayAddrs[3] = &(v_evCommon->y2[0]);
 
 
 	// But first, let me reset
@@ -362,42 +378,45 @@ void UserProcMonitoring::ProcessCAMACmwpcWords(const UserEventUnpacking* p_input
 
 void UserProcMonitoring::FillHistograms(void) const
 {
+	DetEventFull& v_outputEvRef = *fCurrentOutputEvent;
+	DetEventCommon* v_evCommon = dynamic_cast<DetEventCommon*>(&v_outputEvRef[100]); // id=100
+
 	// nx1, ny1, nx2, ny2
-	fHistoMan->histoMWPCnx1->Fill(fCurrentOutputEvent->nx1);
-	fHistoMan->histoMWPCny1->Fill(fCurrentOutputEvent->ny1);
-	fHistoMan->histoMWPCnx2->Fill(fCurrentOutputEvent->nx2);
-	fHistoMan->histoMWPCny2->Fill(fCurrentOutputEvent->ny2);
+	fHistoMan->histoMWPCnx1->Fill(v_evCommon->nx1);
+	fHistoMan->histoMWPCny1->Fill(v_evCommon->ny1);
+	fHistoMan->histoMWPCnx2->Fill(v_evCommon->nx2);
+	fHistoMan->histoMWPCny2->Fill(v_evCommon->ny2);
 
 	// x1, y1, x2, y2
-	for (UInt_t iIndex=0; iIndex<fCurrentOutputEvent->nx1; iIndex++) {
-		fHistoMan->histoMWPCx1->Fill(fCurrentOutputEvent->x1[iIndex]);
+	for (UInt_t iIndex=0; iIndex<v_evCommon->nx1; iIndex++) {
+		fHistoMan->histoMWPCx1->Fill(v_evCommon->x1[iIndex]);
 	}
-	for (UInt_t iIndex=0; iIndex<fCurrentOutputEvent->ny1; iIndex++) {
-		fHistoMan->histoMWPCy1->Fill(fCurrentOutputEvent->y1[iIndex]);
+	for (UInt_t iIndex=0; iIndex<v_evCommon->ny1; iIndex++) {
+		fHistoMan->histoMWPCy1->Fill(v_evCommon->y1[iIndex]);
 	}
-	for (UInt_t iIndex=0; iIndex<fCurrentOutputEvent->nx2; iIndex++) {
-		fHistoMan->histoMWPCx2->Fill(fCurrentOutputEvent->x2[iIndex]);
+	for (UInt_t iIndex=0; iIndex<v_evCommon->nx2; iIndex++) {
+		fHistoMan->histoMWPCx2->Fill(v_evCommon->x2[iIndex]);
 	}
-	for (UInt_t iIndex=0; iIndex<fCurrentOutputEvent->ny2; iIndex++) {
-		fHistoMan->histoMWPCy2->Fill(fCurrentOutputEvent->y2[iIndex]);
+	for (UInt_t iIndex=0; iIndex<v_evCommon->ny2; iIndex++) {
+		fHistoMan->histoMWPCy2->Fill(v_evCommon->y2[iIndex]);
 	}
 
 	// rx1, ry1, rx2, ry2
 	for (unsigned char v_wire=0; v_wire<32; v_wire++) {
 		unsigned char v_bitValue;
-		v_bitValue = (fCurrentOutputEvent->rx1 >> v_wire) & 0x1;
+		v_bitValue = (v_evCommon->rx1 >> v_wire) & 0x1;
 		if (v_bitValue == 1) {
 			fHistoMan->histoMWPCrx1->Fill(v_wire);
 		}
-		v_bitValue = (fCurrentOutputEvent->ry1 >> v_wire) & 0x1;
+		v_bitValue = (v_evCommon->ry1 >> v_wire) & 0x1;
 		if (v_bitValue == 1) {
 			fHistoMan->histoMWPCry1->Fill(v_wire);
 		}
-		v_bitValue = (fCurrentOutputEvent->rx2 >> v_wire) & 0x1;
+		v_bitValue = (v_evCommon->rx2 >> v_wire) & 0x1;
 		if (v_bitValue == 1) {
 			fHistoMan->histoMWPCrx2->Fill(v_wire);
 		}
-		v_bitValue = (fCurrentOutputEvent->ry2 >> v_wire) & 0x1;
+		v_bitValue = (v_evCommon->ry2 >> v_wire) & 0x1;
 		if (v_bitValue == 1) {
 			fHistoMan->histoMWPCry2->Fill(v_wire);
 		}

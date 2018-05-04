@@ -15,23 +15,16 @@ set(ROOTCLING_HEADERS UserAnalysis.h
                       unpacking/UserProcUnpacking.h
                       unpacking/UserHistosUnpacking.h
                       monitoring/UserEventMonitoring.h
-
-                      data_events/UserEventNew.h
-                      data_events/UserEventLeftTele.h
-                      data_events/UserEventRightTele.h
-                      data_events/UserEventAnnularTele.h
-                      data_events/UserEventNeutronDet.h
-                      data_events/UserEventBeamDetTof.h
-                      data_events/UserEventBeamDetMwpc.h
-
                       monitoring/UserProcMonitoring.h
                       monitoring/UserHistosMonitoring.h
                       learn/UserEventLearn.h
                       learn/UserProcLearn.h
-                      step2/UserEventStep2.h
-                      step2/UserProcStep2.h
-                      data/BeamDetMWPCDigi.h
                       data/RawMessage.h
+                      data/DetMessage.h
+                      data/DetEventFull.h
+                      data/DetEventCommon.h
+                      data/DetEventDetector.h
+                      data/DetEventStation.h
                       )
 
 ROOT_GENERATE_DICTIONARY(G__UserAnalysis ${ROOTCLING_HEADERS} LINKDEF UserAnalysisLinkDef.h)
@@ -49,23 +42,16 @@ set(SOURCE_LIB G__UserAnalysis.cxx
                unpacking/UserProcUnpacking.cxx
                unpacking/UserHistosUnpacking.cxx
                monitoring/UserEventMonitoring.cxx
-
-               data_events/UserEventNew.cxx
-               data_events/UserEventLeftTele.cxx
-               data_events/UserEventRightTele.cxx
-               data_events/UserEventAnnularTele.cxx
-               data_events/UserEventNeutronDet.cxx
-               data_events/UserEventBeamDetTof.cxx
-               data_events/UserEventBeamDetMwpc.cxx
-
                monitoring/UserProcMonitoring.cxx
                monitoring/UserHistosMonitoring.cxx
                learn/UserEventLearn.cxx
                learn/UserProcLearn.cxx
-               step2/UserEventStep2.cxx
-               step2/UserProcStep2.cxx
-               data/BeamDetMWPCDigi.cxx
                data/RawMessage.cxx
+               data/DetMessage.cxx
+               data/DetEventFull.cxx
+               data/DetEventCommon.cxx
+               data/DetEventDetector.cxx
+               data/DetEventStation.cxx
                Support.cxx
                )
 

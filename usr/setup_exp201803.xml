@@ -57,7 +57,7 @@
 	<mapping addr="10"	elblock="mQDC"	startelectrch="4"	nelectrch="4"	detector="F5"	startdetch="0"	folder="Beam_detector_ToF"/>
 	<mapping addr="10"	elblock="mQDC"	startelectrch="8"	nelectrch="4"	detector="F6"	startdetch="0"	folder="Beam_detector_ToF"/>
 
-	<mapping addr="10"	elblock="mQDC"	startelectrch="16"	nelectrch="16"	detector="Ignore"	startdetch="0"	folder=""/>
+	<mapping addr="10"	elblock="mQDC"	startelectrch="16"	nelectrch="16"	detector="Ignore"	startdetch="0"	folder="Ignore"/>
 
 	<mapping addr="11"	elblock="mTDC"	startelectrch="0"	nelectrch="4"	detector="tF3"	startdetch="0"	folder="Beam_detector_ToF"/>
 	<mapping addr="11"	elblock="mTDC"	startelectrch="4"	nelectrch="4"	detector="tF5"	startdetch="0"	folder="Beam_detector_ToF"/>

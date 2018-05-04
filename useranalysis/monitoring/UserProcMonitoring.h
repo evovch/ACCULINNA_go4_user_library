@@ -11,8 +11,8 @@
 
 class TGo4EventElement;
 
-class UserEventMonitoring;
-//class UserEventNew;
+//class UserEventMonitoring;
+class DetEventFull;
 class UserHistosMonitoring;
 class UserEventUnpacking;
 class RawMessage;
@@ -62,8 +62,8 @@ private: // data members
 	 * Current output event object. This object is filled during BuildEvent
 	 * and then pushed into the output tree by the framework.
 	 */
-	UserEventMonitoring* fCurrentOutputEvent;
-	//UserEventNew* fCurrentOutputEvent;
+	//UserEventMonitoring* fCurrentOutputEvent;
+	DetEventFull* fCurrentOutputEvent;
 
 	/**
 	 * Put all your output histograms inside this object.

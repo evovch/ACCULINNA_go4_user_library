@@ -12,12 +12,13 @@
 // ROOT
 #include <TString.h>
 
+class UserParameter;
+
 //TODO not used by now
 class TGo4MbsEvent;
-class UserParameter;
-class UserEventUnpack;
+class UserEventUnpacking;
 class UserEventMonitoring;
-class UserEventStep2;
+class UserEventLearn;
 
 class UserAnalysis : public TGo4Analysis
 {
@@ -42,9 +43,9 @@ private:
 
 	//TODO not used by now
 	TGo4MbsEvent* mMbsEvent;
-	UserEventUnpack* mUserEventUnpack;
+	UserEventUnpacking* mUserEventUnpacking;
 	UserEventMonitoring* mUserEventMonitoring;
-	UserEventStep2* mUserEventStep2;
+	UserEventLearn* mUserEventLearn;
 
 	ClassDef(UserAnalysis, 1);
 };

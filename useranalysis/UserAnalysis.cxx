@@ -9,18 +9,24 @@ using std::endl;
 // Go4
 #include <TGo4Version.h> // for CheckVersion
 #include <TGo4StepFactory.h>
+#include <TGo4MbsEvent.h>
 
 // Project
 #include "UserParameter.h"
+#include "unpacking/UserEventUnpacking.h"
+//#include "monitoring/UserEventMonitoring.h"
+#include "data/DetEventFull.h"
+#include "learn/UserEventLearn.h"
 
 UserAnalysis::UserAnalysis(const char* name) :
 	TGo4Analysis(name),
 	mEventCounter(0),
 	//TODO not used by now ---------
 	mMbsEvent(nullptr),
-	mUserEventUnpack(nullptr),
-	mUserEventMonitoring(nullptr),
-	mUserEventStep2(nullptr)
+	mUserEventUnpacking(nullptr),
+	//mUserEventMonitoring(nullptr),
+
+	mUserEventLearn(nullptr)
 	//------------------------------
 {
 	if (!TGo4Version::CheckVersion(__GO4BUILDVERSION__)) {
@@ -43,9 +49,9 @@ UserAnalysis::UserAnalysis(int argc, char** argv) :
 	mEventCounter(0),
 	//TODO not used by now ---------
 	mMbsEvent(nullptr),
-	mUserEventUnpack(nullptr),
-	mUserEventMonitoring(nullptr),
-	mUserEventStep2(nullptr)
+	mUserEventUnpacking(nullptr),
+	//mUserEventMonitoring(nullptr),
+	mUserEventLearn(nullptr)
 	//------------------------------
 {
 	if (!TGo4Version::CheckVersion(__GO4BUILDVERSION__)) {
@@ -87,6 +93,9 @@ void UserAnalysis::Construct(TString p_outfilename, TString p_setupfilename)
 	mParams->Init(); //TODO User function to perform XML import. Probably there should be a more nice way to do this.
 	AddParameter(mParams);
 
+
+	//mParams = (UserParameter*)MakeParameter("UserParameter1", "UserParameter", "autoload/set_par.C");
+
 	//TODO
 	SetStepChecking(kFALSE); // necessary for non-subsequent mesh analysis
 
@@ -108,7 +117,7 @@ void UserAnalysis::Construct(TString p_outfilename, TString p_setupfilename)
 
 	AddAnalysisStep(stepUnpacking);
 
-	// STEP2 - provider - monitoring ===============================================================
+	// STEP2.1 - provider - monitoring ===============================================================
 
 	TGo4StepFactory* factoryUnpackedProvider1 = new TGo4StepFactory("factoryUnpackedProvider1");
 	factoryUnpackedProvider1->DefInputEvent("UserEventUnpacking1", "UserEventUnpacking"); // read full raw event without partial io
@@ -120,12 +129,13 @@ void UserAnalysis::Construct(TString p_outfilename, TString p_setupfilename)
 	stepUnpackedProvider1->SetProcessEnabled(kTRUE);
 	AddAnalysisStep(stepUnpackedProvider1);
 
-	// STEP2 - processor - monitoring =============================================================
+	// STEP2.1 - processor - monitoring =============================================================
 
 	TGo4StepFactory* factoryMonitoring = new TGo4StepFactory("factoryMonitoring");
 	//factoryMonitoring->DefInputEvent("UserEventUnpacking1", "UserEventUnpacking"); // object name, class name
 	factoryMonitoring->DefEventProcessor("UserProcMonitoring1", "UserProcMonitoring"); // object name, class name
-	factoryMonitoring->DefOutputEvent("UserEventMonitoring1", "UserEventMonitoring"); // object name, class name
+	//factoryMonitoring->DefOutputEvent("UserEventMonitoring1", "UserEventMonitoring"); // object name, class name
+	factoryMonitoring->DefOutputEvent("DetEventFull1", "DetEventFull"); // object name, class name
 
 	TGo4AnalysisStep* stepMonitoring = new TGo4AnalysisStep("stepMonitoring", factoryMonitoring);
 
@@ -139,7 +149,7 @@ void UserAnalysis::Construct(TString p_outfilename, TString p_setupfilename)
 
 	AddAnalysisStep(stepMonitoring);
 
-	// STEP2 - provider - learn ===================================================================
+	// STEP2.2 - provider - learn ===================================================================
 
 	TGo4StepFactory* factoryUnpackedProvider2 = new TGo4StepFactory("factoryUnpackedProvider2");
 	factoryUnpackedProvider2->DefInputEvent("UserEventUnpacking1", "UserEventUnpacking"); // read full raw event without partial io
@@ -151,7 +161,7 @@ void UserAnalysis::Construct(TString p_outfilename, TString p_setupfilename)
 	stepUnpackedProvider2->SetProcessEnabled(kTRUE);
 	AddAnalysisStep(stepUnpackedProvider2);
 
-	// STEP2 - processor - learn ==================================================================
+	// STEP2.2 - processor - learn ==================================================================
 
 	TGo4StepFactory* factoryLearn = new TGo4StepFactory("factoryLearn");
 	//factoryLearn->DefInputEvent("UserEventUnpacking1", "UserEventUnpacking"); // object name, class name
@@ -177,6 +187,13 @@ Int_t UserAnalysis::UserPreLoop(void)
 {
 	//cout << "UserAnalysis::UserPreLoop()." << endl;
 	//cerr << "Starting UserAnalysis." << endl;
+/*
+	//TODO not used by now
+	mMbsEvent = dynamic_cast<TGo4MbsEvent*> (GetInputEvent("stepUnpacking"));
+	mUserEventUnpacking = dynamic_cast<UserEventUnpacking*> (GetOutputEvent("stepUnpacking"));
+	mUserEventMonitoring = dynamic_cast<UserEventMonitoring*> (GetOutputEvent("stepMonitoring"));
+	mUserEventLearn = dynamic_cast<UserEventLearn*> (GetOutputEvent("stepLearn"));
+*/
 	mEventCounter = 0;
 	return 0;
 }
@@ -193,6 +210,13 @@ Int_t UserAnalysis::UserPostLoop(void)
 {
 	//cout << "UserAnalysis::UserPostLoop()." << endl;
 	cerr << "Finished UserAnalysis. Total " << mEventCounter << " events." << endl;
+/*
+	//TODO not used by now
+	mMbsEvent = nullptr;
+	mUserEventUnpacking = nullptr;
+	mUserEventMonitoring = nullptr;
+	mUserEventLearn = nullptr;
+*/
 	return 0;
 }
 

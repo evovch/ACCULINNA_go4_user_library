@@ -33,6 +33,20 @@ SetupConfiguration::~SetupConfiguration()
 {
 }
 
+bool SetupConfiguration::IsMapped(unsigned short p_crateProcid,
+              unsigned short p_addr,
+              unsigned short p_elch) const
+{
+	unsigned int v_chUID = SetupConfiguration::GetChUID(p_crateProcid, p_addr, p_elch);
+
+	std::map<unsigned int, stc_mapping*>::const_iterator iter = mMappings.find(v_chUID);
+	if (iter != mMappings.end()) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
 bool SetupConfiguration::CheckConsistency(void)
 {
 	//TODO any additional checks
@@ -79,6 +93,32 @@ void SetupConfiguration::Link(void)
 			}
 
 			cerr << "PER-CHANNEL MAPPING: " << v_curMappingChID << " - " << v_curMapping->fDetector << endl;
+
+			if (mDetectors.find(v_curMapping->fFolder) == mDetectors.end()) {
+				// New folder (actually detector, not station) found
+				this->mDetectors.insert(v_curMapping->fFolder);
+				std::set<TString> v_newSet;
+				v_newSet.insert(v_curMapping->fDetector);
+				this->mStationsPerDet.insert(std::pair<TString, std::set<TString> >
+				                            (v_curMapping->fFolder, v_newSet));
+
+				cerr << "Found folder " << v_curMapping->fFolder << " for the first time." << endl;
+				cerr << "Adding station " << v_curMapping->fDetector << " into " << v_curMapping->fFolder << endl;
+
+			} else {
+				// Not new folder (actually detector, not station) found
+				// Add stations (which is called detector here, at least by now) into the list
+
+				std::map< TString, std::set<TString> >::iterator iterDet =
+				    this->mStationsPerDet.find(v_curMapping->fFolder);
+
+				std::set<TString>::iterator iterSt = iterDet->second.find(v_curMapping->fDetector);
+
+				if (iterSt == iterDet->second.end()) {
+					iterDet->second.insert(v_curMapping->fDetector);
+					cerr << "Adding station " << v_curMapping->fDetector << " into " << v_curMapping->fFolder << endl;
+				}
+			}
 
 			if (++counter >= 10000) {
 				// Something went completely wrong.
@@ -218,6 +258,12 @@ bool SetupConfiguration::IsMappedToMachineTime(unsigned short p_crateProcid,
 		     << endl;*/
 		return false;
 	}
+}
+
+std::set<TString> const SetupConfiguration::GetStationList(TString detector) const
+{
+	std::map< TString, std::set<TString> >::const_iterator iterDet = this->mStationsPerDet.find(detector);
+	return iterDet->second;
 }
 
 ClassImp(SetupConfiguration)

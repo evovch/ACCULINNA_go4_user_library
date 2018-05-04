@@ -13,6 +13,7 @@
 
 // STD
 #include <map>
+#include <set>
 
 // ROOT
 #include <TString.h>
@@ -28,6 +29,14 @@ public:
 	SetupConfiguration();
 	SetupConfiguration(const char* p_filename);
 	virtual ~SetupConfiguration();
+
+	/**
+	 * Return true if the given electronics channel is mapped
+	 * to some detector channel.
+	 */
+	bool IsMapped(unsigned short p_crateProcid,
+	              unsigned short p_addr,
+	              unsigned short p_elch) const;
 
 	/**
 	 * When looking at the decimal representation of the channel unique ID from left to right:
@@ -112,6 +121,16 @@ public:
 	 */
 	bool CheckConsistency(void);
 
+	/**
+	 * Get the list of detectors imported from the setup configuration file
+	 */
+	std::set<TString> const GetDetectorList(void) const { return mDetectors; }
+
+	/**
+	 * Get the list of stations for the given detector
+	 */
+	std::set<TString> const GetStationList(TString detector) const;
+
 private: // methods
 	/**
 	 *
@@ -125,9 +144,21 @@ private: // data members
 	stc_setup_config mConfiguration;
 
 	/**
-	 *
+	 * Filled during the Link() method
 	 */
 	std::map<unsigned int, stc_mapping*> mMappings; //! key - unique channel ID, see GetChUID()
+
+	/**
+	 * List of detectors
+	 * Filled during the Link() method
+	 */
+	std::set<TString> mDetectors;
+
+	/**
+	 * List of stations per detector
+	 * Filled during the Link() method
+	 */
+	std::map< TString, std::set<TString> > mStationsPerDet;
 
 	ClassDef(SetupConfiguration, 1);
 };

@@ -2,6 +2,8 @@
 
 	@class UserEventUnpacking
 
+	RawEvent with raw messages
+
 */
 
 #ifndef USEREVENTUNPACKING_H

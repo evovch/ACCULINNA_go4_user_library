@@ -30,11 +30,12 @@ using std::endl;
 UserProcLearn::UserProcLearn(const char* name) :
 	TGo4EventProcessor(name),
 	fEventCounter(0)
+	/*fCurrentOutputEvent(NULL)*/
 {
 	TGo4Analysis* a = TGo4Analysis::Instance();
 
 	/*const char* procids[3] = {"100", "101", "200"};*/
-	fHistoAddrVsProcid = a->MakeTH2('D', "fHistoAddrVsProcid", "addr vs. procid;procid;addr",
+	fHistoAddrVsProcid = a->MakeTH2('D', "fHistoAddrVsProcid", "Messages per block;procid;addr",
 	                                3, 0., 3., 32, 0., 32.);
 
 	fFileSummary = fopen("textoutput/summaryLearn.txt", "w");
@@ -174,6 +175,10 @@ void UserProcLearn::UserPostLoop()
 	TString v_folder;
 
 	fprintf(fFileSummary, "=============================== SUMMARY ==============================\n");
+
+	fprintf(fFileSummary, "The following channels are mapped but no data comes from them:\n");
+	this->ProcessUnmappedChannels();
+
 	fprintf(fFileSummary, "The following channels have been detected in the input file:\n");
 
 	for (auto v_chuid : fUsedChUIDs) {
@@ -193,7 +198,7 @@ void UserProcLearn::UserPostLoop()
 			continue;
 		}
 
-		// TODO special case for CAEN scalers
+		// TODO special case for CAEN scalers and machine time
 		if ((v_detectorLcase == "scalers") || (v_detectorLcase == "mtime")) {
 			// The difference is that the output (detector) channel = input (electronics) channel
 			// Moreover, the input (electronics) channel is not really a channel, extracted from
@@ -215,6 +220,10 @@ void UserProcLearn::UserPostLoop()
 	}
 
 	fprintf(fFileSummary, "======================================================================\n");
+}
+
+void UserProcLearn::ProcessUnmappedChannels(void) const
+{
 }
 
 ClassImp(UserProcLearn)
