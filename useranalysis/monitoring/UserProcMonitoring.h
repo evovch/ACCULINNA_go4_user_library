@@ -2,6 +2,28 @@
 
 	@class UserProcMonitoring
 
+	Processor-class for the Repacking step of the analysis.
+
+	The overall logic of this step is the following.
+	The BuildEvent() method is called by the framework for each input event.
+	Currently (and hopefully always) the input event is the result of the
+	Unpacking step. In the BuildEvent() there are:
+	a) loop over the input raw messages. For each input raw message the
+	ProcessMessageUniversal() method is called;
+	b) processing of the common event data such as 'tigger';
+	c) call for the ProcessCAMACmwpcWords() method to process CAMAC words
+
+	First ProcessMessageUniversal() identifies if the message comes from the scalers
+	and calls for the ProcessMessageScaler() method, then return.
+
+	Then ProcessMessageUniversal() identifies if the message contains machine time
+	and calls for the ProcessMachineTime() method, then return.
+
+	After that ProcessMessageUniversal() checks if the messages comes from a channel
+	which is mapped to the 'Ignore' datactor-station. If so - return.
+
+	In the end remaining messages are processed in a rather generic way.
+
 */
 
 #ifndef USERPROCMONITORING_H
@@ -40,7 +62,7 @@ private: // methods
 	/**
 	 * Process machine time message
 	 */
-	void ProcessMachineTimeScaler(const RawMessage* p_message);
+	void ProcessMachineTime(const RawMessage* p_message);
 
 	/**
 	 * Process raw CAMAC words assuming they have been produced by MWPCs

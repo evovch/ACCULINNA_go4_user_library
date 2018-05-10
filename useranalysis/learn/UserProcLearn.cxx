@@ -127,9 +127,9 @@ void UserProcLearn::ProcessMessage(const RawMessage* p_message)
 		exit(EXIT_FAILURE);
 		return;
 	}
+	//TString v_station;
 	//TString v_detector;
-	//TString v_folder;
-	///*unsigned short v_detChannel = */fSetupConfig->GetOutput(p_message->fSubeventProcID, v_addr, p_message->fChannel, &v_detector, &v_folder);
+	///*unsigned short v_detChannel = */fSetupConfig->GetOutput(p_message->fSubeventProcID, v_addr, p_message->fChannel, &v_station, &v_detector);
 
 	unsigned int curChUID;
 
@@ -171,8 +171,8 @@ void UserProcLearn::UserPreLoop()
 
 void UserProcLearn::UserPostLoop()
 {
+	TString v_station;
 	TString v_detector;
-	TString v_folder;
 
 	fprintf(fFileSummary, "=============================== SUMMARY ==============================\n");
 
@@ -185,10 +185,10 @@ void UserProcLearn::UserPostLoop()
 		unsigned short v_procid = v_chuid/100000;
 		unsigned short v_addr = (v_chuid%100000) / 1000;
 		unsigned short v_ch = v_chuid%1000;
-		unsigned short v_det_ch = fSetupConfig->GetOutput(v_procid, v_addr, v_ch, &v_detector, &v_folder);
+		unsigned short v_det_ch = fSetupConfig->GetOutput(v_procid, v_addr, v_ch, &v_station, &v_detector);
 
-		TString v_detectorLcase(v_detector);
-		v_detectorLcase.ToLower();
+		TString v_stationLcase(v_station);
+		v_stationLcase.ToLower();
 
 		if (v_det_ch == 9999) {
 			fprintf(fFileSummary, "======================================================================\n");
@@ -199,23 +199,23 @@ void UserProcLearn::UserPostLoop()
 		}
 
 		// TODO special case for CAEN scalers and machine time
-		if ((v_detectorLcase == "scalers") || (v_detectorLcase == "mtime")) {
-			// The difference is that the output (detector) channel = input (electronics) channel
+		if ((v_stationLcase == "scalers") || (v_stationLcase == "mtime")) {
+			// The difference is that the output (station) channel = input (electronics) channel
 			// Moreover, the input (electronics) channel is not really a channel, extracted from
 			// the raw data word, but it is taken as the position of the raw data word within the
 			// subsubevent header. Sorry.
 			fprintf(fFileSummary, "%ld: procid=%u\taddr=%u\tch=%u\tmapped to %s[%u]\tfrom %s\n",
-			        v_chuid, v_procid, v_addr, v_ch, v_detector.Data(), v_ch, v_folder.Data());
+			        v_chuid, v_procid, v_addr, v_ch, v_station.Data(), v_ch, v_detector.Data());
 		} else {
 			fprintf(fFileSummary, "%ld: procid=%u\taddr=%u\tch=%u\tmapped to %s[%u]\tfrom %s\n",
-			        v_chuid, v_procid, v_addr, v_ch, v_detector.Data(), v_det_ch, v_folder.Data());
+			        v_chuid, v_procid, v_addr, v_ch, v_station.Data(), v_det_ch, v_detector.Data());
 		}
 
 		/*cerr << v_chuid << ": procid=" << v_procid
 		     << "\taddr=" << v_addr
 		     << "\tch=" << v_ch
-		     << "\tmapped to " << v_detector << "[" << v_det_ch << "]"
-		     << "\t from " << v_folder
+		     << "\tmapped to " << v_station << "[" << v_det_ch << "]"
+		     << "\t from " << v_detector
 		     << endl;*/
 	}
 

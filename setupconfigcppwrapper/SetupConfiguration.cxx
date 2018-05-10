@@ -34,8 +34,8 @@ SetupConfiguration::~SetupConfiguration()
 }
 
 bool SetupConfiguration::IsMapped(unsigned short p_crateProcid,
-              unsigned short p_addr,
-              unsigned short p_elch) const
+                                  unsigned short p_addr,
+                                  unsigned short p_elch) const
 {
 	unsigned int v_chUID = SetupConfiguration::GetChUID(p_crateProcid, p_addr, p_elch);
 
@@ -55,6 +55,8 @@ bool SetupConfiguration::CheckConsistency(void)
 
 void SetupConfiguration::Link(void)
 {
+	unsigned short v_detCounter = 1;
+
 	// For each mapping
 	for (unsigned short iMapping=0; iMapping<mConfiguration.fNmappings; iMapping++) {
 		stc_mapping* v_curMapping = &(mConfiguration.fMappingsList[iMapping]);
@@ -67,6 +69,7 @@ void SetupConfiguration::Link(void)
 
 		////DumpStcMapping(v_curMapping);
 
+		// For each electronics channel
 		unsigned short counter = 0;
 		for (unsigned short iCh = v_curMapping->fStartelectrch;
 		                    iCh < v_curMapping->fStartelectrch + v_curMapping->fNelectrch;
@@ -76,6 +79,7 @@ void SetupConfiguration::Link(void)
 			                                                             v_curMapping->fAddr,
 			                                                             (unsigned int)iCh);
 
+			// Add current per-channel mapping
 			std::pair<std::map<unsigned int, stc_mapping*>::iterator, bool> ret;
 			ret = this->mMappings.insert(std::pair<unsigned int, stc_mapping*>(v_curMappingChID, v_curMapping));
 			if (ret.second == false) {
@@ -92,33 +96,91 @@ void SetupConfiguration::Link(void)
 
 			}
 
-			cerr << "PER-CHANNEL MAPPING: " << v_curMappingChID << " - " << v_curMapping->fDetector << endl;
+			//cerr << "PER-CHANNEL MAPPING: " << v_curMappingChID << " - " << v_curMapping->fStation << endl;
 
-			if (mDetectors.find(v_curMapping->fFolder) == mDetectors.end()) {
-				// New folder (actually detector, not station) found
-				this->mDetectors.insert(v_curMapping->fFolder);
-				std::set<TString> v_newSet;
-				v_newSet.insert(v_curMapping->fDetector);
-				this->mStationsPerDet.insert(std::pair<TString, std::set<TString> >
-				                            (v_curMapping->fFolder, v_newSet));
+			unsigned short v_stationID = 65535;
 
-				cerr << "Found folder " << v_curMapping->fFolder << " for the first time." << endl;
-				cerr << "Adding station " << v_curMapping->fDetector << " into " << v_curMapping->fFolder << endl;
+			// Search for the current detector
+			if (mDetectors.find(v_curMapping->fDetector) == mDetectors.end()) {
+				// New detector found
+				this->mDetectors.insert(std::pair<TString, unsigned short>(v_curMapping->fDetector, v_detCounter));
+
+				cerr << "Found detector " << v_detCounter << ": " << v_curMapping->fDetector << " for the first time." << endl;
+
+				// Add new station list for this detector with one station
+				std::map<TString, unsigned short> v_newSet;
+
+				v_stationID = v_detCounter * 100 + 0;
+
+				v_newSet.insert(std::pair<TString, unsigned short>(v_curMapping->fStation, v_stationID));
+				this->mStationsPerDet.insert(std::pair<TString, std::map<TString, unsigned short> >
+				                            (v_curMapping->fDetector, v_newSet));
+
+				cerr << "Adding station " << v_stationID << ": " << v_curMapping->fStation
+				     << " into " << v_curMapping->fDetector << endl;
+
+				v_detCounter++;
 
 			} else {
-				// Not new folder (actually detector, not station) found
-				// Add stations (which is called detector here, at least by now) into the list
+				// Not new detector found
+				// Add stations into the list
 
-				std::map< TString, std::set<TString> >::iterator iterDet =
-				    this->mStationsPerDet.find(v_curMapping->fFolder);
+				std::map< TString, std::map<TString, unsigned short> >::iterator iterDet =
+				    this->mStationsPerDet.find(v_curMapping->fDetector);
 
-				std::set<TString>::iterator iterSt = iterDet->second.find(v_curMapping->fDetector);
+				if (iterDet == this->mStationsPerDet.end()) {
+					// This should never happen
+					cerr << "[FATAL ] No stations list was found for the detector." << endl;
+					exit(EXIT_FAILURE);
+					return;
+				}
+
+				// Find station
+				std::map<TString, unsigned short>::iterator iterSt = iterDet->second.find(v_curMapping->fStation);
 
 				if (iterSt == iterDet->second.end()) {
-					iterDet->second.insert(v_curMapping->fDetector);
-					cerr << "Adding station " << v_curMapping->fDetector << " into " << v_curMapping->fFolder << endl;
-				}
+					// Station not found
+
+					// Current size of the stations list of the current detector
+					unsigned short v_curSize = iterDet->second.size();
+
+					v_stationID = this->GetDetectorID(v_curMapping->fDetector) * 100 + v_curSize;
+
+					iterDet->second.insert(std::pair<TString, unsigned short>(v_curMapping->fStation, v_stationID));
+					cerr << "Adding station " << v_stationID << ": " << v_curMapping->fStation
+					     << " into " << v_curMapping->fDetector << endl;
+				} /*else {
+					cerr << "Not new detector, not new station." << endl;
+				}*/
 			}
+
+// ------------------------------------------------------------------------------------------------
+// MWPC specific
+// ------------------------------------------------------------------------------------------------
+
+			// Try to identify MWPC
+			TString v_stationName(v_curMapping->fStation);
+			if (v_stationName.Contains("mwpc", TString::kIgnoreCase) &&
+			   !v_stationName.Contains("tmwpc", TString::kIgnoreCase) &&
+			   v_stationID != 65535) {
+				cerr << v_curMapping->fStation << " mapping found!" << endl;
+
+				Ssiz_t pos = v_stationName.Index("mwpc", 0, TString::kIgnoreCase);
+				TSubString v_MWPCst = v_stationName(pos+4, 2);
+				TString v_MWPCst2(v_MWPCst);
+
+				// MWPC stations start numbering from 1 but arrays - from 0
+				Int_t MWPCstIndex = v_MWPCst2.Atoi() - 1;
+
+				// We can call for this method here. I hope.
+				fMWPCdetectorID[MWPCstIndex] = this->GetDetectorID(v_curMapping->fDetector);
+				fMWPCstationID[MWPCstIndex] = v_stationID;
+
+				//cerr << "i=" << MWPCstIndex << "\tdet=" << fMWPCdetectorID[MWPCstIndex]
+				//     << "\tst=" << fMWPCstationID[MWPCstIndex] << endl;
+			}
+
+// ------------------------------------------------------------------------------------------------
 
 			if (++counter >= 10000) {
 				// Something went completely wrong.
@@ -146,17 +208,19 @@ unsigned short SetupConfiguration::ElChToDetCh(const stc_mapping* p_mapping, uns
 		return 9999;
 	}
 
-	unsigned short v_stDetCh = p_mapping->fStartdetch;
+	unsigned short v_stStationCh = p_mapping->fStartstatch;
 
-	return v_stDetCh + ((p_elch - v_stElCh) / v_stepElCh);
+	return v_stStationCh + ((p_elch - v_stElCh) / v_stepElCh);
 }
 
 unsigned short SetupConfiguration::GetOutput(unsigned short p_crateProcid,
                                              unsigned short p_addr,
                                              unsigned short p_elch,
+                                             TString* o_station,
                                              TString* o_detector,
-                                             TString* o_folder,
-                                             TString* o_elblock) const
+                                             TString* o_elblock,
+                                             unsigned short* o_detid,
+                                             unsigned short* o_statid) const
 {
 	unsigned int v_detCh;
 	unsigned int v_chUID = SetupConfiguration::GetChUID(p_crateProcid, p_addr, p_elch);
@@ -166,12 +230,16 @@ unsigned short SetupConfiguration::GetOutput(unsigned short p_crateProcid,
 
 	std::map<unsigned int, stc_mapping*>::const_iterator iter = mMappings.find(v_chUID);
 	if (iter != mMappings.end()) {
+		if (o_station != NULL) { *o_station = iter->second->fStation; }
 		if (o_detector != NULL) { *o_detector = iter->second->fDetector; }
-		if (o_folder != NULL) { *o_folder = iter->second->fFolder; }
 		if (o_elblock != NULL) {*o_elblock = iter->second->fElblock; }
 
 		//TODO computation of the output detector channel is here
 		v_detCh = SetupConfiguration::ElChToDetCh(iter->second, p_elch);
+
+		//TODO
+		if (o_detid != NULL) { *o_detid = this->GetDetectorID(iter->second->fDetector); }
+		if (o_statid != NULL) { *o_statid = this->GetStationID(iter->second->fDetector, iter->second->fStation); }
 	} else {
 		//ERROR
 		cerr << "[ERROR ] GetOutput() "
@@ -204,9 +272,9 @@ bool SetupConfiguration::IsMappedToScaler(unsigned short p_crateProcid,
 
 	if (iter != mMappings.end())
 	{
-		TString v_detectorName(iter->second->fDetector);
-		v_detectorName.ToLower();
-		if (v_detectorName == "scalers") {
+		TString v_stationName(iter->second->fStation);
+		v_stationName.ToLower();
+		if (v_stationName == "scalers") {
 			return true;
 		} else {
 			return false;
@@ -241,9 +309,9 @@ bool SetupConfiguration::IsMappedToMachineTime(unsigned short p_crateProcid,
 
 	if ((iter != mMappings.end()))
 	{
-		TString v_detectorName(iter->second->fDetector);
-		v_detectorName.ToLower();
-		if (v_detectorName == "mtime") {
+		TString v_stationName(iter->second->fStation);
+		v_stationName.ToLower();
+		if (v_stationName == "mtime") {
 			return true;
 		} else {
 			return false;
@@ -260,10 +328,53 @@ bool SetupConfiguration::IsMappedToMachineTime(unsigned short p_crateProcid,
 	}
 }
 
-std::set<TString> const SetupConfiguration::GetStationList(TString detector) const
+unsigned short SetupConfiguration::GetStationID(TString p_detector, TString p_station) const
 {
-	std::map< TString, std::set<TString> >::const_iterator iterDet = this->mStationsPerDet.find(detector);
-	return iterDet->second;
+	std::map< TString, std::map<TString, unsigned short> >::const_iterator iterDet = this->mStationsPerDet.find(p_detector);
+
+	if (iterDet != this->mStationsPerDet.end()) {
+
+		std::map<TString, unsigned short>::const_iterator iterStat = iterDet->second.find(p_station);
+
+		if (iterStat != iterDet->second.end()) {
+			return iterStat->second;
+		} else {
+			//ERROR
+			cerr << "SetupConfiguration::GetStationID: ERROR" << endl;
+			return 65535; //TODO
+		}
+
+	} else {
+		//ERROR
+		cerr << "SetupConfiguration::GetStationID: ERROR" << endl;
+		return 65535; //TODO
+	}
+}
+
+unsigned short SetupConfiguration::GetDetectorID(TString p_detector) const
+{
+	std::map<TString, unsigned short>::const_iterator iter = this->mDetectors.find(p_detector);
+
+	if (iter != this->mDetectors.end()) {
+		return iter->second;
+	} else {
+		//ERROR
+		cerr << "SetupConfiguration::GetDetectorID: ERROR" << endl;
+		return 65535; //TODO
+	}
+}
+
+std::map<TString, unsigned short> const SetupConfiguration::GetStationList(TString detector) const
+{
+	std::map< TString, std::map<TString, unsigned short> >::const_iterator iterDet = this->mStationsPerDet.find(detector);
+
+	if (iterDet != this->mStationsPerDet.end()) {
+		return iterDet->second;
+	} else {
+		//ERROR
+		cerr << "SetupConfiguration::GetStationList: ERROR" << endl;
+		//TODO return ?
+	}
 }
 
 ClassImp(SetupConfiguration)

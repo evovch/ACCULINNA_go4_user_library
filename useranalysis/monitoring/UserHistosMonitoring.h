@@ -30,7 +30,7 @@ public:
 	TH1* d1tF6[4];
 	TH1* d1tMWPC[4];*/
 
-	TH1* histoMWPCnx1;
+	/*TH1* histoMWPCnx1;
 	TH1* histoMWPCny1;
 	TH1* histoMWPCnx2;
 	TH1* histoMWPCny2;
@@ -41,7 +41,7 @@ public:
 	TH1* histoMWPCrx1;
 	TH1* histoMWPCry1;
 	TH1* histoMWPCrx2;
-	TH1* histoMWPCry2;
+	TH1* histoMWPCry2;*/
 
 	ClassDef(UserHistosMonitoring, 1);
 };

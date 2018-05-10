@@ -27,6 +27,14 @@ Build the user library using a simple shell script which in turn calls for cmake
 
 > ./compile.sh
 
+Building Doxygen documentation
+==============================
+
+In order to produce documentation from the comments in the code use:
+
+> genDocs.sh
+
+Result will be located in the 'docs' directory.
 
 LMD file analysis
 =================
@@ -34,7 +42,6 @@ LMD file analysis
 Tune the run.sh script to your needs and run it:
 
 > ./run.sh
-
 
 Cleanup
 =======
@@ -45,7 +52,6 @@ You can remove all generated files by:
 
 Note that doclean.sh removes both build result and textual output generate during analysis.
 Analysis results should be located outside of the repository by specifying corresponding paths in the run.sh script.
-
 
 Analysis of output root files
 =============================
@@ -135,10 +141,118 @@ Another reason is that RIO machine time, which is 32-bits wide, is artificially 
 
 A special geo value is written inside the header. At the moment of writing of this README, this special value was 30. It does not matter as long as you use setup.xml file and specify correct geo there. There is no hardcoded value.
 
+Output data structure
+=====================
+
+In order for the code to be independent of the hardware setup as much as possible, the setup.xml has been invented. This setup configuration file allows building repacking(monitoring)-step output event structure 'on the fly'. To make this possible the Go4 composite event functionality is employed.
+
+Lower level entity - detector message (DetMessage class).
+TClonesArray of DetMessage's is encompassed in the station-event (DetEventStation class).
+A group of DetEventStation's makes up one detector-event (DetEventDetector class).
+A group of DetEventDetector's plus one common-event (DetEventCommon) make up one full-event (DetEventFull).
+
+Common information of the event is something which is usually called 'event header'. This habitual name is not used intentionally as it may introduce ambiguity - when processing raw data from the detector, data come in portions which are called events which have their headers (yes, event headers).
+
+The following numbering scheme is implemented.
+
+DetEventCommon has hardcoded detectorID=0.
+Each next detector, found in the setup.xml, is given a new detectorID starting from 1.
+Each detector has some number of stations. Each next found station for the current detector is given a new stationID. Internally stations are numbered from 0. However, in the end each station gets its unique stUID computed as
+
+	stUID = detectorID * 100 + stationID
+
+Even though "Ignore" detector and its "Ignore" station are the special entities with some specific processing, IDs are anyway assigned to them.
+
+Consider the following example. Setup configuration XML file looks like the following:
+
+	...
+	<mapping addr="10"	elblock="mQDC"	startelectrch="0"	nelectrch="4"	detector="F3"	startdetch="0"	folder="Beam_detector_ToF"/>
+	<mapping addr="10"	elblock="mQDC"	startelectrch="4"	nelectrch="4"	detector="F5"	startdetch="0"	folder="Beam_detector_ToF"/>
+	<mapping addr="10"	elblock="mQDC"	startelectrch="8"	nelectrch="4"	detector="F6"	startdetch="0"	folder="Beam_detector_ToF"/>
+	<mapping addr="10"	elblock="mQDC"	startelectrch="16"	nelectrch="16"	detector="Ignore"	startdetch="0"	folder="Ignore"/>
+	<mapping addr="11"	elblock="mTDC"	startelectrch="0"	nelectrch="4"	detector="tF3"	startdetch="0"	folder="Beam_detector_ToF"/>
+	<mapping addr="3"	elblock="V775"	startelectrch="0"	nelectrch="16"	detector="tSQY_L"	startdetch="0"	folder="Left_telescope"/>
+	<mapping addr="3"	elblock="V775"	startelectrch="16"	nelectrch="16"	detector="tSQY_R"	startdetch="0"	folder="Right_telescope"/>
+	<mapping addr="4"	elblock="V775"	startelectrch="0"	nelectrch="16"	detector="tCsI_L"	startdetch="0"	folder="Left_telescope"/>
+	<mapping addr="4"	elblock="V775"	startelectrch="16"	nelectrch="16"	detector="tCsI_R"	startdetch="0"	folder="Right_telescope"/>
+	...
+
+Result:
+
+	Detector "DetEventCommon", detectorID = 0
+	Detector "Beam_detector_ToF", detectorID = 1
+		Station "F3", stationID = 0, stUID = 100
+		Station "F5", stationID = 1, stUID = 101
+		Station "F6", stationID = 2, stUID = 102
+		Station "tF3", stationID = 3, stUID = 103
+	Detector "Ignore", detectorID = 2
+		Station "Ignore", stationID = 0, stUID = 200
+	Detector "Left_telescope", detectorID = 3
+		Station "tSQY_L", stationID = 0, stUID = 300
+		Station "tCsI_L", stationID = 1, stUID = 301
+	Detector "Right_telescope", detectorID = 4
+		Station "tSQY_R", stationID = 0, stUID = 400
+		Station "tCsI_R", stationID = 1, stUID = 401
+
 Project structure
 =================
 
-UserAnalysis
+autoload
+--------
+
+Under development.
+
+auxiliary
+---------
+
+Auxiliary files for the developer.
+
+base
+----
+
+Some common general functionality which may be used by any part of the project.
+
+build
+-----
+
+Build directory. If you use provided compile.sh script, this directory is generated automatically right before building the project.
+
+data
+----
+
+Mostly repacking(monitoring) step output data structures.
+
+docs
+----
+
+Output of the doxygen generator. By now these files should be produced by the user on the local machine. See [Building Doxygen documentation].
+
+docu
+----
+
+Static documentation files.
+
+macros
+------
+
+Directory for user macros.
+
+setupconfig
+-----------
+
+A pure "C" sybsystem which performs import of the setup configuration XML. This code conforms c89 standard which makes it compilable by the RIO3 (RIO4?) VME controllers. It is planned that this subsystem will be also used to configure the DAQ hardware.
+
+setupconfigcppwrapper
+---------------------
+
+"C++" wrapper around SetupConfig for easier usage in this project.
+
+textoutput
+----------
+
+Different text output files produced by the analysis. This directory must exist in order for the usr library to word. Please, use provided script to compile/clean/run anlysis. They take care.
+
+useranalysis
 ------------
 
 ### Unpacking
@@ -149,10 +263,6 @@ The first step of the analysis. Only reads raw data and extracts raw messages wi
 
 The second step of the analysis. Looks into the setup configuration and produces a ROOT tree ...
 
-### Step2
-
-Obsolete. A very primitive analysis step for MWPC decoding. Already implemented in the 'monitoring' step together with the rest of the setup.
-
 ### Learn
 
 A subsystem which allows to perform analysis of a rather small portion of the input data (TODO implement nEvents limit) and generate a summaryLearn.txt file which contains information about which procID's (crates), addressed (geo/module) and electronics channels produce data. This information can be then compared to the setup file and create warnings abount unmapped channels or mapped channels with no information.
@@ -161,31 +271,10 @@ A subsystem which allows to perform analysis of a rather small portion of the in
 
 A small subsystem which is required by Go4 and used by UserAnalysis class to create a mesh-like structure of the analysis. This allows, in particular, to split the unpacked, but not mapped data into two or more streams to be processed by separate processors (i.e. monitoring and learn).
 
-SetupConfig
------------
-
-A pure "C" sybsystem which performs import of the setup configuration XML. This code conforms c89 standard which makes it compilable by the RIO3 (RIO4?) VME controllers. It is planned that this subsystem will be also used to configure the DAQ hardware.
-
-SetupConfigCppWrapper
----------------------
-
-"C++" wrapper around SetupConfig for easier usage in this project.
-
 usr
 ---
 
 Directory for XML files, including setup configuration XML files.
-
-textoutput
-----------
-
-Different text output files produced by the analysis. This directory must exist in order for the usr library to word. Please, use provided script to compile/clean/run anlysis. They take care.
-
-macros
-------
-
-Directory for user macros.
-
 
 Developer reminder
 ==================
@@ -220,7 +309,6 @@ in case you want to specify explicitly:
 
 + variables without any identifiable prefix are usually the local ones -
 this is usually the case for simple one-letter names: i, j, k, x, y, z, n, etc...
-
 
 Short GCC reminder
 ==================
@@ -275,13 +363,11 @@ Most used flags
 
 A command wirtten inside the ` quotes is executed and its result is put in the place.
 
-
 rootcint/rootcling
 ==================
 
 For rootcling (or older rootcint) see official site, there's not so much to read:
 https://root.cern.ch/cling
-
 
 Short Makefile structure reminder
 =================================
@@ -303,11 +389,10 @@ Automatic variables:
 See also:
 https://www.gnu.org/software/make/manual/html_node/Automatic-Variables.html
 
-
 Proposals
 =========
 
-Предлагается ввести новый тип subsubevent'ов в дополнение к имеющимся CAEN и MESYTEC. Назвать его можно, например, DAQSTAT. Особенностью data-слов (между header и footer) в таких subsubevent'ах будет то, что все их 32 бита будут передаваться дальше на обработку, без попытки выделить какие-лио значения, типа номер канала, значение ADC/QDC/TDC. В эту категорию попадают сообщения от счётчиков (CAEN V560) и машинное время от RIO. Желательно, чтобы header содержал длину subsubevent'а. Для машинного времени - 1, для CAEN V560 - количество работающих счётчиков. Эти числа должны задаваться в setup.xml как кол-во каналов.
+Предлагается ввести новый тип subsubevent'ов в дополнение к имеющимся CAEN и MESYTEC. Назвать его можно, например, DAQSTAT. Особенностью data-слов (между header и footer) в таких subsubevent'ах будет то, что все их 32 бита будут передаваться дальше на обработку, без попытки выделить какие-либо значения, типа номер канала, значение ADC/QDC/TDC. В эту категорию попадают сообщения от счётчиков (CAEN V560) и машинное время от RIO. Желательно, чтобы header содержал длину subsubevent'а. Для машинного времени - 1, для CAEN V560 - количество работающих счётчиков. Эти числа должны задаваться в setup.xml как кол-во каналов.
 
 TODO
 ====
@@ -323,4 +408,3 @@ TODO
 4) Реализовать ProcessUnmappedChannels для отфильтровки и вывода каналов с мэппингом, но без данных.
 
 5) Придумать настроечный макрос для включения/выключения всяких опций типа вывода summary, включения/выключения этапов (learn).
-

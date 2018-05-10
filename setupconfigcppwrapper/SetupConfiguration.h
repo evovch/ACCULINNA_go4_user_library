@@ -13,7 +13,6 @@
 
 // STD
 #include <map>
-#include <set>
 
 // ROOT
 #include <TString.h>
@@ -40,8 +39,8 @@ public:
 
 	/**
 	 * When looking at the decimal representation of the channel unique ID from left to right:
-	 * The first 3 digits are the crate ProcID
-	 * Next 2 digits are the module address (module for MESYTEC, geo for CAEN)
+	 * The first 3 digits are the crate ProcID;
+	 * Next 2 digits are the module address (module for MESYTEC, geo for CAEN);
 	 * Last 3 digits are the channel number of the module. 3 digits are reserved,
 	 * so we can go up to 999-ch electronics blocks. Ok, at least 128...
 	 * Example returned value chUID = 10105029: procid=101, addr=05, ch=029
@@ -58,15 +57,20 @@ public:
 	 * this method returns corresponding detector channel.
 	 * A situation may happed (though should not happen) that the tested electronics channel
 	 * is not within the set of the channels described by the mapping. This emits an ERROR.
+	 *
 	 * Consider the following mapping with start el.ch = 3, el.ch.step = 2, n.el.ch = 6
 	 * and the input p_elch = 6
-	 * |   |   |
-	 * 3 4 5 6 7 8
-	 *       ^
-	 * Another example is when the input p_elch is outside of the [3;3+6) range, say, 2 or 9:
+	 *
 	 *     |   |   |
-	 * 1 2 3 4 5 6 7 8 9 10
-	 *   ^             ^
+	 *     3 4 5 6 7 8
+	 *           ^
+	 *
+	 * Another example is when the input p_elch is outside of the [3;3+6) range, say, 2 or 9:
+	 *
+	 *         |   |   |
+	 *     1 2 3 4 5 6 7 8 9 10
+	 *       ^             ^
+	 *
 	 */
 	static unsigned short ElChToDetCh(const stc_mapping* p_mapping, unsigned short p_elch);
 
@@ -74,17 +78,20 @@ public:
 	 * Given crate procid from subevent header, address (module for MESYTEC, geo for CAEN)
 	 * from subsubevent header, and electronics block channel from the data word,
 	 * return the mapped detector channel and write out detector name into o_detector
-	 * and folder name into o_folder.
+	 * and station name into o_station.
 	 *
 	 * TODO check - in case of CAEN scalers, input parameter p_elch is misused - //TODO re-check
-	 * the raw message index is passed as channel (which corresponds to reality unfortunately)
+	 *
+	 * The raw message index is passed as channel (which corresponds to reality unfortunately)
 	 */
 	unsigned short GetOutput(unsigned short p_crateProcid,
 	                         unsigned short p_addr,
 	                         unsigned short p_elch,
+	                         TString* o_station = NULL,
 	                         TString* o_detector = NULL,
-	                         TString* o_folder = NULL,
-	                         TString* o_elblock = NULL) const;
+	                         TString* o_elblock = NULL,
+	                         unsigned short* o_detid = NULL,
+	                         unsigned short* o_statid = NULL) const;
 
 	/**
 	 * Returns true if the input tuple crate/addr/ch/messindex is mapped to one of the scalers
@@ -104,7 +111,7 @@ public:
 	 * Returns true if the input pair p_crateProcid/p_addr is mapped to machine time.
 	 * p_elch is ignored. p_messindex is checked to be 0.
 	 * Unfortunately, there is no nice and neat way to identify whether some message
-	 * comes from RIO-mathine-time-source or not. If we take message index as channel and
+	 * comes from RIO-machine-time-source or not. If we take message index as channel and
 	 * compute unique channel ID (see GetChUID() method), then we may run into non-existing
 	 * values, which, if we want to be on the safe side, should generate errors or warnings.
 	 * Due to this reason, error messages are commented in the implementation.
@@ -122,18 +129,29 @@ public:
 	bool CheckConsistency(void);
 
 	/**
-	 * Get the list of detectors imported from the setup configuration file
+	 *
 	 */
-	std::set<TString> const GetDetectorList(void) const { return mDetectors; }
+	unsigned short GetStationID(TString p_detector, TString p_station) const;
 
 	/**
-	 * Get the list of stations for the given detector
+	 * Get the list of detectors imported from the setup configuration file.
 	 */
-	std::set<TString> const GetStationList(TString detector) const;
+	std::map<TString, unsigned short> const GetDetectorList(void) const { return mDetectors; }
+
+	/**
+	 *
+	 */
+	unsigned short GetDetectorID(TString p_detector) const;
+
+	/**
+	 * Get the list of stations for the given detector.
+	 */
+	std::map<TString, unsigned short> const GetStationList(TString detector) const;
 
 private: // methods
 	/**
-	 *
+	 * The most importatnd method. Goes through the imported structure and
+	 * creates different maps, sets, ...
 	 */
 	void Link(void);
 
@@ -144,21 +162,31 @@ private: // data members
 	stc_setup_config mConfiguration;
 
 	/**
-	 * Filled during the Link() method
+	 * Filled during the Link() method.
 	 */
 	std::map<unsigned int, stc_mapping*> mMappings; //! key - unique channel ID, see GetChUID()
 
 	/**
-	 * List of detectors
-	 * Filled during the Link() method
+	 * List of detectors.
+	 * Filled during the Link() method.
 	 */
-	std::set<TString> mDetectors;
+	std::map<TString, unsigned short> mDetectors; //! key - detector ID
 
 	/**
-	 * List of stations per detector
-	 * Filled during the Link() method
+	 * List of stations per detector.
+	 * Filled during the Link() method.
 	 */
-	std::map< TString, std::set<TString> > mStationsPerDet;
+	std::map< TString, std::map<TString, unsigned short> > mStationsPerDet;
+
+// ------------------------------------------------------------------------------------------------
+// MWPC specific
+// ------------------------------------------------------------------------------------------------
+public:
+
+	unsigned short fMWPCdetectorID[4];
+	unsigned short fMWPCstationID[4];
+
+// ------------------------------------------------------------------------------------------------
 
 	ClassDef(SetupConfiguration, 1);
 };

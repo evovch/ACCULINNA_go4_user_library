@@ -2,6 +2,8 @@
 
 	@class UserEventLearn
 
+	Event-class for the Learn step of the analysis.
+
 */
 
 #ifndef USEREVENTLEARN_H
@@ -15,7 +17,7 @@ public:
 	UserEventLearn(const char* name = "UserEventLearn");
 	virtual ~UserEventLearn();
 
-	void Clear(Option_t* t = "");
+	//void Clear(Option_t* t = "");
 
 public:
 

@@ -11,12 +11,13 @@ using std::endl;
 //#include <TH2D.h>
 
 // Project
-#include "Support.h"
 #include "UserParameter.h"
 //#include "UserEventMonitoring.h"
-#include "data/DetEventFull.h"
-#include "data/DetEventCommon.h"
+#include "DetEventFull.h"
 #include "UserHistosMonitoring.h"
+#include "base/Support.h"
+#include "data/DetEventCommon.h"
+#include "data/DetEventStation.h"
 #include "data/RawMessage.h"
 #include "unpacking/UserEventUnpacking.h"
 #include "setupconfigcppwrapper/SetupConfiguration.h"
@@ -27,7 +28,7 @@ using std::endl;
   This option produces A LOT OF DATA - run your analysis with a
   small number of events (~10-100)
 */
-#define PRINTDEBUGINFO
+//#define PRINTDEBUGINFO
 
 /**
   Uncomment this if you want to see the WARN messages while processing
@@ -78,7 +79,7 @@ Bool_t UserProcMonitoring::BuildEvent(TGo4EventElement* p_dest)
 
 	fCurrentOutputEvent = v_outputEvent;
 	DetEventFull& v_outputEvRef = *fCurrentOutputEvent;
-	DetEventCommon* v_evCommon = dynamic_cast<DetEventCommon*>(&v_outputEvRef[100]); // id=100
+	DetEventCommon* v_evCommon = dynamic_cast<DetEventCommon*>(&v_outputEvRef[0]); // id=0 - DetEventCommon
 
 	// Clear the output event!!!
 	//TODO check that this is not done by the framework
@@ -90,7 +91,6 @@ Bool_t UserProcMonitoring::BuildEvent(TGo4EventElement* p_dest)
 	TIter next(v_input->fRawMessages);
 	while (RawMessage* v_curMessage = (RawMessage*)next())
 	{
-
 		#ifdef PRINTDEBUGINFO
 		cerr << v_messCounter << ": ";
 		v_curMessage->Dump(false);
@@ -146,67 +146,69 @@ void UserProcMonitoring::ProcessMessageUniversal(const RawMessage* p_message)
 		return;
 	}
 
-	if (v_setupConfig->IsMappedToScaler(v_procid, v_addr, v_ch, p_message->fMessageIndex)){
+	if (v_setupConfig->IsMappedToScaler(v_procid, v_addr, v_ch, p_message->fMessageIndex)) {
 		this->ProcessMessageScaler(p_message);
 		return;
 	} else if (v_setupConfig->IsMappedToMachineTime(v_procid, v_addr, v_ch, p_message->fMessageIndex)) {
-		this->ProcessMachineTimeScaler(p_message);
+		this->ProcessMachineTime(p_message);
 		return;
 	}
 
 	// else {
 
+	TString v_station;
 	TString v_detector;
-	TString v_folder;
 	TString v_elblock;
-	unsigned short v_detChannel = v_setupConfig->GetOutput(v_procid, v_addr, v_ch, &v_detector, &v_folder, &v_elblock);
+	unsigned short v_detID;
+	unsigned short v_statID;
+	unsigned short v_detChannel = v_setupConfig->GetOutput(v_procid, v_addr, v_ch, &v_station, &v_detector, &v_elblock, &v_detID, &v_statID);
 
-	TString v_detectorLcase(v_detector);
-	v_detectorLcase.ToLower();
-
+	// Ignore those message which are mapped to the 'Ignore' station
 	//TODO elaborate nice output
-	if (v_detectorLcase == "ignore") {
+	if (v_station.CompareTo("ignore", TString::kIgnoreCase) == 0) {
 		#ifdef PRINTDEBUGINFO
 		//cerr << endl;
 		#endif // PRINTDEBUGINFO
 		#ifdef LOUDIGNORE
 		//TODO
-		cerr << "[DEBUG ] " << v_folder << " /\t" << v_detector << "[" << v_ch << "] =\t"
+		cerr << "[DEBUG ] " << v_detector << " /\t" << v_station << "[" << v_ch << "] =\t"
 		     << p_message->fValueQA << "\t(" << p_message->fValueT << ")\t" << "Ignored." << endl;
 		#endif // LOUDIGNORE
-		return;
+		return; // yes
 	} else {
 		#ifdef PRINTDEBUGINFO
-		cerr << "[DEBUG ] " << v_folder << " /\t" << v_detector << "[" << v_ch << "] =\t"
+		cerr << "[DEBUG ] " << v_detector << " /\t" << v_station << "[" << v_ch << "] =\t"
 		     << p_message->fValueQA << "\t(" << p_message->fValueT << ")" << endl;
 		#endif
 	}
 
-	UShort_t* v_eventDatField = NULL; // fCurrentOutputEvent->GetFieldByName(v_detector);
+	// Extract the required station event object to write the data in
+	DetEventFull& v_outputEvRef = *fCurrentOutputEvent;
+	DetEventStation* v_evSt = dynamic_cast<DetEventStation*>(&v_outputEvRef[v_detID][v_statID]);
 
-	if (v_eventDatField != NULL) {
-
-		TString v_elblockLcase(v_elblock);
-		v_elblockLcase.ToLower();
-
-		//TODO specific actions here
-		if (v_elblockLcase == "mqdc") {
-			// Skip if out-of-range bit of mQDC == 1
-			if (((p_message->fRawWord >> 15) & 0x1) == 1) {
-				cerr << "[DEBUG ] "
-				   << "Skipping a message from mQDC with out-of-range bit." << endl;
-				return;
-			}
-		}
-
-		//TODO check that the channel has allowed value
-		//TODO specific actions here
-		if (v_elblockLcase == "mtdc") {
-			v_eventDatField[v_detChannel] = p_message->fValueT;
+	// Skip if out-of-range bit of mQDC == 1
+	//TODO specific actions here
+	if (v_elblock.CompareTo("mqdc", TString::kIgnoreCase) == 0) {
+		if (((p_message->fRawWord >> 15) & 0x1) == 1) {
+			cerr << "[DEBUG ] "
+			     << "Skipping a message from mQDC with out-of-range bit." << endl;
 			return;
 		}
-		v_eventDatField[v_detChannel] = p_message->fValueQA;
 	}
+
+	//TODO check that the channel has allowed value
+	//TODO specific actions here
+	if (v_elblock.CompareTo("mtdc", TString::kIgnoreCase) == 0) {
+		////////////////////////////////////////////////////////
+		v_evSt->AddDetMessage(v_detChannel, p_message->fValueT);
+		////////////////////////////////////////////////////////
+
+		return;
+	}
+
+	/////////////////////////////////////////////////////////
+	v_evSt->AddDetMessage(v_detChannel, p_message->fValueQA);
+	/////////////////////////////////////////////////////////
 
 	// } // end of else
 }
@@ -221,8 +223,9 @@ void UserProcMonitoring::ProcessMessageScaler(const RawMessage* p_message)
 	     << p_message->fRawWord << endl;
 	#endif
 
+	// Extract the required common event object to write the data in
 	DetEventFull& v_outputEvRef = *fCurrentOutputEvent;
-	DetEventCommon* v_evCommon = dynamic_cast<DetEventCommon*>(&v_outputEvRef[100]); // id=100
+	DetEventCommon* v_evCommon = dynamic_cast<DetEventCommon*>(&v_outputEvRef[0]); // id=0 - DetEventCommon
 
 	//TODO obsolete?
 	//TODO check that scalers channel (which is p_message->fMessageIndex) is whithin the allowed range
@@ -234,11 +237,13 @@ void UserProcMonitoring::ProcessMessageScaler(const RawMessage* p_message)
 		return;
 	}
 
+	///////////////////////////////////////////////////////////////////
 	v_evCommon->scaler[p_message->fMessageIndex] = p_message->fRawWord;
+	///////////////////////////////////////////////////////////////////
 }
 
 //TODO test
-void UserProcMonitoring::ProcessMachineTimeScaler(const RawMessage* p_message)
+void UserProcMonitoring::ProcessMachineTime(const RawMessage* p_message)
 {
 	#ifdef PRINTDEBUGINFO
 	cerr << "[DEBUG ] " << "mtime[" << p_message->fMessageIndex << "] "
@@ -247,28 +252,41 @@ void UserProcMonitoring::ProcessMachineTimeScaler(const RawMessage* p_message)
 	     << p_message->fRawWord << endl;
 	#endif
 
+	// Extract the required common event object to write the data in
 	DetEventFull& v_outputEvRef = *fCurrentOutputEvent;
-	DetEventCommon* v_evCommon = dynamic_cast<DetEventCommon*>(&v_outputEvRef[100]); // id=100
+	DetEventCommon* v_evCommon = dynamic_cast<DetEventCommon*>(&v_outputEvRef[0]); // id=0 - DetEventCommon
 
 	//TODO
 	// We could do something like this:
-	// unsigned short v_detChannel = v_setupConfig->GetOutput(v_procid, v_addr, v_ch, &v_detector, &v_folder, &v_elblock);
-	// and use v_detector instead of hardcoded mtime, but as mtime is anyway hardcoded in SetupConfiguration class
+	// unsigned short v_detChannel = v_setupConfig->GetOutput(v_procid, v_addr, v_ch, &v_station, &v_detector, &v_elblock);
+	// and use v_station instead of hardcoded mtime, but as mtime is anyway hardcoded in SetupConfiguration class
 	// we can avoid useless operation.
 	/*
 	UShort_t* v_eventDatField2 = fCurrentOutputEvent->GetFieldByName("mtime"); //TODO hardcode
 	v_eventDatField2[0] = (p_message->fRawWord >> 16) & 0xffff;
 	v_eventDatField2[1] = (p_message->fRawWord >> 0) & 0xffff;
 	*/
+
+	////////////////////////////////////////////////////////////
 	v_evCommon->mtime[0] = (p_message->fRawWord >> 16) & 0xffff;
 	v_evCommon->mtime[1] = (p_message->fRawWord >> 0) & 0xffff;
-
+	////////////////////////////////////////////////////////////
 }
 
 void UserProcMonitoring::ProcessCAMACmwpcWords(const UserEventUnpacking* p_inputEvent)
 {
 	DetEventFull& v_outputEvRef = *fCurrentOutputEvent;
-	DetEventCommon* v_evCommon = dynamic_cast<DetEventCommon*>(&v_outputEvRef[100]); // id=100
+//	DetEventCommon* v_evCommon = dynamic_cast<DetEventCommon*>(&v_outputEvRef[0]); // id=0 - DetEventCommon
+
+	//TODO check
+	// Get the all-accessible parameter-set object
+	UserParameter* v_params = (UserParameter*)GetParameter("UserParameter");
+	const SetupConfiguration* v_setupConfig = v_params->GetSetupConfig();
+	if (v_setupConfig->fMWPCdetectorID == 0 || v_setupConfig->fMWPCstationID == 0) {
+		//ERROR
+		//TODO
+		// assert
+	}
 
 	const Short_t* v_inputCAMAC = p_inputEvent->fCAMAC;
 /*
@@ -296,12 +314,12 @@ void UserProcMonitoring::ProcessCAMACmwpcWords(const UserEventUnpacking* p_input
 	            ((v_inputCAMAC[4] << 0)  & 0x0000ffff);
 	v_line[3] = ((v_inputCAMAC[7] << 16) & 0xffff0000) |
 	            ((v_inputCAMAC[6] << 0)  & 0x0000ffff);
-
+/*
 	v_evCommon->rx1 = v_line[0];
 	v_evCommon->ry1 = v_line[1];
 	v_evCommon->rx2 = v_line[2];
 	v_evCommon->ry2 = v_line[3];
-
+*/
 	// Just print - ints
 	#ifdef PRINTDEBUGINFO
 	cerr << "--------------------------------" << endl;
@@ -336,7 +354,7 @@ void UserProcMonitoring::ProcessCAMACmwpcWords(const UserEventUnpacking* p_input
 
 	// Count fired wires and
 	// Transfer 4 x 32 bits from contineous words into arrays
-
+/*
 	// Store counters' addresses in an array
 	UChar_t* v_countersAddrs[4];
 	// Here we define the order of words
@@ -361,15 +379,25 @@ void UserProcMonitoring::ProcessCAMACmwpcWords(const UserEventUnpacking* p_input
 			*(v_arrayAddrs[i] + v_wire) = 0;
 		}
 	}
-
+*/
 	// Per-se count
 	for (unsigned int i=0; i<4; i++) {
 		for (unsigned char v_wire=0; v_wire<32; v_wire++) {
 			unsigned char v_bitValue = (v_line[i] >> v_wire) & 0x1;
 			if (v_bitValue == 1) {
 				// Put the index of the fired wire
-				*(v_arrayAddrs[i] + *(v_countersAddrs[i])) = v_wire;
-				*(v_countersAddrs[i]) += 1; // increase number of fired wires by 1
+				//*(v_arrayAddrs[i] + *(v_countersAddrs[i])) = v_wire;
+
+				////TODO
+				DetEventStation* v_evSt = dynamic_cast<DetEventStation*>
+				    (&v_outputEvRef[v_setupConfig->fMWPCdetectorID[i]][v_setupConfig->fMWPCstationID[i]]);
+
+				//cerr << "i=" << i << "\tdet=" << v_setupConfig->fMWPCdetectorID[i]
+				//     << "\tst=" << v_setupConfig->fMWPCstationID[i] << endl;
+
+				v_evSt->AddDetMessage(v_wire, 99);
+
+				//*(v_countersAddrs[i]) += 1; // increase number of fired wires by 1
 			}
 		}
 	}
@@ -378,8 +406,9 @@ void UserProcMonitoring::ProcessCAMACmwpcWords(const UserEventUnpacking* p_input
 
 void UserProcMonitoring::FillHistograms(void) const
 {
+/*
 	DetEventFull& v_outputEvRef = *fCurrentOutputEvent;
-	DetEventCommon* v_evCommon = dynamic_cast<DetEventCommon*>(&v_outputEvRef[100]); // id=100
+	DetEventCommon* v_evCommon = dynamic_cast<DetEventCommon*>(&v_outputEvRef[0]); // id=0 - DetEventCommon
 
 	// nx1, ny1, nx2, ny2
 	fHistoMan->histoMWPCnx1->Fill(v_evCommon->nx1);
@@ -421,6 +450,7 @@ void UserProcMonitoring::FillHistograms(void) const
 			fHistoMan->histoMWPCry2->Fill(v_wire);
 		}
 	}
+*/
 }
 
 ClassImp(UserProcMonitoring)

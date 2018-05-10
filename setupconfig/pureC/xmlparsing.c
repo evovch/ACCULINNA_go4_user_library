@@ -29,7 +29,7 @@ unsigned short CheckIfNextIsComment(FILE* f)
 	cursor = 0;
 	while ((readChar = fgetc(f)) != EOF) {
 		/* fprintf(stderr, "Checking: %c\n", (char)readChar); */
-		/* buffer[cursor++] = readChar; /* FIXME nasty type cast! */
+		/* buffer[cursor++] = readChar; // FIXME nasty type cast! */
 		cursor++; /* This is instead of the prev. commented line */
 		if (readChar == ' ' || readChar == '\t' || readChar == '\n') {
 			cursor--;
@@ -106,7 +106,7 @@ unsigned short ReadComment(FILE* f)
 	buffer[cursor/*-3*/] = '\0'; /* This trailing zero allows using printf */
 
 	/* fprintf(stderr, "============================================================\n");
-	   fprintf(stderr, "%s\n", buffer); /* (buffer+4) to skip first 4 symbols <!--
+	   fprintf(stderr, "%s\n", buffer); // (buffer+4) to skip first 4 symbols <!--
 	   fprintf(stderr, "============================================================\n"); */
 
 	return (endFound==1) ? cursor : 0;
@@ -336,37 +336,37 @@ void ProcessAttr(stc_setup_config* ptr, char* p_token/*, enuTAG* o_CurTag*/, uns
 		}
 	} else if (gCurTag == MAPPING) {
 		if (strcmp(p_token, "addr") == 0) {
-			/* fprintf(stderr, "crateName='%s' crateProcid='%u' %s='%s'\n", */
-			/*         fCurCrateName, fCurCrateProcId, p_token, &equalsign[2]); */
+			/* fprintf(stderr, "crateName='%s' crateProcid='%u' %s='%s'\n",
+			         fCurCrateName, fCurCrateProcId, p_token, &equalsign[2]); */
 			gCurMappingInfo.fAddr = atoi(&equalsign[2]);
 		} else if (strcmp(p_token, "elblock") == 0) {
-			/* fprintf(stderr, "crateName='%s' crateProcid='%u' %s='%s'\n", */
-			/*         fCurCrateName, fCurCrateProcId, p_token, &equalsign[2]); */
+			/* fprintf(stderr, "crateName='%s' crateProcid='%u' %s='%s'\n",
+			         fCurCrateName, fCurCrateProcId, p_token, &equalsign[2]); */
 			strncpy(gCurMappingInfo.fElblock, &equalsign[2], 64);
 		} else if (strcmp(p_token, "startelectrch") == 0) {
-			/* fprintf(stderr, "crateName='%s' crateProcid='%u' %s='%s'\n", */
-			/*         fCurCrateName, fCurCrateProcId, p_token, &equalsign[2]); */
+			/* fprintf(stderr, "crateName='%s' crateProcid='%u' %s='%s'\n",
+			         fCurCrateName, fCurCrateProcId, p_token, &equalsign[2]); */
 			gCurMappingInfo.fStartelectrch = atoi(&equalsign[2]);
 		} else if (strcmp(p_token, "nelectrch") == 0) {
-			/* fprintf(stderr, "crateName='%s' crateProcid='%u' %s='%s'\n", */
-			/*         fCurCrateName, fCurCrateProcId, p_token, &equalsign[2]); */
+			/* fprintf(stderr, "crateName='%s' crateProcid='%u' %s='%s'\n",
+			         fCurCrateName, fCurCrateProcId, p_token, &equalsign[2]); */
 			gCurMappingInfo.fNelectrch = atoi(&equalsign[2]);
 		} else if (strcmp(p_token, "stepelecrtch") == 0) {
-			/* fprintf(stderr, "crateName='%s' crateProcid='%u' %s='%s'\n", */
-			/*         fCurCrateName, fCurCrateProcId, p_token, &equalsign[2]); */
+			/* fprintf(stderr, "crateName='%s' crateProcid='%u' %s='%s'\n",
+			         fCurCrateName, fCurCrateProcId, p_token, &equalsign[2]); */
 			gCurMappingInfo.fStepelecrtch = atoi(&equalsign[2]);
+		} else if (strcmp(p_token, "station") == 0) {
+			/* fprintf(stderr, "crateName='%s' crateProcid='%u' %s='%s'\n",
+			         fCurCrateName, fCurCrateProcId, p_token, &equalsign[2]); */
+			strncpy(gCurMappingInfo.fStation, &equalsign[2], 64);
+		} else if (strcmp(p_token, "startstatch") == 0) {
+			/* fprintf(stderr, "crateName='%s' crateProcid='%u' %s='%s'\n",
+			         fCurCrateName, fCurCrateProcId, p_token, &equalsign[2]); */
+			gCurMappingInfo.fStartstatch = atoi(&equalsign[2]);
 		} else if (strcmp(p_token, "detector") == 0) {
-			/* fprintf(stderr, "crateName='%s' crateProcid='%u' %s='%s'\n", */
-			/*         fCurCrateName, fCurCrateProcId, p_token, &equalsign[2]); */
+			/* fprintf(stderr, "crateName='%s' crateProcid='%u' %s='%s'\n",
+			         fCurCrateName, fCurCrateProcId, p_token, &equalsign[2]); */
 			strncpy(gCurMappingInfo.fDetector, &equalsign[2], 64);
-		} else if (strcmp(p_token, "startdetch") == 0) {
-			/* fprintf(stderr, "crateName='%s' crateProcid='%u' %s='%s'\n", */
-			/*         fCurCrateName, fCurCrateProcId, p_token, &equalsign[2]); */
-			gCurMappingInfo.fStartdetch = atoi(&equalsign[2]);
-		} else if (strcmp(p_token, "folder") == 0) {
-			/* fprintf(stderr, "crateName='%s' crateProcid='%u' %s='%s'\n", */
-			/*         fCurCrateName, fCurCrateProcId, p_token, &equalsign[2]); */
-			strncpy(gCurMappingInfo.fFolder, &equalsign[2], 64);
 		} else {
 			/* ERROR unknown attribute */
 			fprintf(stderr, "ERROR [ProcessAttr] unknown attribute '%s'.\n", p_token);

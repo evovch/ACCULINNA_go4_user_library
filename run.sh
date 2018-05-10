@@ -12,7 +12,7 @@ fi
 INPUTLMDDIR=/home/evovch/Downloads/FLNR_data/exp201803
 OUTPUTROOTDIR=/home/evovch/Downloads/FLNR_data/exp201803
 
-SETUPFILE=./usr/setup_exp201803.xml
+SETUPFILE=./usr/setup2_exp201803.xml
 INPUTFILENAME=run13_0037.lmd
 
 NEVENTS=0 # Specify 0 to process the full file
@@ -27,6 +27,7 @@ TEXTOUTFILE=textoutput/out.txt  # Default: textoutput/out.txt # No reason to sup
 INPUTFILE=${INPUTLMDDIR}/${INPUTFILENAME}
 OUTPUTFILE=${OUTPUTROOTDIR}/${INPUTFILENAME}.root
 AUTOSAVEFILE=${OUTPUTROOTDIR}/${INPUTFILENAME}_asf.root
+DATETIME=`date`
 
 # Cleanup analysis results ====================================================
 
@@ -44,6 +45,7 @@ fi
 # =============================================================================
 
 ANARUNINFO="========================== ANALYSIS RUN INFO ===================================
+Current date and time                      ${DATETIME}
 Processing input file                      ${INPUTFILE}
 acording to the setup configuration file   ${SETUPFILE}
 into output file                           ${OUTPUTFILE}

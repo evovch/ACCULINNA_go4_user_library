@@ -8,7 +8,8 @@ using std::endl;
 DetEventCommon::DetEventCommon(const char* name, Short_t id) :
 	TGo4EventElement(name, name, id)
 {
-	//cerr << "DetEventCommon::DetEventCommon() -> ";
+	cerr << "DetEventCommon::DetEventCommon: name=" << name << " id=" << id << endl;
+
 	this->Clear();
 }
 
@@ -20,7 +21,7 @@ void DetEventCommon::Clear(Option_t* t)
 {
 	//TODO zero all data members!
 	//cerr << "DetEventCommon::Clear()" << endl;
-
+/*
 	// Beam detector - MWPC
 	//TODO temporary solution
 	nx1=0; ny1=0; nx2=0; ny2=0;
@@ -33,7 +34,7 @@ void DetEventCommon::Clear(Option_t* t)
 	for (UInt_t i=0; i<4; i++) {
 		tMWPC[i] = 0;
 	}
-
+*/
 	// Trigger
 	trigger = 0;
 
@@ -49,7 +50,7 @@ void DetEventCommon::Clear(Option_t* t)
 void DetEventCommon::Dump(void) const
 {
 	//TODO dump all data members!
-
+/*
 	// Beam detector - MWPC
 	//TODO temporary solution
 	cerr << " nMWPC:"; cerr << "nx1=" << (UInt_t)nx1 << "\t" << "ny1=" << (UInt_t)ny1 << "\t"
@@ -57,7 +58,7 @@ void DetEventCommon::Dump(void) const
 	//TODO end of temporary solution
 	// MWPC[]
 	cerr << " tMWPC:"; for (UInt_t i=0; i<4; i++)  { cerr << "\t" <<   tMWPC[i]; } cerr << endl;
-
+*/
 	// Trigger
 	cerr << "  trig:"; cerr << trigger << endl;
 

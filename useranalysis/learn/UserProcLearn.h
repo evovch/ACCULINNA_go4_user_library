@@ -2,10 +2,12 @@
 
 	@class UserProcLearn
 
-	Processor class which analyses unpacked input stream and builds the summary.
-	It's goal it to detector if there are:
-	mapped channels without data or
-	unmapped channels with data.
+	Processor-class for the Learn step of the analysis.
+
+	Processor-class which analyses unpacked input stream and builds the summary.
+	It's goal it to detect if there are:
+	1) mapped channels without data or
+	2) unmapped channels with data.
 
 */
 

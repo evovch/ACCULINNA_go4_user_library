@@ -18,11 +18,10 @@ UserEventLearn::~UserEventLearn()
 {
 }
 
-void UserEventLearn::Clear(Option_t* t)
+/*void UserEventLearn::Clear(Option_t* t)
 {
 	//TODO zero all data members!
 	//cerr << "UserEventLearn::Clear()" << endl;
-
-}
+}*/
 
 ClassImp(UserEventLearn)

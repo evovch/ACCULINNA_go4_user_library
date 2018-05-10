@@ -25,5 +25,4 @@ namespace support
 
 }
 
-
 #endif // SUPPORT_H

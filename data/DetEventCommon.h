@@ -14,7 +14,7 @@ class DetEventCommon : public TGo4EventElement
 //	friend class UserProcMonitoring; // provider
 
 public:
-	DetEventCommon(const char* name = "DetEventCommon", Short_t id = 100);
+	DetEventCommon(const char* name = "DetEventCommon", Short_t id = 0);
 	virtual ~DetEventCommon();
 
 	void Clear(Option_t* t = "");
@@ -34,7 +34,7 @@ public: //TODO should be private. Made public for ER
 	// Beam detector - MWPC
 	// MWPC[]
 	//TODO temporary solution
-	UChar_t nx1; // number of fired wires
+/*	UChar_t nx1; // number of fired wires
 	UChar_t ny1; // number of fired wires
 	UChar_t nx2; // number of fired wires
 	UChar_t ny2; // number of fired wires
@@ -48,7 +48,7 @@ public: //TODO should be private. Made public for ER
 	UInt_t ry2; // register (raw) as is has been read
 	//TODO end of temporary solution
 	UShort_t tMWPC[4];
-
+*/
 	// Trigger
 	UInt_t trigger;
 

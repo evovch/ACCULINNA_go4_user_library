@@ -14,17 +14,12 @@ set(ROOTCLING_HEADERS UserAnalysis.h
                       unpacking/UserEventUnpacking.h
                       unpacking/UserProcUnpacking.h
                       unpacking/UserHistosUnpacking.h
+                      monitoring/DetEventFull.h
                       monitoring/UserEventMonitoring.h
                       monitoring/UserProcMonitoring.h
                       monitoring/UserHistosMonitoring.h
                       learn/UserEventLearn.h
                       learn/UserProcLearn.h
-                      data/RawMessage.h
-                      data/DetMessage.h
-                      data/DetEventFull.h
-                      data/DetEventCommon.h
-                      data/DetEventDetector.h
-                      data/DetEventStation.h
                       )
 
 ROOT_GENERATE_DICTIONARY(G__UserAnalysis ${ROOTCLING_HEADERS} LINKDEF UserAnalysisLinkDef.h)
@@ -41,18 +36,12 @@ set(SOURCE_LIB G__UserAnalysis.cxx
                unpacking/UserEventUnpacking.cxx
                unpacking/UserProcUnpacking.cxx
                unpacking/UserHistosUnpacking.cxx
+               monitoring/DetEventFull.cxx
                monitoring/UserEventMonitoring.cxx
                monitoring/UserProcMonitoring.cxx
                monitoring/UserHistosMonitoring.cxx
                learn/UserEventLearn.cxx
                learn/UserProcLearn.cxx
-               data/RawMessage.cxx
-               data/DetMessage.cxx
-               data/DetEventFull.cxx
-               data/DetEventCommon.cxx
-               data/DetEventDetector.cxx
-               data/DetEventStation.cxx
-               Support.cxx
                )
 
 add_library(UserAnalysis SHARED ${SOURCE_LIB})
@@ -60,3 +49,5 @@ add_library(UserAnalysis SHARED ${SOURCE_LIB})
 target_link_libraries(UserAnalysis Go4Analysis)
 
 target_link_libraries(UserAnalysis SetupConfigCppWrapper)
+
+target_link_libraries(UserAnalysis Data)

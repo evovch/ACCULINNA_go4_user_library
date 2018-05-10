@@ -2,6 +2,8 @@
 
 	@class UserEventMonitoring
 
+	Event-class for the Repacking step of the analysis. Version 1 - only for spring 2018 period,
+
 */
 
 #ifndef USEREVENTMONITORING_H

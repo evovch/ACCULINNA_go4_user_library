@@ -2,6 +2,8 @@
 
 	@class UserProcUnpacking
 
+	Processor-class for the Unpacking step of the analysis.
+
 */
 
 #ifndef USERPROCUNPACKING_H
@@ -10,7 +12,7 @@
 #include <TGo4EventProcessor.h> // mother class
 
 // Project
-#include "Support.h"
+#include "base/Support.h"
 #include "data/RawMessage.h"
 
 class TGo4EventElement;

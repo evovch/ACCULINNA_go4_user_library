@@ -2,7 +2,9 @@
 
 	@class UserEventUnpacking
 
-	RawEvent with raw messages
+	Event-class for the Unpacking step of the analysis.
+
+	RawEvent with raw messages.
 
 */
 
@@ -15,9 +17,8 @@ class TClonesArray;
 
 class UserEventUnpacking : public TGo4EventElement
 {
-	friend class UserProcUnpacking; // provider
-	friend class UserProcMonitoring; // consumer
-	friend class UserProcStep2; // consumer
+	/*friend class UserProcUnpacking; // provider
+	friend class UserProcMonitoring; // consumer*/
 
 public:
 	UserEventUnpacking(const char* name = "UserEventUnpacking");

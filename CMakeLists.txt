@@ -3,9 +3,9 @@
 cmake_minimum_required(VERSION 3.5)
 
 # Give your project a name
-project(go4_5H_processor)
+project(ACCULINNA_go4_user_library)
 
-# Switch in on for more verbose make output
+# Switch it on for more verbose make output
 # set(CMAKE_VERBOSE_MAKEFILE ON)
 
 # =============================================================================
@@ -38,6 +38,8 @@ endif()
 
 # =============================================================================
 
-add_subdirectory(useranalysis)
+add_subdirectory(base)
+add_subdirectory(data)
 add_subdirectory(setupconfig)
 add_subdirectory(setupconfigcppwrapper)
+add_subdirectory(useranalysis)
