@@ -12,6 +12,9 @@
 class RawMessage : public TObject
 {
 public:
+	/**
+	 * Default constructor is required for correct ROOT IO.
+	 */
 	RawMessage();
 	RawMessage(const RawMessage &obj);
 	virtual ~RawMessage();

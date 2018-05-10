@@ -8,6 +8,12 @@ using std::endl;
 // Project
 #include "DetEventStation.h"
 
+DetEventDetector::DetEventDetector() :
+	TGo4CompositeEvent()
+{
+	cerr << "DEFAULT DetEventDetector CONSTRUCTOR" << endl;
+}
+
 DetEventDetector::DetEventDetector(const char* name, Short_t id, const std::map<TString, unsigned short> stationList) :
 	TGo4CompositeEvent(name, name, id) // Unique ID as third argument
 {

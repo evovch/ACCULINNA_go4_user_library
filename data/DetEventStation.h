@@ -14,6 +14,9 @@ class TClonesArray;
 class DetEventStation : public TGo4EventElement
 {
 public:
+	/**
+	 * Default constructor is required for correct ROOT IO.
+	 */
 	DetEventStation();
 	DetEventStation(const char* name, const char* title, Short_t id);
 	virtual ~DetEventStation();

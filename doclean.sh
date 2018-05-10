@@ -15,6 +15,10 @@ unlink libSetupConfigCppWrapper.so
 unlink libSetupConfigCppWrapper_rdict.pcm
 unlink libSetupConfigCppWrapper.rootmap
 
+unlink libData.so
+unlink libData_rdict.pcm
+unlink libData.rootmap
+
 if [ -d "build" ]; then
 	rm -rf build/*
 fi

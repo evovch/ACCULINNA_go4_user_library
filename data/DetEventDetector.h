@@ -18,6 +18,10 @@
 class DetEventDetector : public TGo4CompositeEvent
 {
 public:
+	/**
+	 * Default constructor is required for correct ROOT IO.
+	 */
+	DetEventDetector();
 	DetEventDetector(const char* name, Short_t id, const std::map<TString, unsigned short> stationList);
 	virtual ~DetEventDetector();
 

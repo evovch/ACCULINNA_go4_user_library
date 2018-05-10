@@ -22,7 +22,11 @@
 class DetEventFull : public TGo4CompositeEvent
 {
 public:
-	DetEventFull(const char* name = "DetEventFull");
+	/**
+	 * Default constructor is required for correct ROOT IO.
+	 */
+	DetEventFull();
+	DetEventFull(const char* name);
 	virtual ~DetEventFull();
 
 	//void Clear(Option_t* t = "");

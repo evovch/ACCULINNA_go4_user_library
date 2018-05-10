@@ -44,4 +44,8 @@ ln -s build/setupconfigcppwrapper/libSetupConfigCppWrapper.so
 ln -s build/setupconfigcppwrapper/libSetupConfigCppWrapper_rdict.pcm
 ln -s build/setupconfigcppwrapper/libSetupConfigCppWrapper.rootmap
 
+ln -s build/data/libData.so
+ln -s build/data/libData_rdict.pcm
+ln -s build/data/libData.rootmap
+
 echo -e "\e[1m\e[32mCompilation finished.\e[0m"

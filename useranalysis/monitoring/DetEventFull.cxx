@@ -17,6 +17,12 @@ using std::endl;
 #include "data/DetEventCommon.h"
 #include "data/DetEventDetector.h"
 
+DetEventFull::DetEventFull() :
+	TGo4CompositeEvent()
+{
+	cerr << "DEFAULT DetEventFull CONSTRUCTOR" << endl;
+}
+
 DetEventFull::DetEventFull(const char* name) :
 	TGo4CompositeEvent(name, name)
 {
@@ -55,7 +61,7 @@ DetEventFull::DetEventFull(const char* name) :
 	}
 
 	//cerr << "DetEventFull::DetEventFull() -> ";
-	this->Clear();
+	//this->Clear(); // Not really needed
 
 	cerr << endl;
 }
@@ -73,7 +79,6 @@ DetEventFull::~DetEventFull()
 void DetEventFull::Dump(void) const
 {
 	//TODO dump all data members!
-
 }
 
 ClassImp(DetEventFull)

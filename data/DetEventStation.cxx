@@ -11,13 +11,13 @@ using std::endl;
 // Project
 #include "DetMessage.h"
 
-DetEventStation::DetEventStation()
+DetEventStation::DetEventStation() :
+	TGo4EventElement(),
+	fDetMessages(NULL)
 {
 	//TODO how do we avoid using default constructors when browsing the
 	// analysis result root file?
-	cerr << "WRONG DetEventStation CONSTRUCTOR" << endl;
-
-	fDetMessages = new TClonesArray("DetMessage");
+	cerr << "DEFAULT DetEventStation CONSTRUCTOR" << endl;
 }
 
 DetEventStation::DetEventStation(const char* name, const char* title, Short_t id) :
@@ -27,7 +27,7 @@ DetEventStation::DetEventStation(const char* name, const char* title, Short_t id
 
 	fDetMessages = new TClonesArray("DetMessage");
 
-	this->Clear();
+	//this->Clear(); // Not really needed
 }
 
 DetEventStation::~DetEventStation()

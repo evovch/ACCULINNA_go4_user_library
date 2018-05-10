@@ -14,6 +14,10 @@ class DetEventCommon : public TGo4EventElement
 //	friend class UserProcMonitoring; // provider
 
 public:
+	/**
+	 * We don't need a constructor without arguments as the only
+	 * available constructor has the default values for all the arguments.
+	 */
 	DetEventCommon(const char* name = "DetEventCommon", Short_t id = 0);
 	virtual ~DetEventCommon();
 

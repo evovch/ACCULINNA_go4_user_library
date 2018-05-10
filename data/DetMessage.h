@@ -12,6 +12,9 @@
 class DetMessage : public TObject
 {
 public:
+	/**
+	 * Default constructor is required for correct ROOT IO.
+	 */
 	DetMessage();
 	DetMessage(Short_t p_det, Short_t p_stat, Int_t p_stch, Int_t p_val);
 	virtual ~DetMessage();
