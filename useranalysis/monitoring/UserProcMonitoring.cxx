@@ -12,14 +12,14 @@ using std::endl;
 
 // Project
 #include "UserParameter.h"
+#include "unpacking/UserEventUnpacking.h" // input event
 //#include "UserEventMonitoring.h"
-#include "DetEventFull.h"
+#include "DetEventFull.h" // output event
 #include "UserHistosMonitoring.h"
 #include "base/Support.h"
 #include "data/DetEventCommon.h"
 #include "data/DetEventStation.h"
 #include "data/RawMessage.h"
-#include "unpacking/UserEventUnpacking.h"
 #include "setupconfigcppwrapper/SetupConfiguration.h"
 
 /**

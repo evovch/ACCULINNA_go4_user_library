@@ -20,6 +20,8 @@ set(ROOTCLING_HEADERS UserAnalysis.h
                       monitoring/UserHistosMonitoring.h
                       learn/UserEventLearn.h
                       learn/UserProcLearn.h
+                      digibuilding/UserEventDigiBuilding.h
+                      digibuilding/UserProcDigiBuilding.h
                       )
 
 ROOT_GENERATE_DICTIONARY(G__UserAnalysis ${ROOTCLING_HEADERS} LINKDEF UserAnalysisLinkDef.h)
@@ -42,6 +44,8 @@ set(SOURCE_LIB G__UserAnalysis.cxx
                monitoring/UserHistosMonitoring.cxx
                learn/UserEventLearn.cxx
                learn/UserProcLearn.cxx
+               digibuilding/UserEventDigiBuilding.cxx
+               digibuilding/UserProcDigiBuilding.cxx
                )
 
 add_library(UserAnalysis SHARED ${SOURCE_LIB})

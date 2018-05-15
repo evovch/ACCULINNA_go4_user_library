@@ -14,7 +14,7 @@ using std::endl;
 #include <TGo4MbsSubEvent.h>
 
 // Project
-#include "UserEventUnpacking.h"
+#include "UserEventUnpacking.h" // output event
 #include "UserHistosUnpacking.h"
 
 /*static*/

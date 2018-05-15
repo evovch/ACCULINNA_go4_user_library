@@ -25,4 +25,8 @@
 #pragma link C++ class UserEventLearn+;
 #pragma link C++ class UserProcLearn+;
 
+// DigiBuilding step
+#pragma link C++ class UserEventDigiBuilding+;
+#pragma link C++ class UserProcDigiBuilding+;
+
 #endif // __CINT__
