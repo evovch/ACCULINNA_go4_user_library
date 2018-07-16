@@ -746,16 +746,54 @@ void UserProcUnpacking::ProcessSubsubevent_CAEN(Int_t p_size, const Int_t* p_sta
 			}
 			break;
 		default:
-			fNunknownWords++;
-			//#ifdef PRINTDEBUGINFO
-			cerr << "[ERROR ] " << support::GetHexRepresentation(sizeof(Int_t), &v_curWord) << "  ";
-			cerr << support::GetBinaryRepresentation(sizeof(Int_t), &v_curWord) << "  ";
-			cerr << "[" << v_cursor << "]\t" << "CAEN unknown"
-			     << "\ttype=" << v_type
-			     << "\tgeo=" << v_geo
-			     << endl;
-			//#endif
-			break;
+
+			//TODO bug fix for the machine time inside the CAEN subsubevent
+			//cerr << "geo from the header = " << fCurMessage.fSubsubeventGeo << endl;
+			if (fCurMessage.fSubsubeventGeo == 30) {
+				//cerr << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << endl;
+
+				fNknownWords++;
+				#ifdef PRINTDEBUGINFO
+				cerr << "[DEBUG ] " << support::GetHexRepresentation(sizeof(Int_t), &v_curWord) << "  ";
+				cerr << support::GetBinaryRepresentation(sizeof(Int_t), &v_curWord) << "  ";
+				cerr << "[" << v_cursor << "]\t" << "MACHINE TIME" << endl;
+				#endif
+
+				//// HERE WE WRITE OUT
+				fCurMessage.fRawWord = v_curWord;
+				fCurMessage.fChannel = 0; //TODO check
+				fCurMessage.fValueQA = 0; //TODO check
+				fCurMessage.fValueT = 0; //TODO check
+				fCurMessage.fMessageIndex = v_dataWordsCounter;
+
+				this->PushOutputRawMessage();
+
+				#ifdef DORESET
+				fCurMessage.fRawWord = 0; // Yes zero here, because we want to clear the raw word with all zeros
+				fCurMessage.fChannel = -1;
+				fCurMessage.fValueQA = -1;
+				fCurMessage.fValueT = -1;
+				fCurMessage.fMessageIndex = -1;
+				#endif // DORESET
+
+				// Just count data words. This counter is pushed into the output raw message.
+				v_dataWordsCounter++;
+
+			} else {
+
+				fNunknownWords++;
+				//#ifdef PRINTDEBUGINFO
+				cerr << "[ERROR ] " << support::GetHexRepresentation(sizeof(Int_t), &v_curWord) << "  ";
+				cerr << support::GetBinaryRepresentation(sizeof(Int_t), &v_curWord) << "  ";
+				cerr << "[" << v_cursor << "]\t" << "CAEN unknown"
+				     << "\ttype=" << v_type
+				     << "\tgeo=" << v_geo
+				     << endl;
+				//#endif
+				break;
+
+			}
+
 		} // end of switch
 	} // end of for
 
