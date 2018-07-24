@@ -78,7 +78,7 @@ TTree* GetTheTree(TFile* theFile, TString* treeName)
 		TIter v_nextkey(v_keys);
 		while (TKey* v_curKey = (TKey*)v_nextkey()) {
 			TString v_curKeyStr(v_curKey->GetName());
-			////cerr << "key " << v_keysCounter << ": " << v_curKeyStr << endl;
+			////cerr << "key " << v_keysCounter++ << ": " << v_curKeyStr << endl;
 			if (v_curKeyStr.EndsWith("xTree")) {
 				*treeName = v_curKeyStr;
 				cerr << "Automatically defined tree name: '"

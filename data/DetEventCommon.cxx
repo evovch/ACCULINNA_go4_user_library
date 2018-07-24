@@ -47,7 +47,7 @@ void DetEventCommon::Clear(Option_t* t)
 	mtime[0] = 0; mtime[1] = 0;
 }
 
-void DetEventCommon::Dump(void) const
+void DetEventCommon::Print(Option_t* option) const
 {
 	//TODO dump all data members!
 /*

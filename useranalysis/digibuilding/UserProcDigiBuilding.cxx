@@ -6,7 +6,7 @@ using std::cerr;
 using std::endl;
 
 // Project
-#include "monitoring/DetEventFull.h" // input event
+#include "data/DetEventFull.h" // input event
 #include "UserEventDigiBuilding.h" // output event
 #include "UserParameter.h"
 #include "setupconfigcppwrapper/SetupConfiguration.h"

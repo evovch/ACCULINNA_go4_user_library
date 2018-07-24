@@ -22,6 +22,13 @@
 
 class SetupConfiguration : public TObject
 {
+//TODO test this singleton implementation
+public:
+	static SetupConfiguration* GetInstance(void) { return mInstance; }
+private:
+	static SetupConfiguration* mInstance;
+// end of test section
+
 public:
 	//TODO restrict default constructor SetupConfiguration()
 	// Default constructor is required to enable ROOT streaming?
@@ -124,7 +131,7 @@ public:
 
 	/**
 	 * Perform checks of the imported XML configuration.
-	 * Try to identify error os possible mistakes there.
+	 * Try to identify error or possible mistakes there.
 	 */
 	bool CheckConsistency(void);
 

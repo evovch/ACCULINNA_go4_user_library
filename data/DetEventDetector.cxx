@@ -46,9 +46,24 @@ DetEventDetector::~DetEventDetector()
 	//cerr << "DetEventDetector::Clear()" << endl;
 }*/
 
-void DetEventDetector::Dump(void) const
+void DetEventDetector::Print(Option_t* option) const
 {
 	//TODO dump all data members!
+	cerr << "DetEventDetector::Print()\t";
+	cerr << this->ClassName() << "\t";
+	cerr << this->getNElements() << " elements:" << endl;
+
+	for (Short_t iElem=0; iElem<this->getNElements(); iElem++)
+	{
+		TGo4EventElement* curElem = this->getEventElement(iElem);
+
+		if (curElem == NULL) {
+			cerr << "curElem = NULL" << endl;
+			exit(EXIT_FAILURE);
+		}
+
+		curElem->Print();
+	}
 
 }
 

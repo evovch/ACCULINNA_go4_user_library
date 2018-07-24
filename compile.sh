@@ -48,4 +48,8 @@ ln -s build/data/libData.so
 ln -s build/data/libData_rdict.pcm
 ln -s build/data/libData.rootmap
 
+ln -s build/reader/libReader.so
+ln -s build/reader/libReader_rdict.pcm
+ln -s build/reader/libReader.rootmap
+
 echo -e "\e[1m\e[32mCompilation finished.\e[0m"

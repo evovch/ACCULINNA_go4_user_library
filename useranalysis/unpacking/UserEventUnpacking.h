@@ -26,7 +26,7 @@ public:
 
 	void Clear(Option_t* t = "");
 
-	void Dump(void) const;
+	virtual void Print(Option_t* option = "") const;
 
 public: //TODO should be private. Made public for ER
 

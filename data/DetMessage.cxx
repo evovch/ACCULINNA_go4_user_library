@@ -27,13 +27,23 @@ DetMessage::~DetMessage()
 {
 }
 
-void DetMessage::Clear(Option_t * option = "")
+void DetMessage::Clear(Option_t* option)
 {
 	//cerr << "DetMessage::Clear" << endl;
 	fDetector = -1;
 	fStation = -1;
 	fStChannel = -1;
 	fValue = -1;
+}
+
+void DetMessage::Print(Option_t* option) const
+{
+	cerr << "DetMessage:"
+	     << "\tdet=" << fDetector
+	     << "\tst=" << fStation
+	     << "\tch=" << fStChannel
+	     << "\tval=" << fValue
+	     << endl;
 }
 
 ClassImp(DetMessage)

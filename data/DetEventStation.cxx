@@ -62,10 +62,10 @@ void DetEventStation::Clear(Option_t* t)
 	fDetMessages->Clear();
 }
 
-void DetEventStation::Dump(void) const
+void DetEventStation::Print(Option_t* option) const
 {
 	//TODO dump all data members!
-
+	cerr << "DetEventStation::Print()" << endl;
 }
 
 ClassImp(DetEventStation)

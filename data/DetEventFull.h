@@ -31,7 +31,7 @@ public:
 
 	//void Clear(Option_t* t = "");
 
-	void Dump(void) const;
+	virtual void Print(Option_t* option = "") const;
 
 public:
 

@@ -10,5 +10,6 @@
 #pragma link C++ class DetEventStation+;
 #pragma link C++ class DetEventDetector+;
 #pragma link C++ class DetEventCommon+;
+#pragma link C++ class DetEventFull+;
 
 #endif // __CINT__

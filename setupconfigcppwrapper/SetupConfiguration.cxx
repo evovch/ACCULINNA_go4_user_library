@@ -8,14 +8,21 @@ using std::endl;
 // Project
 #include "setupconfig/pureC/functions.h"
 
+/*static*/
+SetupConfiguration* SetupConfiguration::mInstance = nullptr;
+
 SetupConfiguration::SetupConfiguration() :
 	TObject()
 {
+	cerr << "DEFAULT SetupConfiguration CONSTRUCTOR" << endl;
+	mInstance = this; // to be on the safe side
 }
 
 SetupConfiguration::SetupConfiguration(const char* p_filename) :
 	TObject()
 {
+	mInstance = this;
+
 	// Import XML setup config file
 	InitStcSetupConfig(&mConfiguration);
 	ImportXML(&mConfiguration, p_filename);

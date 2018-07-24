@@ -1,18 +1,37 @@
-/**
+#include "Reader.h"
 
-	Example of a native ROOT macro to analyse Go4-produced output root files.
+// STD
+#include <iostream>
+//using std::cout;
+using std::cerr;
+using std::endl;
 
-	Note, that an important action is done in the 'rootlogon.C' ROOT startup macro.
+// ROOT
+#include <TFile.h>
+#include <TTree.h>
+#include <TKey.h>
 
-	Search for TODO and perform all necessary steps written after this word.
+// Project
+#include "setupconfigcppwrapper/SetupConfiguration.h"
+#include "data/DetEventFull.h"
 
-*/
+Reader::Reader() :
+	TObject()
+{
+}
 
-TTree* GetTheTree(TFile* theFile, TString* treeName);
+void Reader::Init(TString p_setupfilename)
+{
+	// Construct SetupConfiguration, which includes the input of the XML file
+	fSetupConfiguration = new SetupConfiguration(p_setupfilename);
+}
 
-//TODO specify how many events do you want to process.
-// If nEvents=0 - process all
-void analyse2(TString inFilename="/home/evovch/Downloads/FLNR_data/exp201803/run13_0037.lmd.root", UInt_t nEvents = 10)
+Reader::~Reader()
+{
+	if (fSetupConfiguration) delete fSetupConfiguration;
+}
+
+void Reader::ProcessFile(TString inFilename, UInt_t nEvents)
 {
 	TFile* inFile = new TFile(inFilename, "READ");
 
@@ -23,13 +42,16 @@ void analyse2(TString inFilename="/home/evovch/Downloads/FLNR_data/exp201803/run
 
 	// Leave this string empty to search for the tree automatically
 	TString inTreeName("");
-	TTree* inTree = GetTheTree(inFile, &inTreeName);
+	TTree* inTree = Reader::GetTheTree(inFile, &inTreeName);
 	if (inTree == NULL) {
+		cerr << "Tree '" << inTreeName << "' not found. Aborting." << endl;
 		return;
 	}
 
-	UInt_t nEventsTotal = inTree->GetEntries();
+	DetEventFull* theEvent = new DetEventFull("DetEventFull1");
+	inTree->SetBranchAddress("DetEventFull1.", &theEvent);
 
+	UInt_t nEventsTotal = inTree->GetEntries();
 	if (nEvents == 0) { nEvents = nEventsTotal; }
 
 	// Loop over the events
@@ -43,16 +65,13 @@ void analyse2(TString inFilename="/home/evovch/Downloads/FLNR_data/exp201803/run
 
 		//TODO implement you actions here
 
+		theEvent->Print();
+
 	}
 
-	cout << "Macro finished successfully." << endl;
 }
 
-// ============================================================================
-// The code below should not worry you.
-// These are just a couple of functions for automatic tree and branch finding.
-
-TTree* GetTheTree(TFile* theFile, TString* treeName)
+TTree* Reader::GetTheTree(TFile* theFile, TString* treeName)
 {
 	if (*treeName == "") {
 		//// Search for a tree, take the first with the name ending with 'xTree'
@@ -80,3 +99,5 @@ TTree* GetTheTree(TFile* theFile, TString* treeName)
 		return NULL;
 	}
 }
+
+ClassImp(Reader)

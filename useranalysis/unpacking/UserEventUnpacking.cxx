@@ -39,7 +39,7 @@ void UserEventUnpacking::Clear(Option_t* t)
 	fTrigger = 0;
 }
 
-void UserEventUnpacking::Dump(void) const
+void UserEventUnpacking::Print(Option_t* option) const
 {
 	cerr << "UserEventUnpacking contains " << fRawMessages->GetEntries() << " raw messages." << endl;
 	//TODO implement

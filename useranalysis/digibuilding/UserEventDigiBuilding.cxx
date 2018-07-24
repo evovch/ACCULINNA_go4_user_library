@@ -14,9 +14,8 @@ void UserEventDigiBuilding::Clear(Option_t* t)
 {
 }
 
-void UserEventDigiBuilding::Dump(void) const
+void UserEventDigiBuilding::Print(Option_t* option) const
 {
-
 }
 
 ClassImp(UserEventDigiBuilding)

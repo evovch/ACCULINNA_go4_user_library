@@ -9,10 +9,10 @@ using std::endl;
 #include <set>
 
 // Go4
-#include <TGo4Analysis.h>
+//#include <TGo4Analysis.h>
 
 // Project
-#include "UserParameter.h"
+//#include "UserParameter.h"
 #include "setupconfigcppwrapper/SetupConfiguration.h"
 #include "data/DetEventCommon.h"
 #include "data/DetEventDetector.h"
@@ -34,10 +34,19 @@ DetEventFull::DetEventFull(const char* name) :
 	cerr << endl;
 
 	//TODO check
+	//TODO old implementation
+	/*
 	TGo4Analysis* a = TGo4Analysis::Instance();
 	// Get the all-accessible parameter-set object
 	UserParameter* v_params = (UserParameter*)a->GetParameter("UserParameter");
+	if (!v_params) {
+		cerr << "No UserParameter global object. Aborting." << endl;
+		exit(EXIT_FAILURE); 
+	}
 	const SetupConfiguration* v_setupConfig = v_params->GetSetupConfig();
+	*/
+	// new implementation
+	SetupConfiguration* v_setupConfig = SetupConfiguration::GetInstance();
 
 	const std::map<TString, unsigned short> v_detectorList = v_setupConfig->GetDetectorList();
 
@@ -76,9 +85,24 @@ DetEventFull::~DetEventFull()
 	//cerr << "DetEventFull::Clear()" << endl;
 }*/
 
-void DetEventFull::Dump(void) const
+void DetEventFull::Print(Option_t* option) const
 {
 	//TODO dump all data members!
+
+	cerr << "DetEventFull::Print()\t";
+	cerr << this->ClassName() << "\t";
+	cerr << this->getNElements() << " elements:" << endl;
+
+	for (Short_t iElem=0; iElem<this->getNElements(); iElem++)
+	{
+		TGo4EventElement* curElem = this->getEventElement(iElem);
+		cerr << "Element " << iElem << ": "
+		     << curElem->isComposed()
+		     << "\t" << curElem->ClassName() << endl;
+
+		curElem->Print();
+	}
+
 }
 
 ClassImp(DetEventFull)

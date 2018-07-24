@@ -19,6 +19,10 @@ unlink libData.so
 unlink libData_rdict.pcm
 unlink libData.rootmap
 
+unlink libReader.so
+unlink libReader_rdict.pcm
+unlink libReader.rootmap
+
 if [ -d "build" ]; then
 	rm -rf build/*
 fi

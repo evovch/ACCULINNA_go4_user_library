@@ -97,7 +97,7 @@ void UserEventMonitoring::Clear(Option_t* t)
 	mtime[0] = 0; mtime[1] = 0;
 }
 
-void UserEventMonitoring::Dump(void) const
+void UserEventMonitoring::Print(Option_t* option) const
 {
 	//TODO dump all data members!
 

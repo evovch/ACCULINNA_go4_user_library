@@ -39,7 +39,9 @@ endif()
 # =============================================================================
 
 add_subdirectory(base)
+add_subdirectory(go4pieces)
 add_subdirectory(data)
 add_subdirectory(setupconfig)
 add_subdirectory(setupconfigcppwrapper)
 add_subdirectory(useranalysis)
+add_subdirectory(reader)
