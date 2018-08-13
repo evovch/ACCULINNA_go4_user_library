@@ -2,7 +2,7 @@
 
 SOFTDIR=/home/evovch/soft
 
-cd ${SOFTDIR}/go4-5.3.0_fairsoftroot/
+cd ${SOFTDIR}/go4_trunk/
 . ./go4login
 cd -
 

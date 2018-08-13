@@ -71,6 +71,7 @@ void Reader::ProcessFile(TString inFilename, UInt_t nEvents)
 
 }
 
+/*static*/
 TTree* Reader::GetTheTree(TFile* theFile, TString* treeName)
 {
 	if (*treeName == "") {

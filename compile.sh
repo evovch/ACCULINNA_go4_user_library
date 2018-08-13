@@ -26,30 +26,14 @@ if [ ! -d "build" ]; then
 	mkdir build
 fi
 
+if [ ! -d "install" ]; then
+	mkdir install
+fi
+
 cd build
-cmake ../
+cmake ../ -DCMAKE_INSTALL_PREFIX=../install
 make -j
+make install
 cd -
-
-ln -s build/setupconfig/libSetupConfig.so
-#ln -s build/setupconfig/libSetupConfig_rdict.pcm
-#ln -s build/setupconfig/libSetupConfig.rootmap
-ln -s build/setupconfig/setup_config_test
-
-ln -s build/useranalysis/libUserAnalysis.so
-ln -s build/useranalysis/libUserAnalysis_rdict.pcm
-ln -s build/useranalysis/libUserAnalysis.rootmap
-
-ln -s build/setupconfigcppwrapper/libSetupConfigCppWrapper.so
-ln -s build/setupconfigcppwrapper/libSetupConfigCppWrapper_rdict.pcm
-ln -s build/setupconfigcppwrapper/libSetupConfigCppWrapper.rootmap
-
-ln -s build/data/libData.so
-ln -s build/data/libData_rdict.pcm
-ln -s build/data/libData.rootmap
-
-ln -s build/reader/libReader.so
-ln -s build/reader/libReader_rdict.pcm
-ln -s build/reader/libReader.rootmap
 
 echo -e "\e[1m\e[32mCompilation finished.\e[0m"

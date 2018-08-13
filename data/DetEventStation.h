@@ -7,7 +7,7 @@
 #ifndef DETEVENTSTATION_H
 #define DETEVENTSTATION_H
 
-#include <TGo4EventElement.h> // mother class
+#include "go4pieces/TGo4EventElement.h" // mother class
 
 class TClonesArray;
 

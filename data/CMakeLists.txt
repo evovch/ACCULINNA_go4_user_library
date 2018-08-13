@@ -32,4 +32,10 @@ set(SOURCE_LIB G__Data.cxx
 
 add_library(Data SHARED ${SOURCE_LIB})
 
-target_link_libraries(Data Base Go4pieces)
+target_link_libraries(Data Base SetupConfigCppWrapper Go4pieces)
+
+#set_property(TARGET Data PROPERTY INSTALL_RPATH_USE_LINK_PATH TRUE)
+
+install(TARGETS Data LIBRARY DESTINATION lib)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libData.rootmap DESTINATION lib)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libData_rdict.pcm DESTINATION lib)

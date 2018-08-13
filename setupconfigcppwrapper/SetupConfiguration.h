@@ -23,10 +23,10 @@
 class SetupConfiguration : public TObject
 {
 //TODO test this singleton implementation
-public:
-	static SetupConfiguration* GetInstance(void) { return mInstance; }
 private:
 	static SetupConfiguration* mInstance;
+public:
+	static SetupConfiguration& GetInstance(void);
 // end of test section
 
 public:
@@ -144,6 +144,11 @@ public:
 	 * Get the list of detectors imported from the setup configuration file.
 	 */
 	std::map<TString, unsigned short> const GetDetectorList(void) const { return mDetectors; }
+
+	/**
+	 * Get the number of detectors.
+	 */
+	size_t GetNdetectors(void) const { return mDetectors.size(); }
 
 	/**
 	 *

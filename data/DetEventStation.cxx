@@ -57,7 +57,7 @@ void DetEventStation::AddDetMessage(Int_t p_statch, Int_t p_val)
 void DetEventStation::Clear(Option_t* t)
 {
 	//TODO zero all data members!
-	//cerr << "DetEventStation::Clear()" << endl;
+	cerr << "DetEventStation::Clear()" << endl;
 
 	fDetMessages->Clear();
 }
@@ -65,7 +65,15 @@ void DetEventStation::Clear(Option_t* t)
 void DetEventStation::Print(Option_t* option) const
 {
 	//TODO dump all data members!
-	cerr << "DetEventStation::Print()" << endl;
+	cerr << "DetEventStation::Print() "
+	     << "name = '" << this->GetName() << "'\t"
+	     << "size = " << fDetMessages->GetEntries() << endl;
+
+	TIter myiter(fDetMessages);
+	DetMessage* curDetM;
+	while ((curDetM = (DetMessage*)myiter.Next())) {
+		curDetM->Print();
+	}
 }
 
 ClassImp(DetEventStation)

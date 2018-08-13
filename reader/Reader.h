@@ -31,7 +31,7 @@ private: // data members
 
 private: // methods
 	
-	TTree* GetTheTree(TFile* theFile, TString* treeName);
+	static TTree* GetTheTree(TFile* theFile, TString* treeName);
 
 	ClassDef(Reader, 1);	
 };

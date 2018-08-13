@@ -5,6 +5,12 @@
 using std::cerr;
 using std::endl;
 
+DetEventCommon::DetEventCommon() :
+	TGo4EventElement()
+{
+	cerr << "DEFAULT DetEventCommon CONSTRUCTOR" << endl;
+}
+
 DetEventCommon::DetEventCommon(const char* name, Short_t id) :
 	TGo4EventElement(name, name, id)
 {
@@ -60,13 +66,13 @@ void DetEventCommon::Print(Option_t* option) const
 	cerr << " tMWPC:"; for (UInt_t i=0; i<4; i++)  { cerr << "\t" <<   tMWPC[i]; } cerr << endl;
 */
 	// Trigger
-	cerr << "  trig:"; cerr << trigger << endl;
+	cerr << "  trig:"; cerr << "\t" << trigger << endl;
 
 	// Scalers
 	cerr << "scaler:"; for (UInt_t i=0; i<16; i++) { cerr << "\t" <<  scaler[i]; } cerr << endl;
 
 	// Machine time
-	cerr << " mtime:"; cerr << this->GetFullTime() << endl;
+	cerr << " mtime:"; cerr << "\t" << this->GetFullTime() << endl;
 }
 
 ClassImp(DetEventCommon)

@@ -56,6 +56,8 @@ Analysis results should be located outside of the repository by specifying corre
 Analysis of output root files
 =============================
 
+Obsolete... The 'Reader' module and corresponding run_reader.C macro are under development.
+
 A ROOT macro 'macros/analyse.C' is provided as a template to start your simple analysis by means of native ROOT. Please, follow the instructions written at the beginning of the file.
 
 > cd macros
@@ -250,7 +252,7 @@ setupconfigcppwrapper
 textoutput
 ----------
 
-Different text output files produced by the analysis. This directory must exist in order for the usr library to word. Please, use provided script to compile/clean/run anlysis. They take care.
+Different text output files produced by the analysis. This directory must exist in order for the user library to work. Please, use provided script to compile/clean/run anlysis. They take care.
 
 useranalysis
 ------------
@@ -261,7 +263,7 @@ The first step of the analysis. Only reads raw data and extracts raw messages wi
 
 ### Monitoring
 
-The second step of the analysis. Looks into the setup configuration and produces a ROOT tree ...
+More correctly should be called 'Repacking'. The second step of the analysis. Looks into the setup configuration and produces a ROOT tree ...
 
 ### Learn
 

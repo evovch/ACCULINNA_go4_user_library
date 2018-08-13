@@ -27,3 +27,9 @@ set(SOURCE_LIB G__Go4pieces.cxx
                )
 
 add_library(Go4pieces SHARED ${SOURCE_LIB})
+
+#set_property(TARGET Go4pieces PROPERTY INSTALL_RPATH_USE_LINK_PATH TRUE)
+
+install(TARGETS Go4pieces LIBRARY DESTINATION lib)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libGo4pieces.rootmap DESTINATION lib)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libGo4pieces_rdict.pcm DESTINATION lib)

@@ -22,3 +22,9 @@ set(SOURCE_LIB G__SetupConfigCppWrapper.cxx
 add_library(SetupConfigCppWrapper SHARED ${SOURCE_LIB})
 
 target_link_libraries(SetupConfigCppWrapper SetupConfig)
+
+#set_property(TARGET SetupConfigCppWrapper PROPERTY INSTALL_RPATH_USE_LINK_PATH TRUE)
+
+install(TARGETS SetupConfigCppWrapper DESTINATION lib)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libSetupConfigCppWrapper.rootmap DESTINATION lib)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libSetupConfigCppWrapper_rdict.pcm DESTINATION lib)

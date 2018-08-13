@@ -17,7 +17,10 @@
 #ifndef DETEVENTFULL_H
 #define DETEVENTFULL_H
 
-#include <TGo4CompositeEvent.h> // mother class
+#include "go4pieces/TGo4CompositeEvent.h" // mother class
+
+// ROOT
+#include <TArrayS.h>
 
 class DetEventFull : public TGo4CompositeEvent
 {
@@ -33,7 +36,9 @@ public:
 
 	virtual void Print(Option_t* option = "") const;
 
-public:
+private:
+
+	TArrayS mChildrenIndices;
 
 	ClassDef(DetEventFull, 1);
 };

@@ -26,13 +26,6 @@ DetEventFull::DetEventFull() :
 DetEventFull::DetEventFull(const char* name) :
 	TGo4CompositeEvent(name, name)
 {
-	cerr << endl;
-
-	UShort_t v_index = 0; // Reserve id=0 for DetEventCommon
-	cerr << "DetEventFull::DetEventFull: id=" << v_index << endl;
-	addEventElement(new DetEventCommon("DetEventCommon", v_index));
-	cerr << endl;
-
 	//TODO check
 	//TODO old implementation
 	/*
@@ -46,9 +39,21 @@ DetEventFull::DetEventFull(const char* name) :
 	const SetupConfiguration* v_setupConfig = v_params->GetSetupConfig();
 	*/
 	// new implementation
-	SetupConfiguration* v_setupConfig = SetupConfiguration::GetInstance();
+	SetupConfiguration& v_setupConfig = SetupConfiguration::GetInstance();
 
-	const std::map<TString, unsigned short> v_detectorList = v_setupConfig->GetDetectorList();
+	cerr << endl;
+
+	mChildrenIndices.Set(v_setupConfig.GetNdetectors() + 1); // set the size of the array
+
+	UShort_t v_childrenCounter = 0;
+	UShort_t v_index = 0; // Reserve id=0 for DetEventCommon
+	cerr << "DetEventFull::DetEventFull: id=" << v_index << endl;
+	addEventElement(new DetEventCommon("DetEventCommon", v_index));
+	mChildrenIndices.AddAt(v_index, v_childrenCounter);
+	v_childrenCounter++;
+	cerr << endl;
+
+	const std::map<TString, unsigned short> v_detectorList = v_setupConfig.GetDetectorList();
 
 	std::map<TString, unsigned short>::const_iterator iter;
 	for (iter = v_detectorList.begin(); iter != v_detectorList.end(); ++iter) {
@@ -56,7 +61,7 @@ DetEventFull::DetEventFull(const char* name) :
 		v_index = iter->second;
 		cerr << "index=" << v_index << " name=" << iter->first << endl;
 
-		const std::map<TString, unsigned short> v_stationList = v_setupConfig->GetStationList(iter->first);
+		const std::map<TString, unsigned short> v_stationList = v_setupConfig.GetStationList(iter->first);
 
 		/*for (std::set<TString>::const_iterator iter2 = v_stationList.begin();
 			iter2 != v_stationList.end(); ++iter2) {
@@ -65,6 +70,8 @@ DetEventFull::DetEventFull(const char* name) :
 
 		cerr << "DetEventFull::DetEventFull: id=" << v_index << " name=" << iter->first << endl;
 		addEventElement(new DetEventDetector(iter->first, v_index, v_stationList));
+		mChildrenIndices.AddAt(v_index, v_childrenCounter);
+		v_childrenCounter++;
 		cerr << endl;
 
 	}
@@ -95,7 +102,13 @@ void DetEventFull::Print(Option_t* option) const
 
 	for (Short_t iElem=0; iElem<this->getNElements(); iElem++)
 	{
-		TGo4EventElement* curElem = this->getEventElement(iElem);
+		TGo4EventElement* curElem = this->getEventElement(mChildrenIndices[iElem]);
+
+		if (curElem == NULL) {
+			cerr << "WTF" << endl;
+			exit(EXIT_FAILURE);
+		}
+
 		cerr << "Element " << iElem << ": "
 		     << curElem->isComposed()
 		     << "\t" << curElem->ClassName() << endl;

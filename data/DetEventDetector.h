@@ -7,13 +7,14 @@
 #ifndef DETEVENTDETECTOR_H
 #define DETEVENTDETECTOR_H
 
-#include <TGo4CompositeEvent.h> // mother class
+#include "go4pieces/TGo4CompositeEvent.h" // mother class
 
 // STD
 #include <map>
 
 // ROOT
 #include <TString.h>
+#include <TArrayS.h>
 
 class DetEventDetector : public TGo4CompositeEvent
 {
@@ -30,6 +31,8 @@ public:
 	virtual void Print(Option_t* option = "") const;
 
 private:
+
+	TArrayS mChildrenIndices;
 
 	ClassDef(DetEventDetector, 1);
 };

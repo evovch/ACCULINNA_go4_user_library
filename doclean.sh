@@ -1,30 +1,11 @@
 #!/bin/bash
 
-# Cleanup compile results =====================================================
-
-unlink libSetupConfig.so
-#unlink libSetupConfig_rdict.pcm
-#unlink libSetupConfig.rootmap
-unlink setup_config_test
-
-unlink libUserAnalysis.so
-unlink libUserAnalysis_rdict.pcm
-unlink libUserAnalysis.rootmap
-
-unlink libSetupConfigCppWrapper.so
-unlink libSetupConfigCppWrapper_rdict.pcm
-unlink libSetupConfigCppWrapper.rootmap
-
-unlink libData.so
-unlink libData_rdict.pcm
-unlink libData.rootmap
-
-unlink libReader.so
-unlink libReader_rdict.pcm
-unlink libReader.rootmap
-
 if [ -d "build" ]; then
 	rm -rf build/*
+fi
+
+if [ -d "install" ]; then
+	rm -rf install/*
 fi
 
 # Cleanup analysis results ====================================================

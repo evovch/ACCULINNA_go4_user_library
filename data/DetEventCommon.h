@@ -7,7 +7,7 @@
 #ifndef DETEVENTCOMMON_H
 #define DETEVENTCOMMON_H
 
-#include <TGo4EventElement.h> // mother class
+#include "go4pieces/TGo4EventElement.h" // mother class
 
 class DetEventCommon : public TGo4EventElement
 {
@@ -18,6 +18,8 @@ public:
 	 * We don't need a constructor without arguments as the only
 	 * available constructor has the default values for all the arguments.
 	 */
+	//TODO testing
+	DetEventCommon();
 	DetEventCommon(const char* name = "DetEventCommon", Short_t id = 0);
 	virtual ~DetEventCommon();
 

@@ -48,8 +48,11 @@ set(SOURCE_LIB G__UserAnalysis.cxx
 
 add_library(UserAnalysis SHARED ${SOURCE_LIB})
 
-target_link_libraries(UserAnalysis Go4Analysis)
+target_link_libraries(UserAnalysis Data SetupConfigCppWrapper Go4Analysis)
 
-target_link_libraries(UserAnalysis SetupConfigCppWrapper)
+# ???
+#set_property(TARGET UserAnalysis PROPERTY INSTALL_RPATH_USE_LINK_PATH TRUE)
 
-target_link_libraries(UserAnalysis Data)
+install(TARGETS UserAnalysis DESTINATION lib)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libUserAnalysis.rootmap DESTINATION lib)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libUserAnalysis_rdict.pcm DESTINATION lib)

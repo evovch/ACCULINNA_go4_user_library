@@ -232,14 +232,7 @@ TGo4EventElement* TGo4CompositeEvent::getEventElement(Int_t idx) const
 {
    // Returns a pointer to the partial event with array location idx.
 
-   TGo4Log::Info("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- 1");
-   TGo4Log::Info("fNElements=%d", fNElements);
-   TGo4Log::Info("idx=%d", idx);
-   TGo4Log::Info("last=%d", fEventElements->GetLast());
-
-   if ((fNElements==0) || (idx<0) || (idx > fEventElements->GetLast())) return NULL;
-
-   TGo4Log::Info("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- 2");
+   if ((fEventElements==0) || (idx<0) || (idx > fEventElements->GetLast())) return NULL;
    return ( TGo4EventElement*) fEventElements->At(idx);
 }
 

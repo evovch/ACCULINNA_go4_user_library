@@ -11,6 +11,15 @@ using std::endl;
 /*static*/
 SetupConfiguration* SetupConfiguration::mInstance = nullptr;
 
+/*static*/
+SetupConfiguration& SetupConfiguration::GetInstance(void) {
+	if (mInstance == nullptr) {
+		cerr << "SetupConfiguration singleton object does not exist. Aborting." << endl;
+		exit(EXIT_FAILURE);
+	}
+	return *mInstance;
+}
+
 SetupConfiguration::SetupConfiguration() :
 	TObject()
 {

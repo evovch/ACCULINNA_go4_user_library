@@ -17,6 +17,10 @@ DetEventDetector::DetEventDetector() :
 DetEventDetector::DetEventDetector(const char* name, Short_t id, const std::map<TString, unsigned short> stationList) :
 	TGo4CompositeEvent(name, name, id) // Unique ID as third argument
 {
+	UShort_t v_childrenCounter = 0;
+
+	mChildrenIndices.Set(stationList.size()); // set the size of the array
+
 	std::map<TString, unsigned short>::const_iterator iter;
 	for (iter = stationList.begin(); iter != stationList.end(); ++iter) {
 		cerr << "DetEventDetector::DetEventDetector: name=" << iter->first << " id=" << iter->second << endl;
@@ -30,10 +34,12 @@ DetEventDetector::DetEventDetector(const char* name, Short_t id, const std::map<
 
 		//////////////////////
 		addEventElement(evSt);
+		mChildrenIndices.AddAt(iter->second, v_childrenCounter);
+		v_childrenCounter++;
 		//////////////////////
 	}
 
-	this->Clear();
+	//this->Clear(); // Not really needed //TODO ???
 }
 
 DetEventDetector::~DetEventDetector()
@@ -50,17 +56,22 @@ void DetEventDetector::Print(Option_t* option) const
 {
 	//TODO dump all data members!
 	cerr << "DetEventDetector::Print()\t";
-	cerr << this->ClassName() << "\t";
+	cerr << "class = '" << this->ClassName() << "'\t";
+	cerr << "name = '" << this->GetName() << "'\t";
 	cerr << this->getNElements() << " elements:" << endl;
 
 	for (Short_t iElem=0; iElem<this->getNElements(); iElem++)
 	{
-		TGo4EventElement* curElem = this->getEventElement(iElem);
+		TGo4EventElement* curElem = this->getEventElement(mChildrenIndices[iElem]);
 
 		if (curElem == NULL) {
-			cerr << "curElem = NULL" << endl;
+			cerr << "WTF" << endl;
 			exit(EXIT_FAILURE);
 		}
+
+		cerr << "Element " << iElem << ": "
+		     << curElem->isComposed()
+		     << "\t" << curElem->ClassName() << "\t\t";
 
 		curElem->Print();
 	}
