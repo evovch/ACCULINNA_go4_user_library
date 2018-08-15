@@ -89,7 +89,7 @@ DetEventFull::~DetEventFull()
 {
 }
 
-void DetEventFull::MapToBranch(TTree* t)
+/*void DetEventFull::MapToBranch(TTree* t)
 {
 	cerr << "DetEventFull::MapToBranch ================================================" << endl;
 
@@ -158,7 +158,7 @@ void DetEventFull::MapToBranch(TTree* t)
 		}
 
 	} // for loop over detectors
-}
+}*/
 
 /*void DetEventFull::Clear(Option_t* t)
 {

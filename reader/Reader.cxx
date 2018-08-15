@@ -50,28 +50,8 @@ void Reader::ProcessFile(TString inFilename, UInt_t nEvents)
 	}
 
 	DetEventFull* theEvent = new DetEventFull("DetEventFull1");
-
-	// DETEVENTFULL
-
-	//TODO identify name automatically
-	TString brNameF("DetEventFull1.");
-	TBranch* curBranchF = inTree->GetBranch(brNameF);
-
-	if (curBranchF == NULL) {
-		cerr << "Branch '" << brNameF << "' not found. Aborting." << endl;
-		exit(EXIT_FAILURE);
-	} else {
-		cerr << "Branch '" << brNameF << "' found." << endl;
-		//cerr << "++++++++++++++++++++++++++++++++++++++++++" << endl;
-		TClass* clF = theEvent->IsA();
-		//cerr << "Class name: " << clF->GetName() << endl;
-		inTree->SetBranchAddress(brNameF, &theEvent, 0, clF, kOther_t, true);
-		//inTree->SetBranchAddress(brNameF, &theEvent);
-		//cerr << "++++++++++++++++++++++++++++++++++++++++++" << endl;
-	}
-
-	// COMMON and DETECTORS
-	theEvent->MapToBranch(inTree);
+	TGo4EventElement* theEventCopy = theEvent;
+	theEvent->synchronizeWithTree(inTree, &theEventCopy);
 
 	UInt_t nEventsTotal = inTree->GetEntries();
 	if (nEvents == 0) { nEvents = nEventsTotal; }
@@ -86,9 +66,7 @@ void Reader::ProcessFile(TString inFilename, UInt_t nEvents)
 		inTree->GetEntry(iEvent);
 
 		//TODO implement you actions here
-
 		theEvent->Print();
-
 	}
 
 }

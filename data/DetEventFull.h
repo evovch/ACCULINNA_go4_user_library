@@ -32,7 +32,7 @@ public:
 	DetEventFull(const char* name);
 	virtual ~DetEventFull();
 
-	void MapToBranch(TTree* t);
+	//void MapToBranch(TTree* t);
 
 	//void Clear(Option_t* t = "");
 

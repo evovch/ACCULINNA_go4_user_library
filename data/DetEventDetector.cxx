@@ -49,7 +49,7 @@ DetEventDetector::~DetEventDetector()
 {
 }
 
-void DetEventDetector::MapToBranch(TTree* t, TString detName, const std::map<TString, unsigned short> stationList)
+/*void DetEventDetector::MapToBranch(TTree* t, TString detName, const std::map<TString, unsigned short> stationList)
 {
 	cerr << "DetEventDetector::MapToBranch ================================================" << endl;
 
@@ -87,7 +87,7 @@ void DetEventDetector::MapToBranch(TTree* t, TString detName, const std::map<TSt
 		}
 
 	}
-}
+}*/
 
 /*void DetEventDetector::Clear(Option_t* t)
 {

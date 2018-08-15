@@ -26,7 +26,7 @@ public:
 	DetEventDetector(const char* name, Short_t id, const std::map<TString, unsigned short> stationList);
 	virtual ~DetEventDetector();
 
-	void MapToBranch(TTree* t, TString detName, const std::map<TString, unsigned short> stationList);
+	//void MapToBranch(TTree* t, TString detName, const std::map<TString, unsigned short> stationList);
 
 	//void Clear(Option_t* t = "");
 
