@@ -32,6 +32,8 @@ public:
 	DetEventFull(const char* name);
 	virtual ~DetEventFull();
 
+	void MapToBranch(TTree* t);
+
 	//void Clear(Option_t* t = "");
 
 	virtual void Print(Option_t* option = "") const;

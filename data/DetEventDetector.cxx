@@ -5,6 +5,9 @@
 using std::cerr;
 using std::endl;
 
+// ROOT
+#include <TTree.h>
+
 // Project
 #include "DetEventStation.h"
 
@@ -44,6 +47,46 @@ DetEventDetector::DetEventDetector(const char* name, Short_t id, const std::map<
 
 DetEventDetector::~DetEventDetector()
 {
+}
+
+void DetEventDetector::MapToBranch(TTree* t, TString detName, const std::map<TString, unsigned short> stationList)
+{
+	cerr << "DetEventDetector::MapToBranch ================================================" << endl;
+
+	std::map<TString, unsigned short>::const_iterator iter;
+	for (iter = stationList.begin(); iter != stationList.end(); ++iter) {
+		cerr << "DetEventDetector::MapToBranch: name=" << iter->first << " id=" << iter->second << endl;
+
+		TString elName;
+		elName.Form("%s_%s", detName.Data(), iter->first.Data());
+		TString brName = elName + ".";
+
+		TGo4EventElement* subSubEl = this->getEventElement(elName);
+		if (subSubEl == NULL) {
+			cerr << "Sub-sub-element '" << elName << "' not found. Aborting." << endl;
+			exit(EXIT_FAILURE);
+		} else {
+			cerr << "Sub-sub-element '" << elName << "' found." << endl;
+		}
+
+		TBranch* curBranch = t->GetBranch(brName);
+		if (curBranch == NULL) {
+			cerr << "Station branch '" << brName << "' not found. Aborting." << endl;
+			exit(EXIT_FAILURE);
+		} else {
+			cerr << "Station branch '" << brName << "' found." << endl;
+
+			DetEventStation* subSubElDet = static_cast<DetEventStation*>(subSubEl);
+
+			//cerr << "++++++++++++++++++++++++++++++++++++++++++" << endl;
+			TClass* cl = subSubElDet->IsA();
+			//cerr << "Class name: " << cl->GetName() << endl;
+			t->SetBranchAddress(brName, &subSubElDet, 0, cl, kOther_t, true);
+			//t->SetBranchAddress(brName, &subSubElDet);
+			//cerr << "++++++++++++++++++++++++++++++++++++++++++" << endl;
+		}
+
+	}
 }
 
 /*void DetEventDetector::Clear(Option_t* t)

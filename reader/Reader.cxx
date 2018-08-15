@@ -14,6 +14,7 @@ using std::endl;
 // Project
 #include "setupconfigcppwrapper/SetupConfiguration.h"
 #include "data/DetEventFull.h"
+#include "data/DetEventCommon.h"
 
 Reader::Reader() :
 	TObject()
@@ -49,7 +50,28 @@ void Reader::ProcessFile(TString inFilename, UInt_t nEvents)
 	}
 
 	DetEventFull* theEvent = new DetEventFull("DetEventFull1");
-	inTree->SetBranchAddress("DetEventFull1.", &theEvent);
+
+	// DETEVENTFULL
+
+	//TODO identify name automatically
+	TString brNameF("DetEventFull1.");
+	TBranch* curBranchF = inTree->GetBranch(brNameF);
+
+	if (curBranchF == NULL) {
+		cerr << "Branch '" << brNameF << "' not found. Aborting." << endl;
+		exit(EXIT_FAILURE);
+	} else {
+		cerr << "Branch '" << brNameF << "' found." << endl;
+		//cerr << "++++++++++++++++++++++++++++++++++++++++++" << endl;
+		TClass* clF = theEvent->IsA();
+		//cerr << "Class name: " << clF->GetName() << endl;
+		inTree->SetBranchAddress(brNameF, &theEvent, 0, clF, kOther_t, true);
+		//inTree->SetBranchAddress(brNameF, &theEvent);
+		//cerr << "++++++++++++++++++++++++++++++++++++++++++" << endl;
+	}
+
+	// COMMON and DETECTORS
+	theEvent->MapToBranch(inTree);
 
 	UInt_t nEventsTotal = inTree->GetEntries();
 	if (nEvents == 0) { nEvents = nEventsTotal; }
