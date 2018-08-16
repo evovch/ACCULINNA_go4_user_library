@@ -78,12 +78,12 @@
 
 <crate name="VME1" procid="200">
 
-	<mapping addr="2"	elblock="mTDC"	startelectrch="0"	nelectrch="32"	stepelecrtch="1"	detector="neutTDC"	startdetch="0"	folder="Neutron_detector"/>
+	<mapping addr="2"	elblock="mTDC"	startelectrch="0"	nelectrch="32"	stepelectrch="1"	detector="neutTDC"	startdetch="0"	folder="Neutron_detector"/>
 
-	<mapping addr="0"	elblock="V785"	startelectrch="0"	nelectrch="32"	stepelecrtch="2"	detector="neutAmp"	startdetch="0"	folder="Neutron_detector"/>
-	<mapping addr="0"	elblock="V785"	startelectrch="1"	nelectrch="32"	stepelecrtch="2"	detector="neutTAC"	startdetch="0"	folder="Neutron_detector"/>
-	<mapping addr="1"	elblock="V785"	startelectrch="0"	nelectrch="32"	stepelecrtch="2"	detector="neutAmp"	startdetch="16"	folder="Neutron_detector"/>
-	<mapping addr="1"	elblock="V785"	startelectrch="1"	nelectrch="32"	stepelecrtch="2"	detector="neutTAC"	startdetch="16"	folder="Neutron_detector"/>
+	<mapping addr="0"	elblock="V785"	startelectrch="0"	nelectrch="32"	stepelectrch="2"	detector="neutAmp"	startdetch="0"	folder="Neutron_detector"/>
+	<mapping addr="0"	elblock="V785"	startelectrch="1"	nelectrch="32"	stepelectrch="2"	detector="neutTAC"	startdetch="0"	folder="Neutron_detector"/>
+	<mapping addr="1"	elblock="V785"	startelectrch="0"	nelectrch="32"	stepelectrch="2"	detector="neutAmp"	startdetch="16"	folder="Neutron_detector"/>
+	<mapping addr="1"	elblock="V785"	startelectrch="1"	nelectrch="32"	stepelectrch="2"	detector="neutTAC"	startdetch="16"	folder="Neutron_detector"/>
 
 </crate>
 
@@ -117,8 +117,8 @@
 	Order or attributes does not matter - it is ignored by any clever (=correctly) developed software.
 
 	There can be missing attributes if the reading software covers such situations.
-	In our particular case 'stepelecrtch' attribute can be omitted while all the other are necessary.
-	If omitted, stepelecrtch=1
+	In our particular case 'stepelectrch' attribute can be omitted while all the other are necessary.
+	If omitted, stepelectrch=1
 
 	comment start: less-exclamation-minus-minus
 	comment end: minus-minus-more

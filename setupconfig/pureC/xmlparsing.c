@@ -351,10 +351,10 @@ void ProcessAttr(stc_setup_config* ptr, char* p_token/*, enuTAG* o_CurTag*/, uns
 			/* fprintf(stderr, "crateName='%s' crateProcid='%u' %s='%s'\n",
 			         fCurCrateName, fCurCrateProcId, p_token, &equalsign[2]); */
 			gCurMappingInfo.fNelectrch = atoi(&equalsign[2]);
-		} else if (strcmp(p_token, "stepelecrtch") == 0) {
+		} else if (strcmp(p_token, "stepelectrch") == 0) {
 			/* fprintf(stderr, "crateName='%s' crateProcid='%u' %s='%s'\n",
 			         fCurCrateName, fCurCrateProcId, p_token, &equalsign[2]); */
-			gCurMappingInfo.fStepelecrtch = atoi(&equalsign[2]);
+			gCurMappingInfo.fStepelectrch = atoi(&equalsign[2]);
 		} else if (strcmp(p_token, "station") == 0) {
 			/* fprintf(stderr, "crateName='%s' crateProcid='%u' %s='%s'\n",
 			         fCurCrateName, fCurCrateProcId, p_token, &equalsign[2]); */
@@ -367,6 +367,10 @@ void ProcessAttr(stc_setup_config* ptr, char* p_token/*, enuTAG* o_CurTag*/, uns
 			/* fprintf(stderr, "crateName='%s' crateProcid='%u' %s='%s'\n",
 			         fCurCrateName, fCurCrateProcId, p_token, &equalsign[2]); */
 			strncpy(gCurMappingInfo.fDetector, &equalsign[2], 64);
+		} else if (strcmp(p_token, "digicomp") == 0) {
+			/* fprintf(stderr, "crateName='%s' crateProcid='%u' %s='%s'\n",
+			         fCurCrateName, fCurCrateProcId, p_token, &equalsign[2]); */
+			strncpy(gCurMappingInfo.fDigicomp, &equalsign[2], 64);
 		} else {
 			/* ERROR unknown attribute */
 			fprintf(stderr, "ERROR [ProcessAttr] unknown attribute '%s'.\n", p_token);

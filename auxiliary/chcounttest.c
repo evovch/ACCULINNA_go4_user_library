@@ -8,11 +8,11 @@ int main(int argc, char** argv)
 	int geo=0;
 	int startdetch=0;
 	int startelectrch=0;
-	int stepelecrtch=2;
+	int stepelectrch=2;
 	int nelectrch=32;
 
 	detch = startdetch;
-	for (electrch = startelectrch; electrch < nelectrch; electrch += stepelecrtch) {
+	for (electrch = startelectrch; electrch < nelectrch; electrch += stepelectrch) {
 		printf("geo=%d\telectrch=%d\tdetch=%d\n", geo, electrch, detch);
 		detch++;
 	}
@@ -20,11 +20,11 @@ int main(int argc, char** argv)
 	geo=0;
 	startdetch=0;
 	startelectrch=1;
-	stepelecrtch=2;
+	stepelectrch=2;
 	nelectrch=32;
 
 	detch = startdetch;
-	for (electrch = startelectrch; electrch < nelectrch; electrch += stepelecrtch) {
+	for (electrch = startelectrch; electrch < nelectrch; electrch += stepelectrch) {
 		printf("geo=%d\telectrch=%d\tdetch=%d\n", geo, electrch, detch);
 		detch++;
 	}
@@ -32,11 +32,11 @@ int main(int argc, char** argv)
 	geo=1;
 	startdetch=16;
 	startelectrch=0;
-	stepelecrtch=2;
+	stepelectrch=2;
 	nelectrch=32;
 
 	detch = startdetch;
-	for (electrch = startelectrch; electrch < nelectrch; electrch += stepelecrtch) {
+	for (electrch = startelectrch; electrch < nelectrch; electrch += stepelectrch) {
 		printf("geo=%d\telectrch=%d\tdetch=%d\n", geo, electrch, detch);
 		detch++;
 	}
@@ -44,11 +44,11 @@ int main(int argc, char** argv)
 	geo=1;
 	startdetch=16;
 	startelectrch=1;
-	stepelecrtch=2;
+	stepelectrch=2;
 	nelectrch=32;
 
 	detch = startdetch;
-	for (electrch = startelectrch; electrch < nelectrch; electrch += stepelecrtch) {
+	for (electrch = startelectrch; electrch < nelectrch; electrch += stepelectrch) {
 		printf("geo=%d\telectrch=%d\tdetch=%d\n", geo, electrch, detch);
 		detch++;
 	}

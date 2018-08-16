@@ -24,10 +24,11 @@ typedef struct _stc_mapping {
 	char fElblock[64]; /* Name of the electronics block: mTDC, mADC, mQDC, V775, V785, V792, ... */
 	unsigned short fStartelectrch;
 	unsigned short fNelectrch;
-	unsigned short fStepelecrtch;
+	unsigned short fStepelectrch;
 	char fStation[64]; /* Station: SQX_L, tSQX_L, CsI_L, tCsI_L, F3, F5, F6, tMWPC, neutTDC, ... */
 	unsigned short fStartstatch;
 	char fDetector[64]; /* Detector: Left_telescope, Right_telescope, Beam_detector, Neutron_detector */
+	char fDigicomp[64]; /* A string which identifies which component of the digi this is */
 
 } stc_mapping;
 

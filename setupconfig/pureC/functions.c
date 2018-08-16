@@ -20,10 +20,11 @@ void InitStcMapping(stc_mapping* ptr)
 	strncpy(ptr->fElblock, "", 64);
 	ptr->fStartelectrch = 0;
 	ptr->fNelectrch = 0;
-	ptr->fStepelecrtch = 1;
+	ptr->fStepelectrch = 1;
 	strncpy(ptr->fStation, "", 64);
 	ptr->fStartstatch = 0;
-	strncpy(ptr->fDetector, "", 64);*/
+	strncpy(ptr->fDetector, "", 64);
+	strncpy(ptr->fDigicomp, "", 64);*/
 
 	/* I'd better call for reset here: */
 	ResetStcMapping(ptr);
@@ -36,10 +37,11 @@ void ResetStcMapping(stc_mapping* ptr)
 	strncpy(ptr->fElblock, "", 64);
 	ptr->fStartelectrch = 0;
 	ptr->fNelectrch = 0;
-	ptr->fStepelecrtch = 1;
+	ptr->fStepelectrch = 1;
 	strncpy(ptr->fStation, "", 64);
 	ptr->fStartstatch = 0;
 	strncpy(ptr->fDetector, "", 64);
+	strncpy(ptr->fDigicomp, "", 64);
 }
 
 void DumpStcMapping(const stc_mapping* ptr)
@@ -49,11 +51,11 @@ void DumpStcMapping(const stc_mapping* ptr)
 	   "================================================================================\n"); */
 	fprintf(stderr,
 	"MAPPING cratename='%s' crateprocid='%u' addr='%u' elblock='%s' "
-	"startelectrch='%u' nelectrch='%u' stepelecrtch='%u' station='%s' "
-	"startstatch='%u' detector='%s'\n",
+	"startelectrch='%u' nelectrch='%u' stepelectrch='%u' station='%s' "
+	"startstatch='%u' detector='%s' digicomp='%s'\n",
 	ptr->fCrateName, ptr->fCrateProcid, ptr->fAddr, ptr->fElblock,
-	ptr->fStartelectrch, ptr->fNelectrch, ptr->fStepelecrtch, ptr->fStation,
-	ptr->fStartstatch, ptr->fDetector);
+	ptr->fStartelectrch, ptr->fNelectrch, ptr->fStepelectrch, ptr->fStation,
+	ptr->fStartstatch, ptr->fDetector, ptr->fDigicomp);
 	/* fprintf(stderr,
 	   "================================================================================"
 	   "================================================================================\n"); */
@@ -120,10 +122,11 @@ void ExtendMappingsListStcSetupConfig(stc_setup_config* ptr, const stc_mapping* 
 	strncpy(ptr->fMappingsList[ptr->fNmappings].fElblock, ptrMapping->fElblock, 64);
 	ptr->fMappingsList[ptr->fNmappings].fStartelectrch = ptrMapping->fStartelectrch;
 	ptr->fMappingsList[ptr->fNmappings].fNelectrch = ptrMapping->fNelectrch;
-	ptr->fMappingsList[ptr->fNmappings].fStepelecrtch = ptrMapping->fStepelecrtch;
+	ptr->fMappingsList[ptr->fNmappings].fStepelectrch = ptrMapping->fStepelectrch;
 	strncpy(ptr->fMappingsList[ptr->fNmappings].fStation, ptrMapping->fStation, 64);
 	ptr->fMappingsList[ptr->fNmappings].fStartstatch = ptrMapping->fStartstatch;
 	strncpy(ptr->fMappingsList[ptr->fNmappings].fDetector, ptrMapping->fDetector, 64);
+	strncpy(ptr->fMappingsList[ptr->fNmappings].fDigicomp, ptrMapping->fDigicomp, 64);
 
 	/* Increase the counter of the entities in the list */
 	ptr->fNmappings++;

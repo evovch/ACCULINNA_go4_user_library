@@ -78,9 +78,9 @@ void SetupConfiguration::Link(void)
 		stc_mapping* v_curMapping = &(mConfiguration.fMappingsList[iMapping]);
 
 		// Check that the channel step > 0, otherwise we will run unto the infinite loop
-		if (v_curMapping->fStepelecrtch == 0) {
+		if (v_curMapping->fStepelectrch == 0) {
 			// Actually, this should not happen. To be on the safe side we reset it to 1.
-			v_curMapping->fStepelecrtch = 1;
+			v_curMapping->fStepelectrch = 1;
 		}
 
 		////DumpStcMapping(v_curMapping);
@@ -89,7 +89,7 @@ void SetupConfiguration::Link(void)
 		unsigned short counter = 0;
 		for (unsigned short iCh = v_curMapping->fStartelectrch;
 		                    iCh < v_curMapping->fStartelectrch + v_curMapping->fNelectrch;
-		                    iCh += v_curMapping->fStepelecrtch)
+		                    iCh += v_curMapping->fStepelectrch)
 		{
 			unsigned int v_curMappingChID = SetupConfiguration::GetChUID(v_curMapping->fCrateProcid,
 			                                                             v_curMapping->fAddr,
@@ -214,7 +214,7 @@ unsigned short SetupConfiguration::ElChToDetCh(const stc_mapping* p_mapping, uns
 {
 	unsigned short v_stElCh = p_mapping->fStartelectrch;
 	unsigned short v_nElCh = p_mapping->fNelectrch;
-	unsigned short v_stepElCh = p_mapping->fStepelecrtch;
+	unsigned short v_stepElCh = p_mapping->fStepelectrch;
 
 	if ((p_elch < v_stElCh) || (p_elch >= v_stElCh+v_nElCh) || ((p_elch - v_stElCh) % v_stepElCh != 0) )
 	{
