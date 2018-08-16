@@ -56,12 +56,10 @@ Analysis results should be located outside of the repository by specifying corre
 Analysis of output root files
 =============================
 
-Obsolete... The 'Reader' module and corresponding run_reader.C macro are under development.
-
-A ROOT macro 'macros/analyse.C' is provided as a template to start your simple analysis by means of native ROOT. Please, follow the instructions written at the beginning of the file.
+A ROOT macro 'macros/analyse4.C' is provided as a template to start your simple analysis by means of native ROOT. Please, follow the instructions written at the beginning of the file.
 
 > cd macros
-> root -l "analyse.C(\"filename.lmd.root\")" > macroout.txt 2> macroerr.txt
+> root -l "analyse4.C(\"filename.lmd.root\", \"config.xml\", 10)" > macroout.txt 2> macroerr.txt
 
 Input data structure
 ====================

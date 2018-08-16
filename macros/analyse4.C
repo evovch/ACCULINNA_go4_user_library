@@ -1,19 +1,22 @@
 /**
 
-	Example of a native ROOT macro to analyse Go4-produced output root files.
-
-	Note, that an important action is done in the 'rootlogon.C' ROOT startup macro.
-
-	Search for TODO and perform all necessary steps written after this word.
+	Please, specify correct input root file and correct corresponding setup.xml file.
+	Currently the structure of the event in the input root file is not identified automatically
+	but taken from the setup.xml file.
+	
+	nEvents = 0 - process all events.
 
 */
 
 TTree* GetTheTree(TFile* theFile, TString* treeName);
 
-//TODO specify how many events do you want to process.
-// If nEvents=0 - process all
-void analyse2(TString inFilename="/home/evovch/Downloads/FLNR_data/exp201803/run13_0037.lmd.root", UInt_t nEvents = 10)
+void analyse4(TString inFilename="/home/evovch/experimental_data/exp201804_calib/result/si_1000_LR_02_0001.lmd.root",
+              TString inSetupConfigFilename="../usr/setup2_exp201803.xml",
+              UInt_t nEvents = 0)
 {
+	// Construct SetupConfiguration, which includes the input of the XML file
+	SetupConfiguration* fSetupConfiguration = new SetupConfiguration(inSetupConfigFilename);
+
 	TFile* inFile = new TFile(inFilename, "READ");
 
 	if (inFile->IsZombie()) {
@@ -25,11 +28,15 @@ void analyse2(TString inFilename="/home/evovch/Downloads/FLNR_data/exp201803/run
 	TString inTreeName("");
 	TTree* inTree = GetTheTree(inFile, &inTreeName);
 	if (inTree == NULL) {
+		cerr << "Tree '" << inTreeName << "' not found. Aborting." << endl;
 		return;
 	}
 
-	UInt_t nEventsTotal = inTree->GetEntries();
+	DetEventFull* theEvent = new DetEventFull("DetEventFull1");
+	TGo4EventElement* theEventCopy = theEvent;
+	theEvent->synchronizeWithTree(inTree, &theEventCopy);
 
+	UInt_t nEventsTotal = inTree->GetEntries();
 	if (nEvents == 0) { nEvents = nEventsTotal; }
 
 	// Loop over the events
@@ -42,15 +49,14 @@ void analyse2(TString inFilename="/home/evovch/Downloads/FLNR_data/exp201803/run
 		inTree->GetEntry(iEvent);
 
 		//TODO implement you actions here
-
+		theEvent->Print();
 	}
 
-	cout << "Macro finished successfully." << endl;
 }
 
 // ============================================================================
 // The code below should not worry you.
-// These are just a couple of functions for automatic tree and branch finding.
+// This is just a function for automatic tree finding.
 
 TTree* GetTheTree(TFile* theFile, TString* treeName)
 {
