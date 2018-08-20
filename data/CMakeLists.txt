@@ -37,5 +37,6 @@ target_link_libraries(Data Tree Base SetupConfigCppWrapper Go4pieces)
 #set_property(TARGET Data PROPERTY INSTALL_RPATH_USE_LINK_PATH TRUE)
 
 install(TARGETS Data LIBRARY DESTINATION lib)
+install(DIRECTORY "." DESTINATION include/data FILES_MATCHING PATTERN "*.h")
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libData.rootmap DESTINATION lib)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libData_rdict.pcm DESTINATION lib)

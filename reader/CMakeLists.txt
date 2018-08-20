@@ -28,5 +28,6 @@ target_link_libraries(Reader Data SetupConfigCppWrapper)
 #set_property(TARGET Reader PROPERTY INSTALL_RPATH_USE_LINK_PATH TRUE)
 
 install(TARGETS Reader LIBRARY DESTINATION lib)
+install(DIRECTORY "." DESTINATION include/reader FILES_MATCHING PATTERN "*.h")
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libReader.rootmap DESTINATION lib)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libReader_rdict.pcm DESTINATION lib)

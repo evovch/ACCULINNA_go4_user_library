@@ -54,5 +54,6 @@ target_link_libraries(UserAnalysis Data SetupConfigCppWrapper Go4Analysis)
 #set_property(TARGET UserAnalysis PROPERTY INSTALL_RPATH_USE_LINK_PATH TRUE)
 
 install(TARGETS UserAnalysis DESTINATION lib)
+install(DIRECTORY "." DESTINATION include/useranalysis FILES_MATCHING PATTERN "*.h")
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libUserAnalysis.rootmap DESTINATION lib)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libUserAnalysis_rdict.pcm DESTINATION lib)

@@ -24,3 +24,4 @@ target_link_libraries(setup_config_test SetupConfig)
 #set_property(TARGET setup_config_test PROPERTY INSTALL_RPATH_USE_LINK_PATH TRUE)
 
 install(TARGETS setup_config_test DESTINATION bin)
+install(DIRECTORY "." DESTINATION include/setupconfig FILES_MATCHING PATTERN "*.h")
