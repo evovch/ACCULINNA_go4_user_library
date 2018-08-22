@@ -5,23 +5,28 @@
 
 // ROOT
 #include <TString.h>
+#include <TTree.h>
+
+#include "data/DetEventFull.h"
 
 class TFile;
 class TTree;
 
 class SetupConfiguration;
+class DetEventFull;
 
 class Reader : public TObject
 {
 public:
 
-	Reader();
+	Reader(TString inFilename,TString p_setupfilename);
 	virtual ~Reader();
 
-	void Init(TString p_setupfilename);
+	void ProcessFile(UInt_t nEvents = 10);
 
-	void ProcessFile(TString inFilename, UInt_t nEvents = 10);
+	Int_t ReadEvent(Int_t iEvent,DetEventFull* event);
 
+	Int_t GetNEventsTotal();
 private: // data members
 
 	/**
@@ -29,6 +34,10 @@ private: // data members
 	 */
 	SetupConfiguration* fSetupConfiguration;
 
+	/**
+	 * Input file tree object
+	 */
+	TTree* fInTree;
 private: // methods
 	
 	static TTree* GetTheTree(TFile* theFile, TString* treeName);

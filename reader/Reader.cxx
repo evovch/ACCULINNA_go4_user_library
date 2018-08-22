@@ -8,32 +8,20 @@ using std::endl;
 
 // ROOT
 #include <TFile.h>
-#include <TTree.h>
 #include <TKey.h>
 
 // Project
 #include "setupconfigcppwrapper/SetupConfiguration.h"
-#include "data/DetEventFull.h"
 #include "data/DetEventCommon.h"
 
-Reader::Reader() :
-	TObject()
-{
-}
-
-void Reader::Init(TString p_setupfilename)
+Reader::Reader(TString inFilename,TString p_setupfilename) :
+	TObject(),
+	fSetupConfiguration(NULL),
+	fInTree(NULL)
 {
 	// Construct SetupConfiguration, which includes the input of the XML file
 	fSetupConfiguration = new SetupConfiguration(p_setupfilename);
-}
 
-Reader::~Reader()
-{
-	if (fSetupConfiguration) delete fSetupConfiguration;
-}
-
-void Reader::ProcessFile(TString inFilename, UInt_t nEvents)
-{
 	TFile* inFile = new TFile(inFilename, "READ");
 
 	if (inFile->IsZombie()) {
@@ -42,19 +30,26 @@ void Reader::ProcessFile(TString inFilename, UInt_t nEvents)
 	}
 
 	// Leave this string empty to search for the tree automatically
-	TString inTreeName("");
-	TTree* inTree = Reader::GetTheTree(inFile, &inTreeName);
-	if (inTree == NULL) {
-		cerr << "Tree '" << inTreeName << "' not found. Aborting." << endl;
+	TString fInTreeName("");
+	fInTree = Reader::GetTheTree(inFile, &fInTreeName);
+	if (fInTree == NULL) {
+		cerr << "Tree '" << fInTreeName << "' not found. Aborting." << endl;
 		return;
 	}
+}
 
+Reader::~Reader()
+{
+	if (fSetupConfiguration) delete fSetupConfiguration;
+}
+
+void Reader::ProcessFile(UInt_t nEvents)
+{
 	DetEventFull* theEvent = new DetEventFull("DetEventFull1");
 	TGo4EventElement* theEventCopy = theEvent;
-	theEvent->synchronizeWithTree(inTree, &theEventCopy);
+	theEvent->synchronizeWithTree(fInTree, &theEventCopy);
 
-	UInt_t nEventsTotal = inTree->GetEntries();
-	if (nEvents == 0) { nEvents = nEventsTotal; }
+	if (nEvents == 0) { nEvents = GetNEventsTotal(); }
 
 	// Loop over the events
 	for (UInt_t iEvent=0; iEvent<nEvents; iEvent++)
@@ -63,12 +58,31 @@ void Reader::ProcessFile(TString inFilename, UInt_t nEvents)
 		     << " =================================================================="
 		     << endl;
 
-		inTree->GetEntry(iEvent);
+		fInTree->GetEntry(iEvent);
 
 		//TODO implement you actions here
 		theEvent->Print();
 	}
+}
 
+Int_t Reader::ReadEvent(Int_t iEvent,DetEventFull* event)
+{
+	if (iEvent >= GetNEventsTotal()){
+		cerr << "The event number is greater than total events number in input file!";
+		return -1;
+	}
+
+	TGo4EventElement* theEventCopy = event;
+	event->synchronizeWithTree(fInTree, &theEventCopy);
+
+	fInTree->GetEntry(iEvent);
+
+	return 0;
+}
+
+Int_t Reader::GetNEventsTotal()
+{
+	return fInTree->GetEntries();
 }
 
 /*static*/
