@@ -190,8 +190,10 @@ void UserProcMonitoring::ProcessMessageUniversal(const RawMessage* p_message)
 	//TODO specific actions here
 	if (v_elblock.CompareTo("mqdc", TString::kIgnoreCase) == 0) {
 		if (((p_message->fRawWord >> 15) & 0x1) == 1) {
+			#ifdef PRINTDEBUGINFO
 			cerr << "[DEBUG ] "
 			     << "Skipping a message from mQDC with out-of-range bit." << endl;
+			#endif
 			return;
 		}
 	}
@@ -199,6 +201,15 @@ void UserProcMonitoring::ProcessMessageUniversal(const RawMessage* p_message)
 	//TODO check that the channel has allowed value
 	//TODO specific actions here
 	if (v_elblock.CompareTo("mtdc", TString::kIgnoreCase) == 0) {
+
+		if (((p_message->fRawWord >> 21) & 0x1) == 1) {
+			#ifdef PRINTDEBUGINFO
+			cerr << "[DEBUG ] "
+			     << "Skipping a message from mTDC with trigger-flag bit." << endl;
+			#endif
+			return;
+		}
+
 		////////////////////////////////////////////////////////
 		v_evSt->AddDetMessage(v_detChannel, p_message->fValueT);
 		////////////////////////////////////////////////////////
