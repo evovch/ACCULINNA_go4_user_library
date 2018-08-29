@@ -27,6 +27,14 @@ using std::endl;
 */
 //#define PRINTDEBUGINFO
 
+/**
+  Uncomment this if you want to hide the messages about the channels
+  which are mapped and with data coming from them.
+  This option reduces the text output in the summaryLearn.txt file
+  a little bit.
+*/
+//#define SUPPRESSMAPPEDWITHDATA
+
 UserProcLearn::UserProcLearn(const char* name) :
 	TGo4EventProcessor(name),
 	fEventCounter(0)
@@ -176,10 +184,10 @@ void UserProcLearn::UserPostLoop()
 
 	fprintf(fFileSummary, "=============================== SUMMARY ==============================\n");
 
-	fprintf(fFileSummary, "The following channels are mapped but no data comes from them:\n");
+	fprintf(fFileSummary, "The following channels are mapped:\n");
 	this->ProcessUnmappedChannels();
 
-	fprintf(fFileSummary, "The following channels have been detected in the input file:\n");
+	fprintf(fFileSummary, "The following channels have been detected in the input file(no matter what the mappings are):\n");
 
 	for (auto v_chuid : fUsedChUIDs) {
 		unsigned short v_procid = v_chuid/100000;
@@ -224,6 +232,41 @@ void UserProcLearn::UserPostLoop()
 
 void UserProcLearn::ProcessUnmappedChannels(void) const
 {
+// This code snippet may be useful in the future
+/*
+	std::map<TString, unsigned short> v_detectorList = fSetupConfig->GetDetectorList();
+	std::map<TString, unsigned short>::const_iterator v_detIter = v_detectorList.begin();
+
+	for ( ; v_detIter != v_detectorList.end(); ++v_detIter) {
+		std::map<TString, unsigned short> v_stationsList = fSetupConfig->GetStationList(v_detIter->first);
+		std::map<TString, unsigned short>::const_iterator v_stIter = v_stationsList.begin();
+
+		for ( ; v_stIter != v_stationsList.end(); ++v_stIter) {
+			cerr << v_detIter->first << ": " << v_stIter->first << endl;
+		}
+	}
+*/
+	std::map<unsigned int, stc_mapping*> v_mappings = fSetupConfig->GetMappings();
+	std::map<unsigned int, stc_mapping*>::const_iterator v_mapIter = v_mappings.begin();
+
+	for ( ; v_mapIter != v_mappings.end(); ++v_mapIter) {
+		unsigned int v_uid = v_mapIter->first;
+		//cerr << v_uid << endl;
+
+		unsigned short v_procid = fSetupConfig->GetProcIdFromUID(v_uid);
+		unsigned short v_addr = fSetupConfig->GetAddrFromUID(v_uid);
+		unsigned short v_ch = fSetupConfig->GetElChFromUID(v_uid);
+
+		auto search = fUsedChUIDs.find(v_uid);
+
+		if (search != fUsedChUIDs.end()) {
+			#ifndef SUPPRESSMAPPEDWITHDATA
+			fprintf(fFileSummary, "%ld: procid=%u\taddr=%u\tch=%u\tok\n", v_uid, v_procid, v_addr, v_ch);
+			#endif
+		} else {
+			fprintf(fFileSummary, "%ld: procid=%u\taddr=%u\tch=%u\tNO DATA\n", v_uid, v_procid, v_addr, v_ch);
+		}
+	}
 }
 
 ClassImp(UserProcLearn)
