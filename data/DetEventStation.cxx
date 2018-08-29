@@ -57,7 +57,7 @@ void DetEventStation::AddDetMessage(Int_t p_statch, Int_t p_val)
 void DetEventStation::Clear(Option_t* t)
 {
 	//TODO zero all data members!
-	cerr << "DetEventStation::Clear()" << endl;
+	//cerr << "DetEventStation::Clear()" << endl;
 
 	fDetMessages->Clear();
 }
