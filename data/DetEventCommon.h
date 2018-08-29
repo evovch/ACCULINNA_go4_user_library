@@ -11,7 +11,7 @@
 
 class DetEventCommon : public TGo4EventElement
 {
-//	friend class UserProcMonitoring; // provider
+//	friend class UserProcRepacking; // provider
 
 public:
 	/**

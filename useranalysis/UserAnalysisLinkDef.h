@@ -15,11 +15,11 @@
 #pragma link C++ class UserProcUnpacking+;
 #pragma link C++ class UserHistosUnpacking+;
 
-// Monitoring step
+// Repacking step
 #pragma link C++ class DetEventFull+;
-#pragma link C++ class UserEventMonitoring+;
-#pragma link C++ class UserProcMonitoring+;
-#pragma link C++ class UserHistosMonitoring+;
+#pragma link C++ class UserEventRepacking+;
+#pragma link C++ class UserProcRepacking+;
+#pragma link C++ class UserHistosRepacking+;
 
 // Learn step
 #pragma link C++ class UserEventLearn+;

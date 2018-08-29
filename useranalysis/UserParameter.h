@@ -4,7 +4,7 @@
 
 	In principle, setup configuration is something which can be considered as parameter
 	from Go4 paradigm point of view. However we don't put it here but keep it accessible
-	only by the UserMonitoring step because it has to be used only by that step.
+	only by the UserRepacking step because it has to be used only by that step.
 	Otherwise we loose the modular structure of the analysis.
 
 */

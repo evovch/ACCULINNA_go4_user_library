@@ -26,25 +26,25 @@
 
 */
 
-#ifndef USERPROCMONITORING_H
-#define USERPROCMONITORING_H
+#ifndef USERPROCREPACKING_H
+#define USERPROCREPACKING_H
 
 #include <TGo4EventProcessor.h> // mother class
 
 class TGo4EventElement;
 
-//class UserEventMonitoring;
+//class UserEventRepacking;
 class DetEventFull;
-class UserHistosMonitoring;
+class UserHistosRepacking;
 class UserEventUnpacking;
 class RawMessage;
 
-class UserProcMonitoring : public TGo4EventProcessor
+class UserProcRepacking : public TGo4EventProcessor
 {
 public: // methods
 
-	UserProcMonitoring(const char* name = "UserProcMonitoring");
-	virtual ~UserProcMonitoring();
+	UserProcRepacking(const char* name = "UserProcRepacking");
+	virtual ~UserProcRepacking();
 
 	virtual Bool_t BuildEvent(TGo4EventElement* p_dest);
 
@@ -84,21 +84,21 @@ private: // data members
 	 * Current output event object. This object is filled during BuildEvent
 	 * and then pushed into the output tree by the framework.
 	 */
-	//UserEventMonitoring* fCurrentOutputEvent;
+	//UserEventRepacking* fCurrentOutputEvent;
 	DetEventFull* fCurrentOutputEvent;
 
 	/**
 	 * Put all your output histograms inside this object.
-	 * See UserHistosMonitoring class.
+	 * See UserHistosRepacking class.
 	 */
-	UserHistosMonitoring* fHistoMan;
+	UserHistosRepacking* fHistoMan;
 
 	/**
 	 * Summary stream
 	 */
 	FILE* fFileSummary;
 
-	ClassDef(UserProcMonitoring, 1);
+	ClassDef(UserProcRepacking, 1);
 };
 
-#endif // USERPROCMONITORING_H
+#endif // USERPROCREPACKING_H

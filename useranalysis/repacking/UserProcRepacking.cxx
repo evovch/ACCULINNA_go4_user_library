@@ -1,4 +1,4 @@
-#include "UserProcMonitoring.h"
+#include "UserProcRepacking.h"
 
 // STD
 #include <iostream>
@@ -13,9 +13,8 @@ using std::endl;
 // Project
 #include "UserParameter.h"
 #include "unpacking/UserEventUnpacking.h" // input event
-//#include "UserEventMonitoring.h"
 #include "data/DetEventFull.h" // output event
-#include "UserHistosMonitoring.h"
+#include "UserHistosRepacking.h"
 #include "base/Support.h"
 #include "data/DetEventCommon.h"
 #include "data/DetEventStation.h"
@@ -36,19 +35,19 @@ using std::endl;
 */
 //#define LOUDIGNORE
 
-UserProcMonitoring::UserProcMonitoring(const char* name) :
+UserProcRepacking::UserProcRepacking(const char* name) :
 	TGo4EventProcessor(name),
 	fEventCounter(0)
 {
-	fHistoMan = new UserHistosMonitoring();
-	fFileSummary = fopen("textoutput/summaryMonitoring.txt", "w");
+	fHistoMan = new UserHistosRepacking();
+	fFileSummary = fopen("textoutput/summaryRepacking.txt", "w");
 	if (fFileSummary == NULL) {
 		//TODO error
-		cerr << "[WARN  ] " << "Could not open output text summary file '" << "summaryMonitoring.txt" << "'" << endl;
+		cerr << "[WARN  ] " << "Could not open output text summary file '" << "summaryRepacking.txt" << "'" << endl;
 	}
 }
 
-UserProcMonitoring::~UserProcMonitoring()
+UserProcRepacking::~UserProcRepacking()
 {
 	if (fHistoMan) delete fHistoMan;
 	if (fFileSummary != NULL) {
@@ -56,23 +55,23 @@ UserProcMonitoring::~UserProcMonitoring()
 	}
 }
 
-Bool_t UserProcMonitoring::BuildEvent(TGo4EventElement* p_dest)
+Bool_t UserProcRepacking::BuildEvent(TGo4EventElement* p_dest)
 {
 	Bool_t v_isValid = kFALSE;
-	//UserEventMonitoring* v_outputEvent = (UserEventMonitoring*)p_dest;
+	//UserEventRepacking* v_outputEvent = (UserEventRepacking*)p_dest;
 	DetEventFull* v_outputEvent = (DetEventFull*)p_dest;
 
 	UserEventUnpacking* v_input = (UserEventUnpacking*)GetInputEvent("stepUnpackedProvider1");
 	if (v_input == NULL)
 	{
-		cerr << "[WARN  ] " << "UserProcMonitoring::BuildEvent(): no input event!" << endl;
+		cerr << "[WARN  ] " << "UserProcRepacking::BuildEvent(): no input event!" << endl;
 		v_outputEvent->SetValid(v_isValid);
 		return v_isValid;
 	}
 	v_isValid = kTRUE;
 
 	#ifdef DEBUGREPACKING
-	cerr << "[DEBUG ] " << "UserProcMonitoring: Event " << fEventCounter
+	cerr << "[DEBUG ] " << "UserProcRepacking: Event " << fEventCounter
 	     << " ======================================================================================================"
 	     << endl;
 	#endif
@@ -120,7 +119,7 @@ Bool_t UserProcMonitoring::BuildEvent(TGo4EventElement* p_dest)
 	return v_isValid;
 }
 
-void UserProcMonitoring::ProcessMessageUniversal(const RawMessage* p_message)
+void UserProcRepacking::ProcessMessageUniversal(const RawMessage* p_message)
 {
 	//TODO check
 	// Get the all-accessible parameter-set object
@@ -135,7 +134,7 @@ void UserProcMonitoring::ProcessMessageUniversal(const RawMessage* p_message)
 	} else if (v_messVendor == support::enu_VENDOR::CAEN) {
 		v_addr = (unsigned short)p_message->fSubsubeventGeo;
 	} else {
-		cerr << "[ERROR ]" << " UserProcMonitoring::ProcessMessageUniversal() Unknown vendor." << endl;
+		cerr << "[ERROR ]" << " UserProcRepacking::ProcessMessageUniversal() Unknown vendor." << endl;
 		return;
 	}
 	unsigned short v_ch = (unsigned short)p_message->fChannel;
@@ -225,7 +224,7 @@ void UserProcMonitoring::ProcessMessageUniversal(const RawMessage* p_message)
 }
 
 //TODO test
-void UserProcMonitoring::ProcessMessageScaler(const RawMessage* p_message)
+void UserProcRepacking::ProcessMessageScaler(const RawMessage* p_message)
 {
 	#ifdef DEBUGREPACKING
 	cerr << "[DEBUG ] " << "Scalers[" << p_message->fMessageIndex << "] "
@@ -254,7 +253,7 @@ void UserProcMonitoring::ProcessMessageScaler(const RawMessage* p_message)
 }
 
 //TODO test
-void UserProcMonitoring::ProcessMachineTime(const RawMessage* p_message)
+void UserProcRepacking::ProcessMachineTime(const RawMessage* p_message)
 {
 	#ifdef DEBUGREPACKING
 	cerr << "[DEBUG ] " << "mtime[" << p_message->fMessageIndex << "] "
@@ -284,7 +283,7 @@ void UserProcMonitoring::ProcessMachineTime(const RawMessage* p_message)
 	////////////////////////////////////////////////////////////
 }
 
-void UserProcMonitoring::ProcessCAMACmwpcWords(const UserEventUnpacking* p_inputEvent)
+void UserProcRepacking::ProcessCAMACmwpcWords(const UserEventUnpacking* p_inputEvent)
 {
 	DetEventFull& v_outputEvRef = *fCurrentOutputEvent;
 //	DetEventCommon* v_evCommon = dynamic_cast<DetEventCommon*>(&v_outputEvRef[0]); // id=0 - DetEventCommon
@@ -415,7 +414,7 @@ void UserProcMonitoring::ProcessCAMACmwpcWords(const UserEventUnpacking* p_input
 
 }
 
-void UserProcMonitoring::FillHistograms(void) const
+void UserProcRepacking::FillHistograms(void) const
 {
 /*
 	DetEventFull& v_outputEvRef = *fCurrentOutputEvent;
@@ -464,4 +463,4 @@ void UserProcMonitoring::FillHistograms(void) const
 */
 }
 
-ClassImp(UserProcMonitoring)
+ClassImp(UserProcRepacking)

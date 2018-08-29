@@ -14,7 +14,7 @@ using std::endl;
 // Project
 #include "UserParameter.h"
 #include "unpacking/UserEventUnpacking.h"
-//#include "monitoring/UserEventMonitoring.h"
+//#include "repacking/UserEventRepacking.h"
 #include "data/DetEventFull.h"
 #include "learn/UserEventLearn.h"
 
@@ -24,7 +24,7 @@ UserAnalysis::UserAnalysis(const char* name) :
 	//TODO not used by now ---------
 	mMbsEvent(nullptr),
 	mUserEventUnpacking(nullptr),
-	//mUserEventMonitoring(nullptr),
+	//mUserEventRepacking(nullptr),
 
 	mUserEventLearn(nullptr)
 	//------------------------------
@@ -50,7 +50,7 @@ UserAnalysis::UserAnalysis(int argc, char** argv) :
 	//TODO not used by now ---------
 	mMbsEvent(nullptr),
 	mUserEventUnpacking(nullptr),
-	//mUserEventMonitoring(nullptr),
+	//mUserEventRepacking(nullptr),
 	mUserEventLearn(nullptr)
 	//------------------------------
 {
@@ -117,7 +117,7 @@ void UserAnalysis::Construct(TString p_outfilename, TString p_setupfilename)
 
 	AddAnalysisStep(stepUnpacking);
 
-	// STEP2.1 - provider - monitoring ===============================================================
+	// STEP2.1 - provider - repacking ===============================================================
 
 	TGo4StepFactory* factoryUnpackedProvider1 = new TGo4StepFactory("factoryUnpackedProvider1");
 	factoryUnpackedProvider1->DefInputEvent("UserEventUnpacking1", "UserEventUnpacking"); // read full raw event without partial io
@@ -129,25 +129,25 @@ void UserAnalysis::Construct(TString p_outfilename, TString p_setupfilename)
 	stepUnpackedProvider1->SetProcessEnabled(kTRUE);
 	AddAnalysisStep(stepUnpackedProvider1);
 
-	// STEP2.1 - processor - monitoring =============================================================
+	// STEP2.1 - processor - repacking =============================================================
 
-	TGo4StepFactory* factoryMonitoring = new TGo4StepFactory("factoryMonitoring");
-	//factoryMonitoring->DefInputEvent("UserEventUnpacking1", "UserEventUnpacking"); // object name, class name
-	factoryMonitoring->DefEventProcessor("UserProcMonitoring1", "UserProcMonitoring"); // object name, class name
-	//factoryMonitoring->DefOutputEvent("UserEventMonitoring1", "UserEventMonitoring"); // object name, class name
-	factoryMonitoring->DefOutputEvent("DetEventFull1", "DetEventFull"); // object name, class name
+	TGo4StepFactory* factoryRepacking = new TGo4StepFactory("factoryRepacking");
+	//factoryRepacking->DefInputEvent("UserEventUnpacking1", "UserEventUnpacking"); // object name, class name
+	factoryRepacking->DefEventProcessor("UserProcRepacking1", "UserProcRepacking"); // object name, class name
+	//factoryRepacking->DefOutputEvent("UserEventRepacking1", "UserEventRepacking"); // object name, class name
+	factoryRepacking->DefOutputEvent("DetEventFull1", "DetEventFull"); // object name, class name
 
-	TGo4AnalysisStep* stepMonitoring = new TGo4AnalysisStep("stepMonitoring", factoryMonitoring);
+	TGo4AnalysisStep* stepRepacking = new TGo4AnalysisStep("stepRepacking", factoryRepacking);
 
-	stepMonitoring->SetSourceEnabled(kFALSE);
-	stepMonitoring->SetProcessEnabled(kTRUE);
-	stepMonitoring->SetErrorStopEnabled(kTRUE); //TODO probably for monitoring this should be false
+	stepRepacking->SetSourceEnabled(kFALSE);
+	stepRepacking->SetProcessEnabled(kTRUE);
+	stepRepacking->SetErrorStopEnabled(kTRUE); //TODO probably for repacking this should be false
 
-	TGo4FileStoreParameter* storeMonitoring = new TGo4FileStoreParameter(p_outfilename); // "outputMonitoring.root"
-	stepMonitoring->SetEventStore(storeMonitoring);
-	stepMonitoring->SetStoreEnabled(kTRUE);
+	TGo4FileStoreParameter* storeRepacking = new TGo4FileStoreParameter(p_outfilename); // "outputRepacking.root"
+	stepRepacking->SetEventStore(storeRepacking);
+	stepRepacking->SetStoreEnabled(kTRUE);
 
-	AddAnalysisStep(stepMonitoring);
+	AddAnalysisStep(stepRepacking);
 
 	// STEP2.2 - provider - learn ===================================================================
 
@@ -210,7 +210,7 @@ Int_t UserAnalysis::UserPreLoop(void)
 	//TODO not used by now
 	mMbsEvent = dynamic_cast<TGo4MbsEvent*> (GetInputEvent("stepUnpacking"));
 	mUserEventUnpacking = dynamic_cast<UserEventUnpacking*> (GetOutputEvent("stepUnpacking"));
-	mUserEventMonitoring = dynamic_cast<UserEventMonitoring*> (GetOutputEvent("stepMonitoring"));
+	mUserEventRepacking = dynamic_cast<UserEventRepacking*> (GetOutputEvent("stepRepacking"));
 	mUserEventLearn = dynamic_cast<UserEventLearn*> (GetOutputEvent("stepLearn"));
 */
 	mEventCounter = 0;
@@ -233,7 +233,7 @@ Int_t UserAnalysis::UserPostLoop(void)
 	//TODO not used by now
 	mMbsEvent = nullptr;
 	mUserEventUnpacking = nullptr;
-	mUserEventMonitoring = nullptr;
+	mUserEventRepacking = nullptr;
 	mUserEventLearn = nullptr;
 */
 	return 0;
