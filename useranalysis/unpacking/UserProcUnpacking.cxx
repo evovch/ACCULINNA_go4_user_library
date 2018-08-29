@@ -251,6 +251,7 @@ void UserProcUnpacking::ProcessSubevent(TGo4MbsSubEvent* p_subevent)
 	this->FinishSubevent();
 }
 
+// Only data (payload) is processed here. Header and footer of the current subevent are already left out.
 void UserProcUnpacking::ProcessSubeventRaw(Int_t p_size, const Int_t* p_startAddress)
 {
 	for (Int_t v_cursor=0; v_cursor<p_size; /*no action here*/) // v_cursor is incremented inside
@@ -581,7 +582,22 @@ void UserProcUnpacking::ProcessSubsubevent_MESYTEC(Int_t p_size, const Int_t* p_
 			fCurMessage.fValueT = v_valueT;
 			fCurMessage.fMessageIndex = v_dataWordsCounter;
 
-			this->PushOutputRawMessage();
+			//TODO patch for padding zero word handling
+			if ((v_curWord == 0) && (v_cursor == p_size-2)) {
+
+				#ifdef PRINTDEBUGINFO
+				cerr << "THE LAST PADDING ZERO WORD WILL BE SKIPPED" << endl;
+				#endif
+				//cerr << "v_cursor=" << v_cursor << "\t\t" << "p_size-2=" << p_size-2 << endl;
+
+				// SKIP this padding zero word
+
+			} else {
+				// Otherwise - in a normal situation...
+
+				this->PushOutputRawMessage();
+
+			}
 
 			#ifdef DORESET
 			fCurMessage.fRawWord = 0; // Yes zero here, because we want to clear the raw word with all zeros
