@@ -39,6 +39,16 @@ endif()
 
 # =============================================================================
 
+# TODO uncomment certain flags if you want to see more detailed output
+# Beware that A LOT of text will be generated. Don't run more than 10-100 events.
+
+#add_definitions(-DDEBUGUNPACKING)
+#add_definitions(-DDEBUGREPACKING)
+#add_definitions(-DDEBUGLEARN)
+#add_definitions(-DDEBUGDIGIBUILDING)
+
+# =============================================================================
+
 add_subdirectory(base)
 add_subdirectory(go4pieces)
 add_subdirectory(data)

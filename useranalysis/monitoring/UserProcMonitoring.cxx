@@ -28,7 +28,7 @@ using std::endl;
   This option produces A LOT OF DATA - run your analysis with a
   small number of events (~10-100)
 */
-//#define PRINTDEBUGINFO
+//#define DEBUGREPACKING
 
 /**
   Uncomment this if you want to see the WARN messages while processing
@@ -71,7 +71,7 @@ Bool_t UserProcMonitoring::BuildEvent(TGo4EventElement* p_dest)
 	}
 	v_isValid = kTRUE;
 
-	#ifdef PRINTDEBUGINFO
+	#ifdef DEBUGREPACKING
 	cerr << "[DEBUG ] " << "UserProcMonitoring: Event " << fEventCounter
 	     << " ======================================================================================================"
 	     << endl;
@@ -91,7 +91,7 @@ Bool_t UserProcMonitoring::BuildEvent(TGo4EventElement* p_dest)
 	TIter next(v_input->fRawMessages);
 	while (RawMessage* v_curMessage = (RawMessage*)next())
 	{
-		#ifdef PRINTDEBUGINFO
+		#ifdef DEBUGREPACKING
 		cerr << v_messCounter << ": ";
 		v_curMessage->Dump(false);
 		cerr << "\t\t";
@@ -166,9 +166,9 @@ void UserProcMonitoring::ProcessMessageUniversal(const RawMessage* p_message)
 	// Ignore those message which are mapped to the 'Ignore' station
 	//TODO elaborate nice output
 	if (v_station.CompareTo("ignore", TString::kIgnoreCase) == 0) {
-		#ifdef PRINTDEBUGINFO
+		#ifdef DEBUGREPACKING
 		//cerr << endl;
-		#endif // PRINTDEBUGINFO
+		#endif // DEBUGREPACKING
 		#ifdef LOUDIGNORE
 		//TODO
 		cerr << "[DEBUG ] " << v_detector << " /\t" << v_station << "[" << v_ch << "] =\t"
@@ -176,7 +176,7 @@ void UserProcMonitoring::ProcessMessageUniversal(const RawMessage* p_message)
 		#endif // LOUDIGNORE
 		return; // yes
 	} else {
-		#ifdef PRINTDEBUGINFO
+		#ifdef DEBUGREPACKING
 		cerr << "[DEBUG ] " << v_detector << " /\t" << v_station << "[" << v_ch << "] =\t"
 		     << p_message->fValueQA << "\t(" << p_message->fValueT << ")" << endl;
 		#endif
@@ -190,7 +190,7 @@ void UserProcMonitoring::ProcessMessageUniversal(const RawMessage* p_message)
 	//TODO specific actions here
 	if (v_elblock.CompareTo("mqdc", TString::kIgnoreCase) == 0) {
 		if (((p_message->fRawWord >> 15) & 0x1) == 1) {
-			#ifdef PRINTDEBUGINFO
+			#ifdef DEBUGREPACKING
 			cerr << "[DEBUG ] "
 			     << "Skipping a message from mQDC with out-of-range bit." << endl;
 			#endif
@@ -203,7 +203,7 @@ void UserProcMonitoring::ProcessMessageUniversal(const RawMessage* p_message)
 	if (v_elblock.CompareTo("mtdc", TString::kIgnoreCase) == 0) {
 
 		if (((p_message->fRawWord >> 21) & 0x1) == 1) {
-			#ifdef PRINTDEBUGINFO
+			#ifdef DEBUGREPACKING
 			cerr << "[DEBUG ] "
 			     << "Skipping a message from mTDC with trigger-flag bit." << endl;
 			#endif
@@ -227,7 +227,7 @@ void UserProcMonitoring::ProcessMessageUniversal(const RawMessage* p_message)
 //TODO test
 void UserProcMonitoring::ProcessMessageScaler(const RawMessage* p_message)
 {
-	#ifdef PRINTDEBUGINFO
+	#ifdef DEBUGREPACKING
 	cerr << "[DEBUG ] " << "Scalers[" << p_message->fMessageIndex << "] "
 	     << support::GetBinaryRepresentation(sizeof(Int_t), &p_message->fRawWord) << "\t0x"
 	     << support::GetHexRepresentation(sizeof(Int_t), &p_message->fRawWord) << "\t"
@@ -256,7 +256,7 @@ void UserProcMonitoring::ProcessMessageScaler(const RawMessage* p_message)
 //TODO test
 void UserProcMonitoring::ProcessMachineTime(const RawMessage* p_message)
 {
-	#ifdef PRINTDEBUGINFO
+	#ifdef DEBUGREPACKING
 	cerr << "[DEBUG ] " << "mtime[" << p_message->fMessageIndex << "] "
 	     << support::GetBinaryRepresentation(sizeof(Int_t), &p_message->fRawWord) << "\t0x"
 	     << support::GetHexRepresentation(sizeof(Int_t), &p_message->fRawWord) << "\t"
@@ -302,7 +302,7 @@ void UserProcMonitoring::ProcessCAMACmwpcWords(const UserEventUnpacking* p_input
 	const Short_t* v_inputCAMAC = p_inputEvent->fCAMAC;
 /*
 	// Just print - shorts
-	#ifdef PRINTDEBUGINFO
+	#ifdef DEBUGREPACKING
 	cerr << "--------------------------------" << endl;
 	cerr << support::GetBinaryRepresentation(sizeof(Short_t), &v_inputCAMAC[1]);
 	cerr << support::GetBinaryRepresentation(sizeof(Short_t), &v_inputCAMAC[0]) << endl;
@@ -332,7 +332,7 @@ void UserProcMonitoring::ProcessCAMACmwpcWords(const UserEventUnpacking* p_input
 	v_evCommon->ry2 = v_line[3];
 */
 	// Just print - ints
-	#ifdef PRINTDEBUGINFO
+	#ifdef DEBUGREPACKING
 	cerr << "--------------------------------" << endl;
 	cerr << support::GetBinaryRepresentation(sizeof(Int_t), &v_line[0]) << "\t0x"
 	     << support::GetHexRepresentation(sizeof(Int_t), &v_line[0]) << "\t"
@@ -350,7 +350,7 @@ void UserProcMonitoring::ProcessCAMACmwpcWords(const UserEventUnpacking* p_input
 	#endif
 /*
 	// Just print - bits
-	#ifdef PRINTDEBUGINFO
+	#ifdef DEBUGREPACKING
 	cerr << "--------------------------------" << endl;
 	for (unsigned int i=0; i<4; i++) {
 		for (unsigned char v_wire=0; v_wire<32; v_wire++) {

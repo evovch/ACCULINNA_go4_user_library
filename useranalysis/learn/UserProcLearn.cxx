@@ -25,7 +25,7 @@ using std::endl;
   This option produces A LOT OF DATA - run your analysis with a
   small number of events (~10-100)
 */
-//#define PRINTDEBUGINFO
+//#define DEBUGLEARN
 
 /**
   Uncomment this if you want to hide the messages about the channels
@@ -75,7 +75,7 @@ Bool_t UserProcLearn::BuildEvent(TGo4EventElement* p_dest)
 	}
 	v_isValid = kTRUE;
 
-	#ifdef PRINTDEBUGINFO
+	#ifdef DEBUGLEARN
 	cerr << "[DEBUG ] " << "UserProcLearn: Event " << fEventCounter
 	     << " ==========================================================================================================="
 	     << endl;
@@ -95,7 +95,7 @@ Bool_t UserProcLearn::BuildEvent(TGo4EventElement* p_dest)
 	while (RawMessage* v_curMessage = (RawMessage*)next())
 	{
 
-		#ifdef PRINTDEBUGINFO
+		#ifdef DEBUGLEARN
 		cerr << v_messCounter << ": ";
 		v_curMessage->Dump(false);
 		cerr << endl;

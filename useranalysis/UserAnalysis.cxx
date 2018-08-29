@@ -181,7 +181,7 @@ void UserAnalysis::Construct(TString p_outfilename, TString p_setupfilename)
 	AddAnalysisStep(stepLearn);
 
 	// STEP3.1 - digibuilding =====================================================================
-
+/*
 	TGo4StepFactory* factoryDigiBuilding = new TGo4StepFactory("factoryDigiBuilding");
 	factoryDigiBuilding->DefInputEvent("DetEventFull1", "DetEventFull"); // object name, class name
 	factoryDigiBuilding->DefEventProcessor("UserProcDigiBuilding1", "UserProcDigiBuilding"); // object name, class name
@@ -198,7 +198,7 @@ void UserAnalysis::Construct(TString p_outfilename, TString p_setupfilename)
 	stepDigiBuilding->SetStoreEnabled(kTRUE); //TODO enable/disable
 
 	AddAnalysisStep(stepDigiBuilding);
-
+*/
 	// ============================================================================================
 }
 
