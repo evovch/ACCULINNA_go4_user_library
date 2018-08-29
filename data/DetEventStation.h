@@ -27,8 +27,17 @@ public:
 
 	virtual void Print(Option_t* option = "") const;
 
-private:
+public:
+	/**
+	 * Accessor
+	 */
+	TClonesArray* GetDetMessages(void) { return fDetMessages; }
 
+private:
+	/**
+	 * The main component of the station-event -
+	 * an array of detector-messages.
+	 */
 	TClonesArray* fDetMessages;
 
 	ClassDef(DetEventStation, 1);
