@@ -1,3 +1,6 @@
+# Name of the project component which must be constructed as project prefix + some name
+set(COMPNAME ${PROJECT_PREFIX}SetupConfigCppWrapper)
+
 # =============================================================================
 # ROOT dictionary
 
@@ -11,20 +14,20 @@ include_directories(${CMAKE_SOURCE_DIR})
 set(ROOTCLING_HEADERS SetupConfiguration.h
                       )
 
-ROOT_GENERATE_DICTIONARY(G__SetupConfigCppWrapper ${ROOTCLING_HEADERS} LINKDEF SetupConfigCppWrapperLinkDef.h)
+ROOT_GENERATE_DICTIONARY(G__${COMPNAME} ${ROOTCLING_HEADERS} LINKDEF SetupConfigCppWrapperLinkDef.h)
 
 # =============================================================================
 
-set(SOURCE_LIB G__SetupConfigCppWrapper.cxx
+set(SOURCE_LIB G__${COMPNAME}.cxx
                SetupConfiguration.cxx
                )
 
-add_library(SetupConfigCppWrapper SHARED ${SOURCE_LIB})
+add_library(${COMPNAME} SHARED ${SOURCE_LIB})
 
-target_link_libraries(SetupConfigCppWrapper SetupConfig)
+target_link_libraries(${COMPNAME} ${PROJECT_PREFIX}SetupConfig)
 
-#set_property(TARGET SetupConfigCppWrapper PROPERTY INSTALL_RPATH_USE_LINK_PATH TRUE)
+#set_property(TARGET ${COMPNAME} PROPERTY INSTALL_RPATH_USE_LINK_PATH TRUE)
 
-install(TARGETS SetupConfigCppWrapper DESTINATION lib)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libSetupConfigCppWrapper.rootmap DESTINATION lib)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libSetupConfigCppWrapper_rdict.pcm DESTINATION lib)
+install(TARGETS ${COMPNAME} DESTINATION lib)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/lib${COMPNAME}.rootmap DESTINATION lib)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/lib${COMPNAME}_rdict.pcm DESTINATION lib)

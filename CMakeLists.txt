@@ -4,6 +4,7 @@ cmake_minimum_required(VERSION 3.5)
 
 # Give your project a name
 project(ACCULINNA_go4_user_library)
+set(PROJECT_PREFIX AcGo4)
 
 # Switch it on for more verbose make output
 # set(CMAKE_VERBOSE_MAKEFILE ON)
