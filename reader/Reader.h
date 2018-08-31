@@ -23,7 +23,7 @@ public:
 
 	void ProcessFile(UInt_t nEvents = 10);
 
-	Int_t ReadEvent(Int_t iEvent, DetEventFull* event);
+	const DetEventFull* ReadEvent(Int_t iEvent);
 
 	Long64_t GetNEventsTotal() const;
 private: // data members
@@ -37,6 +37,15 @@ private: // data members
 	 * Input file tree object
 	 */
 	TTree* fInTree;
+
+	/**
+	 * Event synchronized with tree
+	 */
+	DetEventFull* fEvent;
+	/**
+	 * Event copy
+	 */
+	TGo4EventElement* fEventCopy;
 private: // methods
 	
 	static TTree* GetTheTree(TFile* theFile, TString* treeName);

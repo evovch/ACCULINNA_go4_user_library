@@ -37,19 +37,20 @@ Reader::Reader(TString inFilename, TString p_setupfilename) :
 		cerr << "Tree '" << inTreeName << "' not found. Aborting." << endl;
 		return;
 	}
+
+	fEvent = new DetEventFull("DetEventFull1");
+	fEventCopy = fEvent;
+	fEvent->synchronizeWithTree(fInTree, &fEventCopy);
 }
 
 Reader::~Reader()
 {
 	if (fSetupConfiguration) delete fSetupConfiguration;
+	if (fEvent) delete fEvent;
 }
 
 void Reader::ProcessFile(UInt_t nEvents)
 {
-	DetEventFull* theEvent = new DetEventFull("DetEventFull1");
-	TGo4EventElement* theEventCopy = theEvent;
-	theEvent->synchronizeWithTree(fInTree, &theEventCopy);
-
 	if (nEvents == 0) { nEvents = GetNEventsTotal(); }
 
 	// Loop over the events
@@ -62,28 +63,20 @@ void Reader::ProcessFile(UInt_t nEvents)
 		fInTree->GetEntry(iEvent);
 
 		//TODO implement you actions here
-		theEvent->Print();
+		fEvent->Print();
 	}
 }
 
-Int_t Reader::ReadEvent(Int_t iEvent, DetEventFull* event)
+const DetEventFull* Reader::ReadEvent(Int_t iEvent)
 {
 	if (iEvent < 0 || iEvent >= GetNEventsTotal()) {
 		cerr << "The event number is greater than total events number in input file!";
-		return -1;
+		return NULL;
 	}
-
-	if (!event) {
-		cerr << "Event object is null!";
-		return -1;
-	}
-
-	TGo4EventElement* theEventCopy = event;
-	event->synchronizeWithTree(fInTree, &theEventCopy);
 
 	fInTree->GetEntry(iEvent);
 
-	return 0;
+	return fEvent;
 }
 
 Long64_t Reader::GetNEventsTotal() const
