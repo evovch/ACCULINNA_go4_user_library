@@ -8,13 +8,14 @@ using std::endl;
 
 // ROOT
 #include <TFile.h>
+#include <TTree.h>
 #include <TKey.h>
 
 // Project
 #include "setupconfigcppwrapper/SetupConfiguration.h"
 #include "data/DetEventCommon.h"
 
-Reader::Reader(TString inFilename,TString p_setupfilename) :
+Reader::Reader(TString inFilename, TString p_setupfilename) :
 	TObject(),
 	fSetupConfiguration(NULL),
 	fInTree(NULL)
@@ -30,10 +31,10 @@ Reader::Reader(TString inFilename,TString p_setupfilename) :
 	}
 
 	// Leave this string empty to search for the tree automatically
-	TString fInTreeName("");
-	fInTree = Reader::GetTheTree(inFile, &fInTreeName);
+	TString inTreeName("");
+	fInTree = Reader::GetTheTree(inFile, &inTreeName);
 	if (fInTree == NULL) {
-		cerr << "Tree '" << fInTreeName << "' not found. Aborting." << endl;
+		cerr << "Tree '" << inTreeName << "' not found. Aborting." << endl;
 		return;
 	}
 }
@@ -65,10 +66,15 @@ void Reader::ProcessFile(UInt_t nEvents)
 	}
 }
 
-Int_t Reader::ReadEvent(Int_t iEvent,DetEventFull* event)
+Int_t Reader::ReadEvent(Int_t iEvent, DetEventFull* event)
 {
-	if (iEvent >= GetNEventsTotal()){
+	if (iEvent < 0 || iEvent >= GetNEventsTotal()) {
 		cerr << "The event number is greater than total events number in input file!";
+		return -1;
+	}
+
+	if (!event) {
+		cerr << "Event object is null!";
 		return -1;
 	}
 
@@ -80,9 +86,12 @@ Int_t Reader::ReadEvent(Int_t iEvent,DetEventFull* event)
 	return 0;
 }
 
-Int_t Reader::GetNEventsTotal()
+Long64_t Reader::GetNEventsTotal() const
 {
-	return fInTree->GetEntries();
+	if (fInTree)
+		return fInTree->GetEntries();
+	else
+		return -1;
 }
 
 /*static*/
@@ -90,7 +99,7 @@ TTree* Reader::GetTheTree(TFile* theFile, TString* treeName)
 {
 	if (*treeName == "") {
 		//// Search for a tree, take the first with the name ending with 'xTree'
-		UInt_t v_keysCounter = 0;
+		// UInt_t v_keysCounter = 0;
 		TList* v_keys = theFile->GetListOfKeys();
 		TIter v_nextkey(v_keys);
 		while (TKey* v_curKey = (TKey*)v_nextkey()) {

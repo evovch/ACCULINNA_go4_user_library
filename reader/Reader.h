@@ -5,7 +5,6 @@
 
 // ROOT
 #include <TString.h>
-#include <TTree.h>
 
 #include "data/DetEventFull.h"
 
@@ -19,14 +18,14 @@ class Reader : public TObject
 {
 public:
 
-	Reader(TString inFilename,TString p_setupfilename);
+	Reader(TString inFilename, TString p_setupfilename);
 	virtual ~Reader();
 
 	void ProcessFile(UInt_t nEvents = 10);
 
-	Int_t ReadEvent(Int_t iEvent,DetEventFull* event);
+	Int_t ReadEvent(Int_t iEvent, DetEventFull* event);
 
-	Int_t GetNEventsTotal();
+	Long64_t GetNEventsTotal() const;
 private: // data members
 
 	/**
