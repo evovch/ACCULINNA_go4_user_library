@@ -39,9 +39,9 @@ Use cmake directly for custom building:
 CMake options
 -------------
 
-Here are some specific options that can affect on result binaries.
+Here are some specific options affecting output binaries.
 
-Use `-DREADER_MODE=ON` to build only for output files reading. This mode ignore _userananlysis_ compilation and does not require _go4_ installation. 
+Use `-DREADER_MODE=ON` to build only for output files reading. This mode ignores _useranalysis_ compilation and does not require _go4_ installation. 
 
 Building Doxygen documentation
 ==============================
