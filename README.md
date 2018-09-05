@@ -27,6 +27,22 @@ Build the user library using a simple shell script which in turn calls for cmake
 
 > ./compile.sh
 
+CMake building
+==============
+
+Use cmake directly for custom building:
+
+> mkdir build && cd build
+> 
+> cmake ../ -DCMAKE_INSTALL_PREFIX=install_path
+
+CMake options
+-------------
+
+Here are some specific options affecting output binaries.
+
+Use `-DREADER_MODE=ON` to build only for output files reading. This mode ignores _useranalysis_ compilation and does not require _go4_ installation. 
+
 Building Doxygen documentation
 ==============================
 
