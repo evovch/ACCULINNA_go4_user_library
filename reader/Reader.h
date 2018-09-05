@@ -6,10 +6,10 @@
 // ROOT
 #include <TString.h>
 
-#include "data/DetEventFull.h"
-
 class TFile;
 class TTree;
+
+class TGo4EventElement;
 
 class SetupConfiguration;
 class DetEventFull;

@@ -13,7 +13,9 @@ using std::endl;
 
 // Project
 #include "setupconfigcppwrapper/SetupConfiguration.h"
+#include "data/DetEventFull.h"
 #include "data/DetEventCommon.h"
+#include "go4pieces/TGo4EventElement.h"
 
 Reader::Reader(TString inFilename, TString p_setupfilename) :
 	TObject(),
