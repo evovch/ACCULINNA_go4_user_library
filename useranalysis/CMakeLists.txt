@@ -60,6 +60,6 @@ target_link_libraries(${COMPNAME} Go4Analysis)
 # ???
 #set_property(TARGET ${COMPNAME} PROPERTY INSTALL_RPATH_USE_LINK_PATH TRUE)
 
-install(TARGETS ${COMPNAME} DESTINATION lib)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/lib${COMPNAME}.rootmap DESTINATION lib)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/lib${COMPNAME}_rdict.pcm DESTINATION lib)
+install(DIRECTORY "." DESTINATION include/useranalysis FILES_MATCHING PATTERN "*.h")
