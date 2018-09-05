@@ -3,10 +3,11 @@ void run_reader(TString inFilename="/home/evovch/experimental_data/exp201804_cal
                 UInt_t nEvents = 10)
 {
 	// Create the reader object
-	Reader* theReader = new Reader();
+	Reader* theReader = new Reader(inFilename, inSetupConfigFilename);
 
-	theReader->Init(inSetupConfigFilename);
-
-	// Per-se import the root file
-	theReader->ProcessFile(inFilename);
+	for (Int_t iEvent = 0; iEvent < nEvents; iEvent++) {
+		cerr << iEvent << endl;
+		const DetEventFull* event = theReader->ReadEvent(iEvent);
+		event->Print();
+	}
 }
