@@ -60,6 +60,21 @@ public:
 	}
 
 	/**
+	 * Extract procID (crate) from the UID (see comment of the GetChUID() method).
+	 */
+	static unsigned short GetProcIdFromUID(unsigned int p_uid) { return p_uid / 100000; }
+
+	/**
+	 * Extract address (geo/module) from the UID (see comment of the GetChUID() method).
+	 */
+	static unsigned short GetAddrFromUID(unsigned int p_uid) { return (p_uid % 100000) / 1000; }
+
+	/**
+	 * Extract electronics channel from the UID (see comment of the GetChUID() method).
+	 */
+	static unsigned short GetElChFromUID(unsigned int p_uid) { return p_uid % 1000; }
+
+	/**
 	 * Given an electronics block channel number p_elch and the mapping,
 	 * this method returns corresponding detector channel.
 	 * A situation may happed (though should not happen) that the tested electronics channel
@@ -159,6 +174,11 @@ public:
 	 * Get the list of stations for the given detector.
 	 */
 	std::map<TString, unsigned short> const GetStationList(TString detector) const;
+
+	/**
+	 *
+	 */
+	std::map<unsigned int, stc_mapping*> const GetMappings(void) const { return mMappings; }
 
 private: // methods
 	/**

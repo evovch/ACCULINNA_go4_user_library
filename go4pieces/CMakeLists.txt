@@ -1,3 +1,6 @@
+# Name of the project component which must be constructed as project prefix + some name
+set(COMPNAME ${PROJECT_PREFIX}Go4pieces)
+
 # =============================================================================
 # ROOT dictionary
 
@@ -13,24 +16,24 @@ set(ROOTCLING_HEADERS TGo4CompositeEvent.h
                       TGo4Log.h
                       )
 
-ROOT_GENERATE_DICTIONARY(G__Go4pieces ${ROOTCLING_HEADERS} LINKDEF Go4piecesLinkDef.h)
+ROOT_GENERATE_DICTIONARY(G__${COMPNAME} ${ROOTCLING_HEADERS} LINKDEF Go4piecesLinkDef.h)
 
 # =============================================================================
 
 include_directories(${CMAKE_SOURCE_DIR})
 
-set(SOURCE_LIB G__Go4pieces.cxx
+set(SOURCE_LIB G__${COMPNAME}.cxx
                TGo4CompositeEvent.cxx
                TGo4EventElement.cxx
                TGo4LockGuard.cxx
                TGo4Log.cxx
                )
 
-add_library(Go4pieces SHARED ${SOURCE_LIB})
+add_library(${COMPNAME} SHARED ${SOURCE_LIB})
 
-#set_property(TARGET Go4pieces PROPERTY INSTALL_RPATH_USE_LINK_PATH TRUE)
+#set_property(TARGET ${COMPNAME} PROPERTY INSTALL_RPATH_USE_LINK_PATH TRUE)
 
-install(TARGETS Go4pieces LIBRARY DESTINATION lib)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libGo4pieces.rootmap DESTINATION lib)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libGo4pieces_rdict.pcm DESTINATION lib)
+install(TARGETS ${COMPNAME} LIBRARY DESTINATION lib)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/lib${COMPNAME}.rootmap DESTINATION lib)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/lib${COMPNAME}_rdict.pcm DESTINATION lib)
 install(DIRECTORY "." DESTINATION include/go4pieces FILES_MATCHING PATTERN "*.h")

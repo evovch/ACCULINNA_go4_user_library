@@ -17,7 +17,7 @@ using std::endl;
   This option produces A LOT OF DATA - run your analysis with a
   small number of events (~10-100)
 */
-#define PRINTDEBUGINFO
+//#define DEBUGDIGIBUILDING
 
 UserProcDigiBuilding::UserProcDigiBuilding(const char* name) :
 	TGo4EventProcessor(name),
@@ -44,7 +44,7 @@ Bool_t UserProcDigiBuilding::BuildEvent(TGo4EventElement* p_dest)
 	}
 	v_isValid = kTRUE;
 
-	#ifdef PRINTDEBUGINFO
+	#ifdef DEBUGDIGIBUILDING
 	cerr << "[DEBUG ] " << "UserProcDigiBuilding: Event " << fEventCounter
 	     << " ======================================================================================================"
 	     << endl;

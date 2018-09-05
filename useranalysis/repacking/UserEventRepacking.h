@@ -1,23 +1,23 @@
 /**
 
-	@class UserEventMonitoring
+	@class UserEventRepacking
 
 	Event-class for the Repacking step of the analysis. Version 1 - only for spring 2018 period,
 
 */
 
-#ifndef USEREVENTMONITORING_H
-#define USEREVENTMONITORING_H
+#ifndef USEREVENTREPACKING_H
+#define USEREVENTREPACKING_H
 
 #include <TGo4EventElement.h> // mother class
 
-class UserEventMonitoring : public TGo4EventElement
+class UserEventRepacking : public TGo4EventElement
 {
 	friend class UserProcMonitoring; // provider
 
 public:
-	UserEventMonitoring(const char* name = "UserEventMonitoring");
-	virtual ~UserEventMonitoring();
+	UserEventRepacking(const char* name = "UserEventRepacking");
+	virtual ~UserEventRepacking();
 
 	void Clear(Option_t* t = "");
 
@@ -106,7 +106,7 @@ public: //TODO should be private. Made public for ER
 
 	// VULOM? - 96 ch. scaler?
 
-	ClassDef(UserEventMonitoring, 1);
+	ClassDef(UserEventRepacking, 1);
 };
 
-#endif // USEREVENTMONITORING_H
+#endif // USEREVENTREPACKING_H

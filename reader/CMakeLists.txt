@@ -1,3 +1,6 @@
+# Name of the project component which must be constructed as project prefix + some name
+set(COMPNAME ${PROJECT_PREFIX}Reader)
+
 # =============================================================================
 # ROOT dictionary
 
@@ -10,24 +13,24 @@ include_directories(${CMAKE_SOURCE_DIR})
 set(ROOTCLING_HEADERS Reader.h
                       )
 
-ROOT_GENERATE_DICTIONARY(G__Reader ${ROOTCLING_HEADERS} LINKDEF ReaderLinkDef.h)
+ROOT_GENERATE_DICTIONARY(G__${COMPNAME} ${ROOTCLING_HEADERS} LINKDEF ReaderLinkDef.h)
 
 # =============================================================================
 
 include_directories(${CMAKE_SOURCE_DIR})
 
-set(SOURCE_LIB G__Reader.cxx
+set(SOURCE_LIB G__${COMPNAME}.cxx
                Reader.cxx
                )
 
-add_library(Reader SHARED ${SOURCE_LIB})
+add_library(${COMPNAME} SHARED ${SOURCE_LIB})
 
-target_link_libraries(Reader Data SetupConfigCppWrapper)
+target_link_libraries(${COMPNAME} ${PROJECT_PREFIX}Data ${PROJECT_PREFIX}SetupConfigCppWrapper)
 
 # ???
-#set_property(TARGET Reader PROPERTY INSTALL_RPATH_USE_LINK_PATH TRUE)
+#set_property(TARGET ${COMPNAME} PROPERTY INSTALL_RPATH_USE_LINK_PATH TRUE)
 
-install(TARGETS Reader LIBRARY DESTINATION lib)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libReader.rootmap DESTINATION lib)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libReader_rdict.pcm DESTINATION lib)
+install(TARGETS ${COMPNAME} LIBRARY DESTINATION lib)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/lib${COMPNAME}.rootmap DESTINATION lib)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/lib${COMPNAME}_rdict.pcm DESTINATION lib)
 install(DIRECTORY "." DESTINATION include/reader FILES_MATCHING PATTERN "*.h")

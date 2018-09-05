@@ -4,8 +4,8 @@
 
 */
 
-#ifndef USERHISTOSMONITORING_H
-#define USERHISTOSMONITORING_H
+#ifndef USERHISTOSREPACKING_H
+#define USERHISTOSREPACKING_H
 
 #include <TObject.h> // mother class
 
@@ -14,11 +14,11 @@ class TH2;
 
 class TH1D;
 
-class UserHistosMonitoring : public TObject
+class UserHistosRepacking : public TObject
 {
 public:
-	UserHistosMonitoring();
-	~UserHistosMonitoring();
+	UserHistosRepacking();
+	~UserHistosRepacking();
 
 public:
 
@@ -43,7 +43,7 @@ public:
 	TH1* histoMWPCrx2;
 	TH1* histoMWPCry2;*/
 
-	ClassDef(UserHistosMonitoring, 1);
+	ClassDef(UserHistosRepacking, 1);
 };
 
-#endif // USERHISTOSMONITORING_H
+#endif // USERHISTOSREPACKING_H

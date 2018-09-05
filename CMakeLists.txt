@@ -4,6 +4,7 @@ cmake_minimum_required(VERSION 3.5)
 
 # Give your project a name
 project(ACCULINNA_go4_user_library)
+set(PROJECT_PREFIX AcGo4)
 
 # Switch it on for more verbose make output
 # set(CMAKE_VERBOSE_MAKEFILE ON)
@@ -35,6 +36,16 @@ if (CMAKE_COMPILER_IS_GNUCXX)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Wall -Wextra -Wno-unused-parameter")
     # -std=c++11 -g -Wall -Wextra -Wpedantic
 endif()
+
+# =============================================================================
+
+# TODO uncomment certain flags if you want to see more detailed output
+# Beware that A LOT of text will be generated. Don't run more than 10-100 events.
+
+#add_definitions(-DDEBUGUNPACKING)
+#add_definitions(-DDEBUGREPACKING)
+#add_definitions(-DDEBUGLEARN)
+#add_definitions(-DDEBUGDIGIBUILDING)
 
 # =============================================================================
 

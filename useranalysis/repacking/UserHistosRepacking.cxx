@@ -1,4 +1,4 @@
-#include "UserHistosMonitoring.h"
+#include "UserHistosRepacking.h"
 
 // ROOT
 //#include <TH1D.h>
@@ -7,7 +7,7 @@
 // Go4
 #include <TGo4Analysis.h>
 
-UserHistosMonitoring::UserHistosMonitoring()
+UserHistosRepacking::UserHistosRepacking()
 {
 //	TGo4Analysis* a = TGo4Analysis::Instance();
 
@@ -58,7 +58,7 @@ UserHistosMonitoring::UserHistosMonitoring()
 
 }
 
-UserHistosMonitoring::~UserHistosMonitoring()
+UserHistosRepacking::~UserHistosRepacking()
 {
 	/**
 	 * Not 100% sure, but it looks as if you do not need to delete your histograms yourself.
@@ -66,4 +66,4 @@ UserHistosMonitoring::~UserHistosMonitoring()
 	 */
 }
 
-ClassImp(UserHistosMonitoring)
+ClassImp(UserHistosRepacking)

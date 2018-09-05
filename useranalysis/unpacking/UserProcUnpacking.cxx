@@ -29,7 +29,7 @@ bool UserProcUnpacking::fInsidePackage = false;
   This option produces A LOT OF DATA - run your analysis with a
   small number of events (~10-100)
 */
-//#define PRINTDEBUGINFO
+//#define DEBUGUNPACKING
 
 //TODO check that all necessary data members are reset
 #define DORESET
@@ -72,7 +72,7 @@ Bool_t UserProcUnpacking::BuildEvent(TGo4EventElement* p_dest)
 	}
 	v_isValid = kTRUE;
 
-	#ifdef PRINTDEBUGINFO
+	#ifdef DEBUGUNPACKING
 	cerr << "[DEBUG ] " << "UserProcUnpacking: Event " << fEventCounter
 	     << " ==========================================================================================================="
 	     << endl;
@@ -97,7 +97,7 @@ Bool_t UserProcUnpacking::BuildEvent(TGo4EventElement* p_dest)
 	UInt_t v_subEventCounter = 0; // Counter of subevents within the current event
 	while ((v_pSubevent = v_input->NextSubEvent()) != NULL)
 	{
-		#ifdef PRINTDEBUGINFO
+		#ifdef DEBUGUNPACKING
 		cerr << "[DEBUG ] " << "UserProcUnpacking: SubEvent " << v_subEventCounter << " (global subevent counter = " << fSubEventCounter << ")"
 		     << " -----------------------------------------------------------------" << endl;
 		#endif
@@ -141,7 +141,7 @@ void UserProcUnpacking::ProcessEventHeader(TGo4MbsEvent* p_event)
 	fCurMessage.fEventCount = p_event->GetCount();
 	fCurrentOutputEvent->fTrigger = p_event->GetTrigger();
 
-	#ifdef PRINTDEBUGINFO
+	#ifdef DEBUGUNPACKING
 	cerr << "[DEBUG ] Event header:" << "\t"
 	     << "type="    << (Int_t)fCurMessage.fEventType << "\t"
 	     << "subtype=" << (Int_t)fCurMessage.fEventSubtype << "\t"
@@ -177,7 +177,7 @@ void UserProcUnpacking::ProcessSubeventHeader(TGo4MbsSubEvent* p_subevent)
 	fCurMessage.fSubeventFullID = p_subevent->GetFullId();
 	fCurMessage.fSubeventProcID = p_subevent->GetProcid();
 
-	#ifdef PRINTDEBUGINFO
+	#ifdef DEBUGUNPACKING
 	cerr << "[DEBUG ] Subevent header:" << "\t"
 	     << "dlen="     << (Int_t)fCurMessage.fSubeventDlen << "\t"
 	     << "type="     << (Int_t)fCurMessage.fSubeventType << "\t"
@@ -217,31 +217,31 @@ void UserProcUnpacking::ProcessSubevent(TGo4MbsSubEvent* p_subevent)
 	//// Get the pointer to the data of the subevent
 	Int_t* v_dataField = p_subevent->GetDataField();
 
-	#ifdef PRINTDEBUGINFO
+	#ifdef DEBUGUNPACKING
 	UserProcUnpacking::DumpSubeventData2(v_intLen, v_dataField);
 	#endif
 
 	switch (v_procID) {
 	case 100:
-		#ifdef PRINTDEBUGINFO
+		#ifdef DEBUGUNPACKING
 		cerr << "[DEBUG ] Found procID " << v_procID << " which corresponds to VME0" << endl;
 		#endif
 		this->ProcessSubeventRaw(v_intLen, v_dataField); // ProcessSubeventRawVME0
 		break;
 	case 200:
-		#ifdef PRINTDEBUGINFO
+		#ifdef DEBUGUNPACKING
 		cerr << "[DEBUG ] Found procID " << v_procID << " which corresponds to VME1" << endl;
 		#endif
 		this->ProcessSubeventRaw(v_intLen, v_dataField); // ProcessSubeventRawVME1
 		break;
 	case 101:
-		#ifdef PRINTDEBUGINFO
+		#ifdef DEBUGUNPACKING
 		cerr << "[DEBUG ] Found procID " << v_procID << " which corresponds to CAMAC" << endl;
 		#endif
 		this->ProcessSubeventRawCAMACmwpc(v_intLen, v_dataField);
 		break;
 	default:
-		#ifdef PRINTDEBUGINFO
+		#ifdef DEBUGUNPACKING
 		cerr << "[WARN  ] Found procID " << v_procID << " which is unknown. Skipping subevent." << endl;
 		#endif
 		fNunknownWords += v_intLen;
@@ -251,6 +251,7 @@ void UserProcUnpacking::ProcessSubevent(TGo4MbsSubEvent* p_subevent)
 	this->FinishSubevent();
 }
 
+// Only data (payload) is processed here. Header and footer of the current subevent are already left out.
 void UserProcUnpacking::ProcessSubeventRaw(Int_t p_size, const Int_t* p_startAddress)
 {
 	for (Int_t v_cursor=0; v_cursor<p_size; /*no action here*/) // v_cursor is incremented inside
@@ -262,7 +263,7 @@ void UserProcUnpacking::ProcessSubeventRaw(Int_t p_size, const Int_t* p_startAdd
 		switch (UserProcUnpacking::CheckNextHeader(&p_startAddress[v_cursor])) {
 		case support::enu_VENDOR::MESYTEC:
 
-			#ifdef PRINTDEBUGINFO
+			#ifdef DEBUGUNPACKING
 			cerr << "[DEBUG ] " << support::GetHexRepresentation(sizeof(Int_t), &p_startAddress[v_cursor]) << "  ";
 			cerr << "[" << v_cursor << "]\t" << "MESYTEC header" << endl;
 			#endif
@@ -276,7 +277,7 @@ void UserProcUnpacking::ProcessSubeventRaw(Int_t p_size, const Int_t* p_startAdd
 
 			if (v_footerPosition > -1) {
 
-				#ifdef PRINTDEBUGINFO
+				#ifdef DEBUGUNPACKING
 				cerr << "[DEBUG ] " << support::GetHexRepresentation(sizeof(Int_t), &p_startAddress[v_cursor+v_footerPosition]) << "  ";
 				cerr << "[" << v_cursor+v_footerPosition << "]\t" << "MESYTEC footer";
 				cerr << "\tshift=" << v_footerPosition << endl;
@@ -286,7 +287,7 @@ void UserProcUnpacking::ProcessSubeventRaw(Int_t p_size, const Int_t* p_startAdd
 
 				v_cursor += (v_footerPosition + 1); // right after the footer
 			} else {
-				//#ifdef PRINTDEBUGINFO
+				//#ifdef DEBUGUNPACKING
 				cerr << "[WARN  ] MESYTEC footer not found!" << endl;
 				//#endif
 				v_cursor++;
@@ -295,7 +296,7 @@ void UserProcUnpacking::ProcessSubeventRaw(Int_t p_size, const Int_t* p_startAdd
 			break;
 		case support::enu_VENDOR::CAEN:
 
-			#ifdef PRINTDEBUGINFO
+			#ifdef DEBUGUNPACKING
 			cerr << "[DEBUG ] " << support::GetHexRepresentation(sizeof(Int_t), &p_startAddress[v_cursor]) << "  ";
 			cerr << "[" << v_cursor << "]\t" << "CAEN header" << endl;
 			#endif
@@ -309,7 +310,7 @@ void UserProcUnpacking::ProcessSubeventRaw(Int_t p_size, const Int_t* p_startAdd
 
 			if (v_footerPosition > -1) {
 
-				#ifdef PRINTDEBUGINFO
+				#ifdef DEBUGUNPACKING
 				cerr << "[DEBUG ] " << support::GetHexRepresentation(sizeof(Int_t), &p_startAddress[v_cursor+v_footerPosition]) << "  ";
 				cerr << "[" << v_cursor+v_footerPosition << "]\t" << "CAEN footer";
 				cerr << "\tshift=" << v_footerPosition << endl;
@@ -319,7 +320,7 @@ void UserProcUnpacking::ProcessSubeventRaw(Int_t p_size, const Int_t* p_startAdd
 
 				v_cursor += (v_footerPosition + 1); // right after the footer
 			} else {
-				//#ifdef PRINTDEBUGINFO
+				//#ifdef DEBUGUNPACKING
 				cerr << "[WARN  ] CAEN footer not found!" << endl;
 				//#endif
 				v_cursor++;
@@ -327,21 +328,21 @@ void UserProcUnpacking::ProcessSubeventRaw(Int_t p_size, const Int_t* p_startAdd
 
 			break;
 		case support::enu_VENDOR::AFFEAFFE:
-			#ifdef PRINTDEBUGINFO
+			#ifdef DEBUGUNPACKING
 			cerr << "[DEBUG ] AFFEAFFE. Skipping one 32-bit word." << endl;
 			#endif
 			fNknownWords++;
 			v_cursor++;
 			break;
 		case support::enu_VENDOR::CAENNOTVALID:
-			#ifdef PRINTDEBUGINFO
+			#ifdef DEBUGUNPACKING
 			cerr << "[DEBUG ] CAENNOTVALID. Skipping one 32-bit word." << endl;
 			#endif
 			fNknownWords++;
 			v_cursor++;
 			break;
 		case support::enu_VENDOR::OTHER:
-			//#ifdef PRINTDEBUGINFO
+			//#ifdef DEBUGUNPACKING
 			cerr << "[WARN  ] OTHER VENDOR. Skipping one 32-bit word:" << "\t";
 			cerr << support::GetHexRepresentation(sizeof(Int_t), &p_startAddress[v_cursor]) << "\t";
 			cerr << support::GetBinaryRepresentation(sizeof(Int_t), &p_startAddress[v_cursor]) << endl;
@@ -356,7 +357,7 @@ void UserProcUnpacking::ProcessSubeventRaw(Int_t p_size, const Int_t* p_startAdd
 
 /*void UserProcUnpacking::ProcessSubeventRawVME0(Int_t p_size, const Int_t* p_startAddress)
 {
-	#ifdef PRINTDEBUGINFO
+	#ifdef DEBUGUNPACKING
 	cerr << "[DEBUG ] Processing raw subevent from VME0 with size=" << p_size << endl;
 	#endif
 	this->ProcessSubeventRaw(p_size, p_startAddress);
@@ -364,7 +365,7 @@ void UserProcUnpacking::ProcessSubeventRaw(Int_t p_size, const Int_t* p_startAdd
 
 void UserProcUnpacking::ProcessSubeventRawVME1(Int_t p_size, const Int_t* p_startAddress)
 {
-	#ifdef PRINTDEBUGINFO
+	#ifdef DEBUGUNPACKING
 	cerr << "[DEBUG ] Processing raw subevent from VME1 with size=" << p_size << endl;
 	#endif
 	this->ProcessSubeventRaw(p_size, p_startAddress);
@@ -372,7 +373,7 @@ void UserProcUnpacking::ProcessSubeventRawVME1(Int_t p_size, const Int_t* p_star
 
 /*void UserProcUnpacking::ProcessSubeventRawCAMAC(Int_t p_size, const Int_t* p_startAddress)
 {
-	#ifdef PRINTDEBUGINFO
+	#ifdef DEBUGUNPACKING
 	cerr << "[DEBUG ] Processing raw subevent from CAMAC with size=" << p_size << endl;
 	//cerr << "\t" << "Skipping." << endl;
 	#endif
@@ -386,7 +387,7 @@ void UserProcUnpacking::ProcessSubeventRawVME1(Int_t p_size, const Int_t* p_star
 
 void UserProcUnpacking::ProcessSubeventRawCAMACmwpc(Int_t p_size, const Int_t* p_startAddress)
 {
-	#ifdef PRINTDEBUGINFO
+	#ifdef DEBUGUNPACKING
 	cerr << "[DEBUG ] Processing raw subevent from CAMAC with size=" << p_size << " as from MWPC." << endl;
 	#endif
 
@@ -456,7 +457,7 @@ void UserProcUnpacking::ProcessSubeventRawCAMACmwpc(Int_t p_size, const Int_t* p
 	v_curWord = p_startAddress[8+7];
 	//v_geo = (v_curWord >> 27) & 0x1f; //TODO mask is unknown to me // 5 bits?
 
-	#ifdef PRINTDEBUGINFO
+	#ifdef DEBUGUNPACKING
 	Short_t v_subword;
 	cerr << "         -----------------------------------------------------------" << endl;
 	for (Int_t v_cursor=0; v_cursor<p_size; v_cursor+=4)
@@ -490,12 +491,12 @@ void UserProcUnpacking::ProcessSubeventRawCAMACmwpc(Int_t p_size, const Int_t* p
 		cerr << endl;
 	}
 	cerr << "         -----------------------------------------------------------" << endl;
-	#endif // PRINTDEBUGINFO
+	#endif // DEBUGUNPACKING
 }
 
 void UserProcUnpacking::ProcessSubsubevent_MESYTEC(Int_t p_size, const Int_t* p_startAddress)
 {
-	#ifdef PRINTDEBUGINFO
+	#ifdef DEBUGUNPACKING
 	cerr << "[DEBUG ] Processing MESYTEC subsubevent with size=" << p_size << endl;
 	cerr << "         -----------------------------------------------------------" << endl;
 	#endif
@@ -525,7 +526,7 @@ void UserProcUnpacking::ProcessSubsubevent_MESYTEC(Int_t p_size, const Int_t* p_
 			v_module_id = (v_curWord >> 16) & 0xff; // 8 bits
 			v_subsubeventSize = v_curWord & 0x3ff; // 10 bits
 			fNknownWords++;
-			#ifdef PRINTDEBUGINFO
+			#ifdef DEBUGUNPACKING
 			cerr << "[DEBUG ] " << support::GetHexRepresentation(sizeof(Int_t), &v_curWord) << "  ";
 			cerr << support::GetBinaryRepresentation(sizeof(Int_t), &v_curWord) << "  ";
 			cerr << "[" << v_cursor << "]\t" << "MESYTEC header"
@@ -542,7 +543,7 @@ void UserProcUnpacking::ProcessSubsubevent_MESYTEC(Int_t p_size, const Int_t* p_
 			fInsidePackage = false;
 			v_eventCounter = UserProcUnpacking::ExtractCounterFromMESYTECfooter(v_curWord);
 			fNknownWords++;
-			#ifdef PRINTDEBUGINFO
+			#ifdef DEBUGUNPACKING
 			cerr << "[DEBUG ] " << support::GetHexRepresentation(sizeof(Int_t), &v_curWord) << "  ";
 			cerr << support::GetBinaryRepresentation(sizeof(Int_t), &v_curWord) << "  ";
 			cerr << "[" << v_cursor << "]\t" << "MESYTEC footer"
@@ -563,7 +564,7 @@ void UserProcUnpacking::ProcessSubsubevent_MESYTEC(Int_t p_size, const Int_t* p_
 			v_valueQA = v_curWord & 0x1fff; // 13 bits // ADC and QDC
 			v_valueT = v_curWord & 0xffff; // 16 bits // TDC
 			fNknownWords++;
-			#ifdef PRINTDEBUGINFO
+			#ifdef DEBUGUNPACKING
 			cerr << "[DEBUG ] " << support::GetHexRepresentation(sizeof(Int_t), &v_curWord) << "  ";
 			cerr << support::GetBinaryRepresentation(sizeof(Int_t), &v_curWord) << "  ";
 			cerr << "[" << v_cursor << "]\t" << "MESYTEC data"
@@ -581,7 +582,22 @@ void UserProcUnpacking::ProcessSubsubevent_MESYTEC(Int_t p_size, const Int_t* p_
 			fCurMessage.fValueT = v_valueT;
 			fCurMessage.fMessageIndex = v_dataWordsCounter;
 
-			this->PushOutputRawMessage();
+			//TODO patch for padding zero word handling
+			if ((v_curWord == 0) && (v_cursor == p_size-2)) {
+
+				#ifdef DEBUGUNPACKING
+				cerr << "THE LAST PADDING ZERO WORD WILL BE SKIPPED" << endl;
+				#endif
+				//cerr << "v_cursor=" << v_cursor << "\t\t" << "p_size-2=" << p_size-2 << endl;
+
+				// SKIP this padding zero word
+
+			} else {
+				// Otherwise - in a normal situation...
+
+				this->PushOutputRawMessage();
+
+			}
 
 			#ifdef DORESET
 			fCurMessage.fRawWord = 0; // Yes zero here, because we want to clear the raw word with all zeros
@@ -600,7 +616,7 @@ void UserProcUnpacking::ProcessSubsubevent_MESYTEC(Int_t p_size, const Int_t* p_
 			break;
 		default:
 			fNunknownWords++;
-			//#ifdef PRINTDEBUGINFO
+			//#ifdef DEBUGUNPACKING
 			cerr << "[ERROR ] " << support::GetHexRepresentation(sizeof(Int_t), &v_curWord) << "  ";
 			cerr << support::GetBinaryRepresentation(sizeof(Int_t), &v_curWord) << "  ";
 			cerr << "[" << v_cursor << "]\t" << "MESYTEC unknown"
@@ -616,14 +632,14 @@ void UserProcUnpacking::ProcessSubsubevent_MESYTEC(Int_t p_size, const Int_t* p_
 	fCurMessage.fSubsubeventVendor = -1;
 	#endif // DORESET
 
-	#ifdef PRINTDEBUGINFO
+	#ifdef DEBUGUNPACKING
 	cerr << "         -----------------------------------------------------------" << endl;
 	#endif
 }
 
 void UserProcUnpacking::ProcessSubsubevent_CAEN(Int_t p_size, const Int_t* p_startAddress)
 {
-	#ifdef PRINTDEBUGINFO
+	#ifdef DEBUGUNPACKING
 	cerr << "[DEBUG ] Processing CAEN subsubevent with size=" << p_size << endl;
 	cerr << "         -----------------------------------------------------------" << endl;
 	#endif
@@ -654,7 +670,7 @@ void UserProcUnpacking::ProcessSubsubevent_CAEN(Int_t p_size, const Int_t* p_sta
 			v_geo = (v_curWord >> 27) & 0x1f; // 5 bits
 			fInsidePackage = true;
 			fNknownWords++;
-			#ifdef PRINTDEBUGINFO
+			#ifdef DEBUGUNPACKING
 			cerr << "[DEBUG ] " << support::GetHexRepresentation(sizeof(Int_t), &v_curWord) << "  ";
 			cerr << support::GetBinaryRepresentation(sizeof(Int_t), &v_curWord) << "  ";
 			cerr << "[" << v_cursor << "]\t" << "CAEN header"
@@ -673,7 +689,7 @@ void UserProcUnpacking::ProcessSubsubevent_CAEN(Int_t p_size, const Int_t* p_sta
 			v_eventCounter = UserProcUnpacking::ExtractCounterFromCAENfooter(v_curWord);
 			v_geo = (v_curWord >> 27) & 0x1f; // 5 bits // This is not really needed here
 			fNknownWords++;
-			#ifdef PRINTDEBUGINFO
+			#ifdef DEBUGUNPACKING
 			cerr << "[DEBUG ] " << support::GetHexRepresentation(sizeof(Int_t), &v_curWord) << "  ";
 			cerr << support::GetBinaryRepresentation(sizeof(Int_t), &v_curWord) << "  ";
 			cerr << "[" << v_cursor << "]\t" << "CAEN footer"
@@ -697,7 +713,7 @@ void UserProcUnpacking::ProcessSubsubevent_CAEN(Int_t p_size, const Int_t* p_sta
 			break;
 		case 6: // CAEN no valid data
 			fNknownWords++;
-			#ifdef PRINTDEBUGINFO
+			#ifdef DEBUGUNPACKING
 			cerr << "[DEBUG ] " << support::GetHexRepresentation(sizeof(Int_t), &v_curWord) << "  ";
 			cerr << support::GetBinaryRepresentation(sizeof(Int_t), &v_curWord) << "  ";
 			cerr << "[" << v_cursor << "]\t" << "CAEN no valid data"
@@ -710,7 +726,7 @@ void UserProcUnpacking::ProcessSubsubevent_CAEN(Int_t p_size, const Int_t* p_sta
 			v_channel = (v_curWord >> 16) & 0x1f; // 5 bits //TODO check
 			v_value = v_curWord & 0xfff; // 12 bits //TODO check
 			fNknownWords++;
-			#ifdef PRINTDEBUGINFO
+			#ifdef DEBUGUNPACKING
 			cerr << "[DEBUG ] " << support::GetHexRepresentation(sizeof(Int_t), &v_curWord) << "  ";
 			cerr << support::GetBinaryRepresentation(sizeof(Int_t), &v_curWord) << "  ";
 			cerr << "[" << v_cursor << "]\t" << "CAEN data"
@@ -753,7 +769,7 @@ void UserProcUnpacking::ProcessSubsubevent_CAEN(Int_t p_size, const Int_t* p_sta
 				//cerr << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << endl;
 
 				fNknownWords++;
-				#ifdef PRINTDEBUGINFO
+				#ifdef DEBUGUNPACKING
 				cerr << "[DEBUG ] " << support::GetHexRepresentation(sizeof(Int_t), &v_curWord) << "  ";
 				cerr << support::GetBinaryRepresentation(sizeof(Int_t), &v_curWord) << "  ";
 				cerr << "[" << v_cursor << "]\t" << "MACHINE TIME" << endl;
@@ -782,7 +798,7 @@ void UserProcUnpacking::ProcessSubsubevent_CAEN(Int_t p_size, const Int_t* p_sta
 			} else {
 
 				fNunknownWords++;
-				//#ifdef PRINTDEBUGINFO
+				//#ifdef DEBUGUNPACKING
 				cerr << "[ERROR ] " << support::GetHexRepresentation(sizeof(Int_t), &v_curWord) << "  ";
 				cerr << support::GetBinaryRepresentation(sizeof(Int_t), &v_curWord) << "  ";
 				cerr << "[" << v_cursor << "]\t" << "CAEN unknown"
@@ -804,7 +820,7 @@ void UserProcUnpacking::ProcessSubsubevent_CAEN(Int_t p_size, const Int_t* p_sta
 	fCurMessage.fSubsubeventVendor = -1;
 	#endif // DORESET
 
-	#ifdef PRINTDEBUGINFO
+	#ifdef DEBUGUNPACKING
 	cerr << "         -----------------------------------------------------------" << endl;
 	#endif
 }
@@ -830,14 +846,14 @@ support::enu_VENDOR UserProcUnpacking::CheckNextHeader(const Int_t* p_startAddre
 	Int_t v_caen_header = (v_curWord >> 24) & 0x7; // 3 bits // = 0x2
 
 	if (v_mesytec_flag == 0x40) {
-		#ifdef PRINTDEBUGINFO
+		#ifdef DEBUGUNPACKING
 		cerr << "[DEBUG ] Checking "
 		     << support::GetHexRepresentation(sizeof(Int_t), &v_curWord) << "\t";
 		cerr << "Identified as MESYTEC block" << endl;
 		#endif
 		return support::enu_VENDOR::MESYTEC;
 	} else if (v_caen_header == 2) { // 010 (binary)
-		#ifdef PRINTDEBUGINFO
+		#ifdef DEBUGUNPACKING
 		cerr << "[DEBUG ] Checking "
 		     << support::GetHexRepresentation(sizeof(Int_t), &v_curWord) << "\t";
 		cerr << "Identified as CAEN block" << endl;
@@ -849,7 +865,7 @@ support::enu_VENDOR UserProcUnpacking::CheckNextHeader(const Int_t* p_startAddre
 		// This is not the most intuitive, but yet very correct way to check the
 		// raw representations of an int. ^ stands for binary XOR.
 		// If all bits are the same, the results will be 0x00000000.
-		#ifdef PRINTDEBUGINFO
+		#ifdef DEBUGUNPACKING
 		cerr << "[DEBUG ] Checking "
 		     << support::GetHexRepresentation(sizeof(Int_t), &v_curWord) << "\t";
 		cerr << "Identified as AFFEAFFE block" << endl;
@@ -859,7 +875,7 @@ support::enu_VENDOR UserProcUnpacking::CheckNextHeader(const Int_t* p_startAddre
 		//TODO this not a very nice hack
 		//// For some reason CAEN not-valid-datum words are coming outside of the
 		//// subsubevent block - not between the header and the footer
-		#ifdef PRINTDEBUGINFO
+		#ifdef DEBUGUNPACKING
 		cerr << "[DEBUG ] Checking "
 		     << support::GetHexRepresentation(sizeof(Int_t), &v_curWord) << "\t";
 		cerr << "Identified as CAENNOTVALID block" << endl;
@@ -868,7 +884,7 @@ support::enu_VENDOR UserProcUnpacking::CheckNextHeader(const Int_t* p_startAddre
 	} else {
 		// Should not emit any warnings here.
 		// The return value of this method is processed and warnings are emitted there.
-		#ifdef PRINTDEBUGINFO
+		#ifdef DEBUGUNPACKING
 		cerr << "[DEBUG ] Checking "
 		     << support::GetHexRepresentation(sizeof(Int_t), &v_curWord) << "\t"
 		     << support::GetBinaryRepresentation(sizeof(Int_t), &v_curWord) << "\t";

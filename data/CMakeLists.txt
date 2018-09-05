@@ -1,3 +1,6 @@
+# Name of the project component which must be constructed as project prefix + some name
+set(COMPNAME ${PROJECT_PREFIX}Data)
+
 # =============================================================================
 # ROOT dictionary
 
@@ -15,13 +18,13 @@ set(ROOTCLING_HEADERS RawMessage.h
                       DetEventFull.h
                       )
 
-ROOT_GENERATE_DICTIONARY(G__Data ${ROOTCLING_HEADERS} LINKDEF DataLinkDef.h)
+ROOT_GENERATE_DICTIONARY(G__${COMPNAME} ${ROOTCLING_HEADERS} LINKDEF DataLinkDef.h)
 
 # =============================================================================
 
 include_directories(${CMAKE_SOURCE_DIR})
 
-set(SOURCE_LIB G__Data.cxx
+set(SOURCE_LIB G__${COMPNAME}.cxx
                RawMessage.cxx
                DetMessage.cxx
                DetEventStation.cxx
@@ -30,13 +33,13 @@ set(SOURCE_LIB G__Data.cxx
                DetEventFull.cxx
                )
 
-add_library(Data SHARED ${SOURCE_LIB})
+add_library(${COMPNAME} SHARED ${SOURCE_LIB})
 
-target_link_libraries(Data Tree Base SetupConfigCppWrapper Go4pieces)
+target_link_libraries(${COMPNAME} Tree ${PROJECT_PREFIX}Base ${PROJECT_PREFIX}SetupConfigCppWrapper ${PROJECT_PREFIX}Go4pieces)
 
-#set_property(TARGET Data PROPERTY INSTALL_RPATH_USE_LINK_PATH TRUE)
+#set_property(TARGET ${COMPNAME} PROPERTY INSTALL_RPATH_USE_LINK_PATH TRUE)
 
-install(TARGETS Data LIBRARY DESTINATION lib)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libData.rootmap DESTINATION lib)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libData_rdict.pcm DESTINATION lib)
+install(TARGETS ${COMPNAME} LIBRARY DESTINATION lib)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/lib${COMPNAME}.rootmap DESTINATION lib)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/lib${COMPNAME}_rdict.pcm DESTINATION lib)
 install(DIRECTORY "." DESTINATION include/data FILES_MATCHING PATTERN "*.h")

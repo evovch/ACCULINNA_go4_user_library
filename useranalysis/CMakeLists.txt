@@ -1,3 +1,6 @@
+# Name of the project component which must be constructed as project prefix + some name
+set(COMPNAME ${PROJECT_PREFIX}UserAnalysis)
+
 # =============================================================================
 # ROOT dictionary
 
@@ -14,22 +17,22 @@ set(ROOTCLING_HEADERS UserAnalysis.h
                       unpacking/UserEventUnpacking.h
                       unpacking/UserProcUnpacking.h
                       unpacking/UserHistosUnpacking.h
-                      monitoring/UserEventMonitoring.h
-                      monitoring/UserProcMonitoring.h
-                      monitoring/UserHistosMonitoring.h
+                      repacking/UserEventRepacking.h
+                      repacking/UserProcRepacking.h
+                      repacking/UserHistosRepacking.h
                       learn/UserEventLearn.h
                       learn/UserProcLearn.h
                       digibuilding/UserEventDigiBuilding.h
                       digibuilding/UserProcDigiBuilding.h
                       )
 
-ROOT_GENERATE_DICTIONARY(G__UserAnalysis ${ROOTCLING_HEADERS} LINKDEF UserAnalysisLinkDef.h)
+ROOT_GENERATE_DICTIONARY(G__${COMPNAME} ${ROOTCLING_HEADERS} LINKDEF UserAnalysisLinkDef.h)
 
 # =============================================================================
 
 include_directories(${CMAKE_SOURCE_DIR})
 
-set(SOURCE_LIB G__UserAnalysis.cxx
+set(SOURCE_LIB G__${COMPNAME}.cxx
                UserAnalysis.cxx
                UserParameter.cxx
                mesh/MeshDummyEvent.cxx
@@ -37,23 +40,26 @@ set(SOURCE_LIB G__UserAnalysis.cxx
                unpacking/UserEventUnpacking.cxx
                unpacking/UserProcUnpacking.cxx
                unpacking/UserHistosUnpacking.cxx
-               monitoring/UserEventMonitoring.cxx
-               monitoring/UserProcMonitoring.cxx
-               monitoring/UserHistosMonitoring.cxx
+               repacking/UserEventRepacking.cxx
+               repacking/UserProcRepacking.cxx
+               repacking/UserHistosRepacking.cxx
                learn/UserEventLearn.cxx
                learn/UserProcLearn.cxx
                digibuilding/UserEventDigiBuilding.cxx
                digibuilding/UserProcDigiBuilding.cxx
                )
 
-add_library(UserAnalysis SHARED ${SOURCE_LIB})
+add_library(${COMPNAME} SHARED ${SOURCE_LIB})
 
-target_link_libraries(UserAnalysis Data SetupConfigCppWrapper Go4Analysis)
+# Dependent libraries from this project
+target_link_libraries(${COMPNAME} ${PROJECT_PREFIX}Data ${PROJECT_PREFIX}SetupConfigCppWrapper)
+
+# Dependent libraries from go4
+target_link_libraries(${COMPNAME} Go4Analysis)
 
 # ???
-#set_property(TARGET UserAnalysis PROPERTY INSTALL_RPATH_USE_LINK_PATH TRUE)
+#set_property(TARGET ${COMPNAME} PROPERTY INSTALL_RPATH_USE_LINK_PATH TRUE)
 
-install(TARGETS UserAnalysis DESTINATION lib)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libUserAnalysis.rootmap DESTINATION lib)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libUserAnalysis_rdict.pcm DESTINATION lib)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/lib${COMPNAME}.rootmap DESTINATION lib)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/lib${COMPNAME}_rdict.pcm DESTINATION lib)
 install(DIRECTORY "." DESTINATION include/useranalysis FILES_MATCHING PATTERN "*.h")

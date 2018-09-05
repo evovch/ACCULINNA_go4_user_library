@@ -23,6 +23,28 @@ public:
 
 	virtual void Print(Option_t* option = "") const;
 
+public:
+	/**
+	 * Accessor
+	 */
+	Short_t GetDetector(void) const { return fDetector; }
+	
+	/**
+	 * Accessor
+	 */
+	Short_t GetStation(void) const { return fStation; }
+	
+	/**
+	 * Accessor
+	 */
+	Int_t GetStChannel(void) const { return fStChannel; }
+	
+	/**
+	 * Accessor
+	 */
+	Int_t GetValue(void) const { return fValue; }
+
+private:
 	Short_t fDetector;
 	Short_t fStation;
 	Int_t fStChannel;

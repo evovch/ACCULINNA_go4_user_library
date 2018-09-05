@@ -64,9 +64,9 @@ echo -e "\e[1m\e[34m${ANARUNINFO}\e[0m"
 echo -e "\e[1m\e[32mAnalysis started.\e[0m"
 
 if [ ${NEVENTS} -eq 0 ]; then
-	${GO4SYS}/bin/go4analysis -v -lib libUserAnalysis.so -asf ${AUTOSAVEFILE} -file ${INPUTFILE} -args ${OUTPUTFILE} ${SETUPFILE} >> ${TEXTOUTFILE} 2> ${TEXTERRFILE}
+	${GO4SYS}/bin/go4analysis -v -lib libAcGo4UserAnalysis.so -asf ${AUTOSAVEFILE} -file ${INPUTFILE} -args ${OUTPUTFILE} ${SETUPFILE} >> ${TEXTOUTFILE} 2> ${TEXTERRFILE}
 else
-	${GO4SYS}/bin/go4analysis -v -lib libUserAnalysis.so -number ${NEVENTS} -asf ${AUTOSAVEFILE} -file ${INPUTFILE} -args ${OUTPUTFILE} ${SETUPFILE} >> ${TEXTOUTFILE} 2> ${TEXTERRFILE}
+	${GO4SYS}/bin/go4analysis -v -lib libAcGo4UserAnalysis.so -number ${NEVENTS} -asf ${AUTOSAVEFILE} -file ${INPUTFILE} -args ${OUTPUTFILE} ${SETUPFILE} >> ${TEXTOUTFILE} 2> ${TEXTERRFILE}
 fi
 
 echo -e "\e[1m\e[32mAnalysis finished.\e[0m"
