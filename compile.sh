@@ -4,13 +4,13 @@
 # There are basically the same checks done by CMake according to the
 # instructions in the top CMakeLists.txt
 
-if [ -z ${GO4SYS+x} ]; then
-	echo "No Go4 found! GO4SYS is unset. Please run thisroot.sh";
-	exit;
-else
-	GO4VERSION=`$GO4SYS/bin/go4-config --version`
-	echo "Found Go4" $GO4VERSION "in GO4SYS='$GO4SYS'";
-fi
+#if [ -z ${GO4SYS+x} ]; then
+#	echo "No Go4 found! GO4SYS is unset. Please run thisroot.sh";
+#	exit;
+#else
+#	GO4VERSION=`$GO4SYS/bin/go4-config --version`
+#	echo "Found Go4" $GO4VERSION "in GO4SYS='$GO4SYS'";
+#fi
 
 if [ -z ${ROOTSYS+x} ]; then
 	echo "No ROOT found! ROOTSYS is unset. Please run thisroot.sh";
@@ -31,7 +31,7 @@ if [ ! -d "install" ]; then
 fi
 
 cd build
-cmake ../ -DCMAKE_INSTALL_PREFIX=../install
+cmake ../ -DCMAKE_INSTALL_PREFIX=../install # -DREADER_MODE=ON
 make -j
 make install
 cd -

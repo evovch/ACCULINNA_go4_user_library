@@ -34,7 +34,7 @@ if (NOT READER_MODE)
         include_directories($ENV{GO4SYS}/include)
         link_directories($ENV{GO4SYS}/lib)
     else()
-        message(FATAL_ERROR "Go4 not found! Please, run go4login or define the GO4SYS env. variable.")
+        message(FATAL_ERROR "Go4 not found! Please, run go4login or define the GO4SYS env. variable. In case you want to compile in the 'Reader mode' which does not require Go4, please, pass the -DREADER_MODE=ON flag to cmake.")
     endif()
 endif()
 
