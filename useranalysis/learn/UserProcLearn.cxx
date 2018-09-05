@@ -200,7 +200,7 @@ void UserProcLearn::UserPostLoop()
 
 		if (v_det_ch == 9999) {
 			fprintf(fFileSummary, "======================================================================\n");
-			fprintf(fFileSummary, "%ld: procid=%u\taddr=%u\tch=%u\tIS NOT MAPPED!\n",
+			fprintf(fFileSummary, "%d: procid=%u\taddr=%u\tch=%u\tIS NOT MAPPED!\n",
 			        v_chuid, v_procid, v_addr, v_ch);
 			fprintf(fFileSummary, "======================================================================\n");
 			continue;
@@ -212,10 +212,10 @@ void UserProcLearn::UserPostLoop()
 			// Moreover, the input (electronics) channel is not really a channel, extracted from
 			// the raw data word, but it is taken as the position of the raw data word within the
 			// subsubevent header. Sorry.
-			fprintf(fFileSummary, "%ld: procid=%u\taddr=%u\tch=%u\tmapped to %s[%u]\tfrom %s\n",
+			fprintf(fFileSummary, "%d: procid=%u\taddr=%u\tch=%u\tmapped to %s[%u]\tfrom %s\n",
 			        v_chuid, v_procid, v_addr, v_ch, v_station.Data(), v_ch, v_detector.Data());
 		} else {
-			fprintf(fFileSummary, "%ld: procid=%u\taddr=%u\tch=%u\tmapped to %s[%u]\tfrom %s\n",
+			fprintf(fFileSummary, "%d: procid=%u\taddr=%u\tch=%u\tmapped to %s[%u]\tfrom %s\n",
 			        v_chuid, v_procid, v_addr, v_ch, v_station.Data(), v_det_ch, v_detector.Data());
 		}
 
@@ -261,10 +261,10 @@ void UserProcLearn::ProcessUnmappedChannels(void) const
 
 		if (search != fUsedChUIDs.end()) {
 			#ifndef SUPPRESSMAPPEDWITHDATA
-			fprintf(fFileSummary, "%ld: procid=%u\taddr=%u\tch=%u\tok\n", v_uid, v_procid, v_addr, v_ch);
+			fprintf(fFileSummary, "%d: procid=%u\taddr=%u\tch=%u\tok\n", v_uid, v_procid, v_addr, v_ch);
 			#endif
 		} else {
-			fprintf(fFileSummary, "%ld: procid=%u\taddr=%u\tch=%u\tNO DATA\n", v_uid, v_procid, v_addr, v_ch);
+			fprintf(fFileSummary, "%d: procid=%u\taddr=%u\tch=%u\tNO DATA\n", v_uid, v_procid, v_addr, v_ch);
 		}
 	}
 }

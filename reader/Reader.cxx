@@ -94,7 +94,7 @@ TTree* Reader::GetTheTree(TFile* theFile, TString* treeName)
 {
 	if (*treeName == "") {
 		//// Search for a tree, take the first with the name ending with 'xTree'
-		// UInt_t v_keysCounter = 0;
+		////UInt_t v_keysCounter = 0;
 		TList* v_keys = theFile->GetListOfKeys();
 		TIter v_nextkey(v_keys);
 		while (TKey* v_curKey = (TKey*)v_nextkey()) {

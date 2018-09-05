@@ -59,7 +59,7 @@ private: // data members
 	 */
 	UserEventLearn* fCurrentOutputEvent;
 
-	std::set<unsigned long int> fUsedChUIDs;
+	std::set<unsigned int> fUsedChUIDs;
 
 	TH2* fHistoAddrVsProcid;
 

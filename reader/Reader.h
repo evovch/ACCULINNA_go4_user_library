@@ -17,7 +17,6 @@ class DetEventFull;
 class Reader : public TObject
 {
 public:
-
 	Reader(TString inFilename, TString p_setupfilename);
 	virtual ~Reader();
 
@@ -26,6 +25,7 @@ public:
 	const DetEventFull* ReadEvent(Int_t iEvent);
 
 	Long64_t GetNEventsTotal() const;
+
 private: // data members
 
 	/**
@@ -42,10 +42,12 @@ private: // data members
 	 * Event synchronized with tree
 	 */
 	DetEventFull* fEvent;
+
 	/**
 	 * Event copy
 	 */
 	TGo4EventElement* fEventCopy;
+	
 private: // methods
 	
 	static TTree* GetTheTree(TFile* theFile, TString* treeName);
