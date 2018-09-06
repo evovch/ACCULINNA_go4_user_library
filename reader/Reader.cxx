@@ -69,7 +69,7 @@ void Reader::ProcessFile(UInt_t nEvents)
 	}
 }
 
-const DetEventFull* Reader::ReadEvent(Int_t iEvent)
+DetEventFull* Reader::ReadEvent(Int_t iEvent)
 {
 	if (iEvent < 0 || iEvent >= GetNEventsTotal()) {
 		cerr << "The event number is greater than total events number in input file!";
