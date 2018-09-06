@@ -23,7 +23,7 @@ public:
 
 	void ProcessFile(UInt_t nEvents = 10);
 
-	const DetEventFull* ReadEvent(Int_t iEvent);
+	DetEventFull* ReadEvent(Int_t iEvent);
 
 	Long64_t GetNEventsTotal() const;
 private: // data members
