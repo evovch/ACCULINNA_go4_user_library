@@ -1,6 +1,11 @@
 #ifndef STRUCTS_H
 #define STRUCTS_H
 
+#ifdef __cplusplus
+#include <TObject.h> /* mother class */
+#include <TObjArray.h>
+#endif /* __cplusplus */
+
 /* ============================================================================================= */
 /* enumeration type enuTAG ===================================================================== */
 /* ============================================================================================= */
@@ -11,7 +16,16 @@ typedef enum _enuTAG {NOTAG=0, SETUP=1, CRATE=2, MAPPING=3} enuTAG;
 /* structure stc_mapping ======================================================================= */
 /* ============================================================================================= */
 
+#ifdef __cplusplus
+class stc_mapping : public TObject
+{
+public:
+	stc_mapping() : TObject() {}
+	virtual ~stc_mapping() {}
+
+#else
 typedef struct _stc_mapping {
+#endif /* __cplusplus */
 
 	/* This information is extracted from the <crate> tag */
 
@@ -30,13 +44,28 @@ typedef struct _stc_mapping {
 	char fDetector[64]; /* Detector: Left_telescope, Right_telescope, Beam_detector, Neutron_detector */
 	char fDigicomp[64]; /* A string which identifies which component of the digi this is */
 
+#ifdef __cplusplus
+	ClassDef(stc_mapping, 1);
+};
+ClassImp(stc_mapping)
+#else
 } stc_mapping;
+#endif /* __cplusplus */
 
 /* ============================================================================================= */
 /* structure stc_setup_config ================================================================== */
 /* ============================================================================================= */
 
+#ifdef __cplusplus
+class stc_setup_config : public TObject
+{
+public:
+	stc_setup_config() : TObject() {}
+	virtual ~stc_setup_config() {}
+
+#else
 typedef struct _stc_setup_config {
+#endif /* __cplusplus */
 
 	/* This information is extracted from the <setup> tag */
 
@@ -47,10 +76,20 @@ typedef struct _stc_setup_config {
 
 	/* This list is extracted from the <crate> and <mapping> tags */
 
-	unsigned short fNmappings; /* Number of <mapping> entries */
+	signed int fNmappings; /* Number of <mapping> entries */
+	#ifdef __cplusplus
+	stc_mapping* fMappingsList; //[fNmappings]
+	#else
 	stc_mapping* fMappingsList;
+	#endif /* __cplusplus */
 
+#ifdef __cplusplus
+	ClassDef(stc_setup_config, 1);
+};
+ClassImp(stc_setup_config)
+#else
 } stc_setup_config;
+#endif /* __cplusplus */
 
 /* ============================================================================================= */
 /* ============================================================================================= */
