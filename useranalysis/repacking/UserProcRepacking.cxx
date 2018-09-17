@@ -98,12 +98,12 @@ Bool_t UserProcRepacking::BuildEvent(TGo4EventElement* p_dest)
 
 		this->ProcessMessageUniversal(v_curMessage);
 
-		//TODO check
-		// Process trigger
-		v_evCommon->trigger = v_input->fTrigger;
-
 		v_messCounter++;
 	} // end of while
+
+	//TODO check
+	// Process trigger
+	v_evCommon->trigger = v_input->fTrigger;
 
 	//TODO do the processing of CAMAC MWPC words here
 	this->ProcessCAMACmwpcWords(v_input);
@@ -113,6 +113,8 @@ Bool_t UserProcRepacking::BuildEvent(TGo4EventElement* p_dest)
 	// --------------------------
 
 	v_outputEvent->SetValid(v_isValid);
+
+	////v_outputEvent->Print();
 
 	fEventCounter++;
 

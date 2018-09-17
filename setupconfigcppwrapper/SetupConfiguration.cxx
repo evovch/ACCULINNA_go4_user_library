@@ -170,9 +170,9 @@ void SetupConfiguration::Link(void)
 				}*/
 			}
 
-// ------------------------------------------------------------------------------------------------
-// MWPC specific
-// ------------------------------------------------------------------------------------------------
+			// ------------------------------------------------------------------------------------------------
+			// MWPC specific
+			// ------------------------------------------------------------------------------------------------
 
 			// Try to identify MWPC
 			TString v_stationName(v_curMapping->fStation);
@@ -196,7 +196,7 @@ void SetupConfiguration::Link(void)
 				//     << "\tst=" << fMWPCstationID[MWPCstIndex] << endl;
 			}
 
-// ------------------------------------------------------------------------------------------------
+			// ------------------------------------------------------------------------------------------------
 
 			if (++counter >= 10000) {
 				// Something went completely wrong.
@@ -244,19 +244,22 @@ unsigned short SetupConfiguration::GetOutput(unsigned short p_crateProcid,
 	//cerr << "[DEBUG] SetupConfiguration::GetOutput("
 	//     << p_crateProcid << ", " << p_addr << ", " << p_elch << ") = (" << v_chUID << ") = ";
 
-	std::map<unsigned int, stc_mapping*>::const_iterator iter = mMappings.find(v_chUID);
-	if (iter != mMappings.end()) {
-		if (o_station != NULL) { *o_station = iter->second->fStation; }
-		if (o_detector != NULL) { *o_detector = iter->second->fDetector; }
-		if (o_elblock != NULL) {*o_elblock = iter->second->fElblock; }
+	//std::map<unsigned int, stc_mapping*>::const_iterator iter = mMappings.find(v_chUID);
+	//if (iter != mMappings.end()) {
+
+	const stc_mapping* theMapping = mMappings.at(v_chUID);
+	{
+		if (o_station != NULL) { *o_station = theMapping->fStation; }
+		if (o_detector != NULL) { *o_detector = theMapping->fDetector; }
+		if (o_elblock != NULL) {*o_elblock = theMapping->fElblock; }
 
 		//TODO computation of the output detector channel is here
-		v_detCh = SetupConfiguration::ElChToDetCh(iter->second, p_elch);
+		v_detCh = SetupConfiguration::ElChToDetCh(theMapping, p_elch);
 
 		//TODO
-		if (o_detid != NULL) { *o_detid = this->GetDetectorID(iter->second->fDetector); }
-		if (o_statid != NULL) { *o_statid = this->GetStationID(iter->second->fDetector, iter->second->fStation); }
-	} else {
+		if (o_detid != NULL) { *o_detid = this->GetDetectorID2(theMapping->fDetector); }
+		if (o_statid != NULL) { *o_statid = this->GetStationID2(theMapping->fDetector, theMapping->fStation); }
+	}/* else {
 		//ERROR
 		cerr << "[ERROR ] GetOutput() "
 		     << "No mapping found for the given channel. "
@@ -266,7 +269,7 @@ unsigned short SetupConfiguration::GetOutput(unsigned short p_crateProcid,
 		     << endl;
 		//TODO think what to do in such situations
 		v_detCh = 9999;
-	}
+	}*/
 
 	//cerr << *o_detector << endl;
 
@@ -367,6 +370,11 @@ unsigned short SetupConfiguration::GetStationID(TString p_detector, TString p_st
 	}
 }
 
+unsigned short SetupConfiguration::GetStationID2(TString p_detector, TString p_station) const
+{
+	return this->mStationsPerDet.at(p_detector).at(p_station);
+}
+
 unsigned short SetupConfiguration::GetDetectorID(TString p_detector) const
 {
 	std::map<TString, unsigned short>::const_iterator iter = this->mDetectors.find(p_detector);
@@ -380,6 +388,11 @@ unsigned short SetupConfiguration::GetDetectorID(TString p_detector) const
 	}
 }
 
+unsigned short SetupConfiguration::GetDetectorID2(TString p_detector) const
+{
+	return this->mDetectors.at(p_detector);
+}
+
 std::map<TString, unsigned short> const SetupConfiguration::GetStationList(TString detector) const
 {
 	std::map< TString, std::map<TString, unsigned short> >::const_iterator iterDet = this->mStationsPerDet.find(detector);
@@ -391,6 +404,11 @@ std::map<TString, unsigned short> const SetupConfiguration::GetStationList(TStri
 		cerr << "SetupConfiguration::GetStationList: ERROR" << endl;
 		//TODO return ?
 	}
+}
+
+std::map<TString, unsigned short> const SetupConfiguration::GetStationList2(TString detector) const
+{
+	return this->mStationsPerDet.at(detector);
 }
 
 ClassImp(SetupConfiguration)

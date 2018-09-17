@@ -61,7 +61,7 @@ EOF
 
 echo -e "\e[1m\e[34m${ANARUNINFO}\e[0m"
 
-echo -e "\e[1m\e[32mAnalysis started.\e[0m"
+echo -e "\e[1m\e[32m"`date` "Analysis started.\e[0m"
 
 if [ ${NEVENTS} -eq 0 ]; then
 	${GO4SYS}/bin/go4analysis -v -lib libAccDaqUserAnalysis.so -asf ${AUTOSAVEFILE} -file ${INPUTFILE} -args ${OUTPUTFILE} ${SETUPFILE} >> ${TEXTOUTFILE} 2> ${TEXTERRFILE}
@@ -69,4 +69,4 @@ else
 	${GO4SYS}/bin/go4analysis -v -lib libAccDaqUserAnalysis.so -number ${NEVENTS} -asf ${AUTOSAVEFILE} -file ${INPUTFILE} -args ${OUTPUTFILE} ${SETUPFILE} >> ${TEXTOUTFILE} 2> ${TEXTERRFILE}
 fi
 
-echo -e "\e[1m\e[32mAnalysis finished.\e[0m"
+echo -e "\e[1m\e[32m"`date` "Analysis finished.\e[0m"

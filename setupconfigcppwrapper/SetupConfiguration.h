@@ -154,6 +154,7 @@ public:
 	 *
 	 */
 	unsigned short GetStationID(TString p_detector, TString p_station) const;
+	unsigned short GetStationID2(TString p_detector, TString p_station) const;
 
 	/**
 	 * Get the list of detectors imported from the setup configuration file.
@@ -169,11 +170,13 @@ public:
 	 *
 	 */
 	unsigned short GetDetectorID(TString p_detector) const;
+	unsigned short GetDetectorID2(TString p_detector) const;
 
 	/**
 	 * Get the list of stations for the given detector.
 	 */
 	std::map<TString, unsigned short> const GetStationList(TString detector) const;
+	std::map<TString, unsigned short> const GetStationList2(TString detector) const;
 
 	/**
 	 *

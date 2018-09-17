@@ -41,7 +41,7 @@ DetEventStation::~DetEventStation()
 void DetEventStation::AddDetMessage(Int_t p_statch, Int_t p_val)
 {
 	TClonesArray& clref = *fDetMessages;
-	Int_t size = clref.GetEntries();
+	Int_t size = clref.GetEntriesFast();
 
 	Short_t v_detID = this->GetParent()->getId();
 	Short_t v_stationID = this->getId();
