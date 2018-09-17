@@ -5,11 +5,11 @@
 using std::cerr;
 using std::endl;
 
-DetEventCommon::DetEventCommon() :
+/*DetEventCommon::DetEventCommon() :
 	TGo4EventElement()
 {
 	cerr << "DEFAULT DetEventCommon CONSTRUCTOR" << endl;
-}
+}*/
 
 DetEventCommon::DetEventCommon(const char* name, Short_t id) :
 	TGo4EventElement(name, name, id)

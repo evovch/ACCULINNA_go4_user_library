@@ -19,7 +19,19 @@ public:
 	 * available constructor has the default values for all the arguments.
 	 */
 	//TODO testing
-	DetEventCommon();
+
+	/**
+	 * This default constructor will interfere with the second constructor with all
+	 * arguments with default values. This in trunleads to an error:
+	 * Error in <TClass::New>: cannot create object of class DetEventCommon
+	 * when trying to browse this branch in the ROOT interactive browser.
+	 * Initially this default constructor was introduced with the commit
+	 * ae0870d26d54fa37fe160d57c3dcd8d88e0b0942
+	 * and probably has something to do with the Reader module.
+	 * Still to be tested...
+	 */
+	//DetEventCommon();
+
 	DetEventCommon(const char* name = "DetEventCommon", Short_t id = 0);
 	virtual ~DetEventCommon();
 
