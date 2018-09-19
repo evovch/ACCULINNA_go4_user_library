@@ -41,7 +41,7 @@ Reader::Reader(TString inFilename, TString p_setupfilename) :
 	}
 
 	fEvent = new DetEventFull("DetEventFull1");
-	fEventCopy = fEvent;
+	fEventCopy = fEvent; //TODO what is this magic?
 	fEvent->synchronizeWithTree(fInTree, &fEventCopy);
 }
 
@@ -49,6 +49,7 @@ Reader::~Reader()
 {
 	if (fSetupConfiguration) delete fSetupConfiguration;
 	if (fEvent) delete fEvent;
+	//TODO Shouldn't we close or delete the input file?
 }
 
 void Reader::ProcessFile(UInt_t nEvents)
@@ -72,7 +73,7 @@ void Reader::ProcessFile(UInt_t nEvents)
 DetEventFull* Reader::ReadEvent(Int_t iEvent)
 {
 	if (iEvent < 0 || iEvent >= GetNEventsTotal()) {
-		cerr << "The event number is greater than total events number in input file!";
+		cerr << "The event number is greater than total number of events in the input file!" << endl;
 		return NULL;
 	}
 
@@ -83,10 +84,11 @@ DetEventFull* Reader::ReadEvent(Int_t iEvent)
 
 Long64_t Reader::GetNEventsTotal() const
 {
-	if (fInTree)
+	if (fInTree) {
 		return fInTree->GetEntries();
-	else
+	} else {
 		return -1;
+	}
 }
 
 /*static*/

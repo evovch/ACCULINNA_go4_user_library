@@ -24,10 +24,10 @@ public:
 
 	DetEventFull* ReadEvent(Int_t iEvent);
 
-	Long64_t GetNEventsTotal() const;
+	Long64_t GetNEventsTotal(void) const;
 
-	TTree* GetInTree() const {return fInTree;} 
-	SetupConfiguration* GetSetupConfiguration() const {return fSetupConfiguration;}
+	TTree* GetInTree(void) const { return fInTree; } 
+	SetupConfiguration* GetSetupConfiguration(void) const { return fSetupConfiguration; }
 
 private: // data members
 
