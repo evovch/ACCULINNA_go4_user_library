@@ -26,6 +26,9 @@ public:
 
 	Long64_t GetNEventsTotal() const;
 
+	TTree* GetInTree() const {return fInTree;} 
+	SetupConfiguration* GetSetupConfiguration() const {return fSetupConfiguration;}
+
 private: // data members
 
 	/**
