@@ -17,9 +17,14 @@ set(ROOTCLING_HEADERS UserAnalysis.h
                       unpacking/UserEventUnpacking.h
                       unpacking/UserProcUnpacking.h
                       unpacking/UserHistosUnpacking.h
-                      repacking/UserEventRepacking.h
+                      rawmonitoring/UserEventRawMonitoring.h
+                      rawmonitoring/UserProcRawMonitoring.h
+                      rawmonitoring/UserHistosRawMonitoring.h
                       repacking/UserProcRepacking.h
                       repacking/UserHistosRepacking.h
+                      advmonitoring/UserEventAdvMonitoring.h
+                      advmonitoring/UserProcAdvMonitoring.h
+                      advmonitoring/UserHistosAdvMonitoring.h
                       learn/UserEventLearn.h
                       learn/UserProcLearn.h
                       digibuilding/UserEventDigiBuilding.h
@@ -40,9 +45,14 @@ set(SOURCE_LIB G__${COMPNAME}.cxx
                unpacking/UserEventUnpacking.cxx
                unpacking/UserProcUnpacking.cxx
                unpacking/UserHistosUnpacking.cxx
-               repacking/UserEventRepacking.cxx
+               rawmonitoring/UserEventRawMonitoring.cxx
+               rawmonitoring/UserProcRawMonitoring.cxx
+               rawmonitoring/UserHistosRawMonitoring.cxx
                repacking/UserProcRepacking.cxx
                repacking/UserHistosRepacking.cxx
+               advmonitoring/UserEventAdvMonitoring.cxx
+               advmonitoring/UserProcAdvMonitoring.cxx
+               advmonitoring/UserHistosAdvMonitoring.cxx
                learn/UserEventLearn.cxx
                learn/UserProcLearn.cxx
                digibuilding/UserEventDigiBuilding.cxx

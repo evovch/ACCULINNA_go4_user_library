@@ -14,12 +14,6 @@
 
 class UserParameter;
 
-//TODO not used by now
-class TGo4MbsEvent;
-class UserEventUnpacking;
-class UserEventRepacking;
-class UserEventLearn;
-
 class UserAnalysis : public TGo4Analysis
 {
 public:
@@ -40,12 +34,6 @@ private:
 	 * Analysis parameters object, accessible by all steps
 	 */
 	UserParameter* mParams;
-
-	//TODO not used by now
-	TGo4MbsEvent* mMbsEvent;
-	UserEventUnpacking* mUserEventUnpacking;
-	UserEventRepacking* mUserEventRepacking;
-	UserEventLearn* mUserEventLearn;
 
 	ClassDef(UserAnalysis, 1);
 };

@@ -13,21 +13,11 @@ using std::endl;
 
 // Project
 #include "UserParameter.h"
-#include "unpacking/UserEventUnpacking.h"
-//#include "repacking/UserEventRepacking.h"
-#include "data/DetEventFull.h"
-#include "learn/UserEventLearn.h"
 
 UserAnalysis::UserAnalysis(const char* name) :
 	TGo4Analysis(name),
 	mEventCounter(0),
-	//TODO not used by now ---------
-	mMbsEvent(nullptr),
-	mUserEventUnpacking(nullptr),
-	//mUserEventRepacking(nullptr),
-
-	mUserEventLearn(nullptr)
-	//------------------------------
+	mParams(nullptr)
 {
 	if (!TGo4Version::CheckVersion(__GO4BUILDVERSION__)) {
 		cout << "Go4 version mismatch! Aborting." << endl;
@@ -47,12 +37,7 @@ UserAnalysis::UserAnalysis(const char* name) :
 UserAnalysis::UserAnalysis(int argc, char** argv) :
 	TGo4Analysis(argc, argv),
 	mEventCounter(0),
-	//TODO not used by now ---------
-	mMbsEvent(nullptr),
-	mUserEventUnpacking(nullptr),
-	//mUserEventRepacking(nullptr),
-	mUserEventLearn(nullptr)
-	//------------------------------
+	mParams(nullptr)
 {
 	if (!TGo4Version::CheckVersion(__GO4BUILDVERSION__)) {
 		cout << "Go4 version mismatch! Aborting." << endl;
@@ -134,7 +119,6 @@ void UserAnalysis::Construct(TString p_outfilename, TString p_setupfilename)
 	TGo4StepFactory* factoryRepacking = new TGo4StepFactory("factoryRepacking");
 	//factoryRepacking->DefInputEvent("UserEventUnpacking1", "UserEventUnpacking"); // object name, class name
 	factoryRepacking->DefEventProcessor("UserProcRepacking1", "UserProcRepacking"); // object name, class name
-	//factoryRepacking->DefOutputEvent("UserEventRepacking1", "UserEventRepacking"); // object name, class name
 	factoryRepacking->DefOutputEvent("DetEventFull1", "DetEventFull"); // object name, class name
 
 	TGo4AnalysisStep* stepRepacking = new TGo4AnalysisStep("stepRepacking", factoryRepacking);
@@ -180,7 +164,71 @@ void UserAnalysis::Construct(TString p_outfilename, TString p_setupfilename)
 
 	AddAnalysisStep(stepLearn);
 
-	// STEP3.1 - digibuilding =====================================================================
+	// STEP2.3 - provider - raw monitoring ===============================================================
+
+	TGo4StepFactory* factoryUnpackedProvider3 = new TGo4StepFactory("factoryUnpackedProvider3");
+	factoryUnpackedProvider3->DefInputEvent("UserEventUnpacking1", "UserEventUnpacking"); // read full raw event without partial io
+	factoryUnpackedProvider3->DefEventProcessor("UserEventUnpacking1_3","MeshProviderProc"); // processorname must match name of input event + "_"
+	factoryUnpackedProvider3->DefOutputEvent("Dummy", "MeshDummyEvent");
+	TGo4AnalysisStep* stepUnpackedProvider3 = new TGo4AnalysisStep("stepUnpackedProvider3", factoryUnpackedProvider3);
+	stepUnpackedProvider3->SetSourceEnabled(kFALSE);
+	stepUnpackedProvider3->SetStoreEnabled(kFALSE);
+	stepUnpackedProvider3->SetProcessEnabled(kTRUE);
+	AddAnalysisStep(stepUnpackedProvider3);
+
+	// STEP2.3 - processor - raw monitoring =============================================================
+
+	TGo4StepFactory* factoryRawMonitoring = new TGo4StepFactory("factoryRawMonitoring");
+	//factoryRawMonitoring->DefInputEvent("UserEventUnpacking1", "UserEventUnpacking"); // object name, class name
+	factoryRawMonitoring->DefEventProcessor("UserProcRawMonitoring1", "UserProcRawMonitoring"); // object name, class name
+	factoryRawMonitoring->DefOutputEvent("UserEventRawMonitoring1", "UserEventRawMonitoring"); // object name, class name
+
+	TGo4AnalysisStep* stepRawMonitoring = new TGo4AnalysisStep("stepRawMonitoring", factoryRawMonitoring);
+
+	stepRawMonitoring->SetSourceEnabled(kFALSE);
+	stepRawMonitoring->SetProcessEnabled(kTRUE);
+	stepRawMonitoring->SetErrorStopEnabled(kFALSE);
+
+	/*TGo4FileStoreParameter* storeRawMonitoring = new TGo4FileStoreParameter("rawmonitoring.root"); //TODO
+	stepRawMonitoring->SetEventStore(storeRawMonitoring);
+	stepRawMonitoring->SetStoreEnabled(kTRUE);*/
+	stepRawMonitoring->SetStoreEnabled(kFALSE);
+
+	AddAnalysisStep(stepRawMonitoring);
+
+	// STEP3.1 - provider - advanced monitoring ===============================================================
+
+	TGo4StepFactory* factoryRepackedProvider1 = new TGo4StepFactory("factoryRepackedProvider1");
+	factoryRepackedProvider1->DefInputEvent("DetEventFull1", "DetEventFull"); // read full raw event without partial io
+	factoryRepackedProvider1->DefEventProcessor("DetEventFull1_1","MeshProviderProc"); // processorname must match name of input event + "_"
+	factoryRepackedProvider1->DefOutputEvent("Dummy", "MeshDummyEvent");
+	TGo4AnalysisStep* stepRepackedProvider1 = new TGo4AnalysisStep("stepRepackedProvider1", factoryRepackedProvider1);
+	stepRepackedProvider1->SetSourceEnabled(kFALSE);
+	stepRepackedProvider1->SetStoreEnabled(kFALSE);
+	stepRepackedProvider1->SetProcessEnabled(kTRUE);
+	AddAnalysisStep(stepRepackedProvider1);
+
+	// STEP3.1 - processor - advanced monitoring =============================================================
+
+	TGo4StepFactory* factoryAdvMonitoring = new TGo4StepFactory("factoryAdvMonitoring");
+	//factoryAdvMonitoring->DefInputEvent("DetEventFull1", "DetEventFull"); // object name, class name
+	factoryAdvMonitoring->DefEventProcessor("UserProcAdvMonitoring1", "UserProcAdvMonitoring"); // object name, class name
+	factoryAdvMonitoring->DefOutputEvent("UserEventAdvMonitoring1", "UserEventAdvMonitoring"); // object name, class name
+
+	TGo4AnalysisStep* stepAdvMonitoring = new TGo4AnalysisStep("stepAdvMonitoring", factoryAdvMonitoring);
+
+	stepAdvMonitoring->SetSourceEnabled(kFALSE);
+	stepAdvMonitoring->SetProcessEnabled(kTRUE);
+	stepAdvMonitoring->SetErrorStopEnabled(kFALSE);
+
+	/*TGo4FileStoreParameter* storeAdvMonitoring = new TGo4FileStoreParameter("advmonitoring.root"); //TODO
+	stepAdvMonitoring->SetEventStore(storeAdvMonitoring);
+	stepAdvMonitoring->SetStoreEnabled(kTRUE);*/
+	stepAdvMonitoring->SetStoreEnabled(kFALSE);
+
+	AddAnalysisStep(stepAdvMonitoring);
+
+	// STEP3.2 - digibuilding =====================================================================
 /*
 	TGo4StepFactory* factoryDigiBuilding = new TGo4StepFactory("factoryDigiBuilding");
 	factoryDigiBuilding->DefInputEvent("DetEventFull1", "DetEventFull"); // object name, class name
@@ -206,13 +254,7 @@ Int_t UserAnalysis::UserPreLoop(void)
 {
 	//cout << "UserAnalysis::UserPreLoop()." << endl;
 	//cerr << "Starting UserAnalysis." << endl;
-/*
-	//TODO not used by now
-	mMbsEvent = dynamic_cast<TGo4MbsEvent*> (GetInputEvent("stepUnpacking"));
-	mUserEventUnpacking = dynamic_cast<UserEventUnpacking*> (GetOutputEvent("stepUnpacking"));
-	mUserEventRepacking = dynamic_cast<UserEventRepacking*> (GetOutputEvent("stepRepacking"));
-	mUserEventLearn = dynamic_cast<UserEventLearn*> (GetOutputEvent("stepLearn"));
-*/
+
 	mEventCounter = 0;
 	return 0;
 }
@@ -229,13 +271,7 @@ Int_t UserAnalysis::UserPostLoop(void)
 {
 	//cout << "UserAnalysis::UserPostLoop()." << endl;
 	cerr << "Finished UserAnalysis. Total " << mEventCounter << " events." << endl;
-/*
-	//TODO not used by now
-	mMbsEvent = nullptr;
-	mUserEventUnpacking = nullptr;
-	mUserEventRepacking = nullptr;
-	mUserEventLearn = nullptr;
-*/
+
 	return 0;
 }
 

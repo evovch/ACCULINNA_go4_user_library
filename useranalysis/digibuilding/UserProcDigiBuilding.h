@@ -9,6 +9,8 @@
 
 #include <TGo4EventProcessor.h> // mother class
 
+class TGo4EventElement;
+
 class UserEventDigiBuilding;
 
 class UserProcDigiBuilding : public TGo4EventProcessor

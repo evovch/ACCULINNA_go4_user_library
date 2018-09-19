@@ -53,7 +53,9 @@ endif()
 # Beware that A LOT of text will be generated. Don't run more than 10-100 events.
 
 #add_definitions(-DDEBUGUNPACKING)
+#add_definitions(-DDEBUGRAWMON)
 #add_definitions(-DDEBUGREPACKING)
+#add_definitions(-DDEBUGADVMON)
 #add_definitions(-DDEBUGLEARN)
 #add_definitions(-DDEBUGDIGIBUILDING)
 
