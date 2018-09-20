@@ -110,19 +110,23 @@ Bool_t UserProcUnpacking::BuildEvent(TGo4EventElement* p_dest)
 
 	v_outputEvent->SetValid(v_isValid);
 
-	cerr << "[INFO  ] " << "End of event " << fEventCounter << ".\t"
-	     << "Total subevents: " << fSubEventCounter << ".\t"
-	     << "Headers' words: " << fHeadersWords << ",\t"
-	     << "known words: " << fNknownWords << ",\t"
-	     << "unknown words: " << fNunknownWords << ",\t"
-	     << "total: " << (fHeadersWords+fNknownWords+fNunknownWords)*sizeof(Int_t) << " bytes."
-	     << endl;
+	if (fEventCounter % 10000 == 0) {
+		cerr << "[INFO  ] " << "End of event " << fEventCounter << ".\t"
+		     << "Total subevents: " << fSubEventCounter << ".\t"
+		     << "Headers' words: " << fHeadersWords << ",\t"
+		     << "known words: " << fNknownWords << ",\t"
+		     << "unknown words: " << fNunknownWords << ",\t"
+		     << "total: " << (fHeadersWords+fNknownWords+fNunknownWords)*sizeof(Int_t) << " bytes."
+		     << endl;
+	 }
 
 	if (fFileSummary != NULL) {
-		fprintf(fFileSummary,
-		        "End of event %ld.\tTotal subevents: %ld.\tHeaders' words: %ld,\tknown words: %ld,\tunknown words: %ld,\ttotal: %ld bytes.\n",
-		        fEventCounter, fSubEventCounter, fHeadersWords, fNknownWords, fNunknownWords,
-		        (fHeadersWords+fNknownWords+fNunknownWords)*sizeof(Int_t));
+		if (fEventCounter % 10000 == 0) {
+			fprintf(fFileSummary,
+			        "End of event %ld.\tTotal subevents: %ld.\tHeaders' words: %ld,\tknown words: %ld,\tunknown words: %ld,\ttotal: %ld bytes.\n",
+			        fEventCounter, fSubEventCounter, fHeadersWords, fNknownWords, fNunknownWords,
+			        (fHeadersWords+fNknownWords+fNunknownWords)*sizeof(Int_t));
+		}
 	}
 
 	this->FinishEvent();
