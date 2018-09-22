@@ -31,14 +31,14 @@ public:
 	/**
 	 * Accessor
 	 */
-	TClonesArray* GetDetMessages(void) { return fDetMessages; }
+	TClonesArray* GetDetMessages(void) { return fData; }
 
 private:
 	/**
 	 * The main component of the station-event -
 	 * an array of detector-messages.
 	 */
-	TClonesArray* fDetMessages;
+	TClonesArray* fData;
 
 	ClassDef(DetEventStation, 1);
 };

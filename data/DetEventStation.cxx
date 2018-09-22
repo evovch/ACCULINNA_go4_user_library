@@ -13,7 +13,7 @@ using std::endl;
 
 DetEventStation::DetEventStation() :
 	TGo4EventElement(),
-	fDetMessages(NULL)
+	fData(NULL)
 {
 	//TODO how do we avoid using default constructors when browsing the
 	// analysis result root file?
@@ -25,22 +25,22 @@ DetEventStation::DetEventStation(const char* name, const char* title, Short_t id
 {
 	cerr << "DetEventStation::DetEventStation: name=" << name << " id=" << id << endl;
 
-	fDetMessages = new TClonesArray("DetMessage");
+	fData = new TClonesArray("DetMessage");
 
 	//this->Clear(); // Not really needed
 }
 
 DetEventStation::~DetEventStation()
 {
-	if (fDetMessages) {
-		fDetMessages->Clear();
-		delete fDetMessages;
+	if (fData) {
+		fData->Clear();
+		delete fData;
 	}
 }
 
 void DetEventStation::AddDetMessage(Int_t p_statch, Int_t p_val)
 {
-	TClonesArray& clref = *fDetMessages;
+	TClonesArray& clref = *fData;
 	Int_t size = clref.GetEntriesFast();
 
 	Short_t v_detID = this->GetParent()->getId();
@@ -59,7 +59,7 @@ void DetEventStation::Clear(Option_t* t)
 	//TODO zero all data members!
 	//cerr << "DetEventStation::Clear()" << endl;
 
-	fDetMessages->Clear();
+	fData->Clear();
 }
 
 void DetEventStation::Print(Option_t* option) const
@@ -67,9 +67,9 @@ void DetEventStation::Print(Option_t* option) const
 	//TODO dump all data members!
 	cerr << "DetEventStation::Print() "
 	     << "name = '" << this->GetName() << "'\t"
-	     << "size = " << fDetMessages->GetEntries() << endl;
+	     << "size = " << fData->GetEntries() << endl;
 
-	TIter myiter(fDetMessages);
+	TIter myiter(fData);
 	DetMessage* curDetM;
 	while ((curDetM = (DetMessage*)myiter.Next())) {
 		curDetM->Print();
