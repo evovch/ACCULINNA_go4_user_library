@@ -73,13 +73,21 @@ void InitStcSetupConfig(stc_setup_config* ptr)
 	ptr->fSetupRun = 0;
 	strncpy(ptr->fSetupComment, "DefaultComment", 128);
 	ptr->fNmappings = 0;
+	#ifdef __cplusplus
+	ptr->fMappingsList = new stc_mapping[ptr->fNmappings];
+	#else
 	ptr->fMappingsList = (stc_mapping*)malloc(ptr->fNmappings*sizeof(stc_mapping));
+	#endif /* __cplusplus */
 	/* fprintf(stderr, "fMappingsList=%p, fNmappings=%u\n", (void*)(ptr->fMappingsList), ptr->fNmappings); */
 }
 
 void DestructStcSetupConfig(stc_setup_config* ptr)
 {
+	#ifdef __cplusplus
+	delete [] ptr->fMappingsList;
+	#else
 	free(ptr->fMappingsList);
+	#endif /* __cplusplus */
 }
 
 void DumpStcSetupConfig(const stc_setup_config* ptr)
@@ -102,9 +110,20 @@ void DumpStcSetupConfig(const stc_setup_config* ptr)
 
 void ExtendMappingsListStcSetupConfig(stc_setup_config* ptr, const stc_mapping* ptrMapping)
 {
+	stc_mapping* curMapping;
 	/* fprintf(stderr, "fMappingsList=%p, fNmappings=%u\n", (void*)(ptr->fMappingsList), ptr->fNmappings); */
 	stc_mapping* newPointer;
+
+	#ifdef __cplusplus
+	newPointer = new stc_mapping[ptr->fNmappings+1];
+	for (signed int i=0; i<ptr->fNmappings; i++) {
+		newPointer[i] = ptr->fMappingsList[i];
+	}
+	delete [] ptr->fMappingsList;
+	#else
 	newPointer = (stc_mapping*)realloc(ptr->fMappingsList, (ptr->fNmappings+1)*sizeof(stc_mapping));
+	#endif /* __cplusplus */
+
 	/* fprintf(stderr, "newPointer=%p, fMappingsList=%p, fNmappings+1=%u\n",
 	          (void*)newPointer, (void*)(ptr->fMappingsList), ptr->fNmappings+1); */
 	if (newPointer == NULL) {
@@ -116,17 +135,19 @@ void ExtendMappingsListStcSetupConfig(stc_setup_config* ptr, const stc_mapping* 
 	ptr->fMappingsList = newPointer;
 
 	/* Fill */
-	strncpy(ptr->fMappingsList[ptr->fNmappings].fCrateName, ptrMapping->fCrateName, 64);
-	ptr->fMappingsList[ptr->fNmappings].fCrateProcid = ptrMapping->fCrateProcid;
-	ptr->fMappingsList[ptr->fNmappings].fAddr = ptrMapping->fAddr;
-	strncpy(ptr->fMappingsList[ptr->fNmappings].fElblock, ptrMapping->fElblock, 64);
-	ptr->fMappingsList[ptr->fNmappings].fStartelectrch = ptrMapping->fStartelectrch;
-	ptr->fMappingsList[ptr->fNmappings].fNelectrch = ptrMapping->fNelectrch;
-	ptr->fMappingsList[ptr->fNmappings].fStepelectrch = ptrMapping->fStepelectrch;
-	strncpy(ptr->fMappingsList[ptr->fNmappings].fStation, ptrMapping->fStation, 64);
-	ptr->fMappingsList[ptr->fNmappings].fStartstatch = ptrMapping->fStartstatch;
-	strncpy(ptr->fMappingsList[ptr->fNmappings].fDetector, ptrMapping->fDetector, 64);
-	strncpy(ptr->fMappingsList[ptr->fNmappings].fDigicomp, ptrMapping->fDigicomp, 64);
+	curMapping = &(ptr->fMappingsList[ptr->fNmappings]);
+
+	strncpy(curMapping->fCrateName, ptrMapping->fCrateName, 64);
+	curMapping->fCrateProcid = ptrMapping->fCrateProcid;
+	curMapping->fAddr = ptrMapping->fAddr;
+	strncpy(curMapping->fElblock, ptrMapping->fElblock, 64);
+	curMapping->fStartelectrch = ptrMapping->fStartelectrch;
+	curMapping->fNelectrch = ptrMapping->fNelectrch;
+	curMapping->fStepelectrch = ptrMapping->fStepelectrch;
+	strncpy(curMapping->fStation, ptrMapping->fStation, 64);
+	curMapping->fStartstatch = ptrMapping->fStartstatch;
+	strncpy(curMapping->fDetector, ptrMapping->fDetector, 64);
+	strncpy(curMapping->fDigicomp, ptrMapping->fDigicomp, 64);
 
 	/* Increase the counter of the entities in the list */
 	ptr->fNmappings++;
@@ -161,7 +182,6 @@ void ImportXML(stc_setup_config* ptr, const char* filename)
 		}
 	}
 	while (nReadSymbols > 0);
-
 
 	fclose(f);
 }

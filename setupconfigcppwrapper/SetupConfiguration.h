@@ -37,6 +37,11 @@ public:
 	virtual ~SetupConfiguration();
 
 	/**
+	 * Print configuration into the stderr stream
+	 */
+	void Print(Option_t* option = "") const;
+
+	/**
 	 * Return true if the given electronics channel is mapped
 	 * to some detector channel.
 	 */
@@ -211,7 +216,7 @@ private: // data members
 	 * List of stations per detector.
 	 * Filled during the Link() method.
 	 */
-	std::map< TString, std::map<TString, unsigned short> > mStationsPerDet;
+	std::map< TString, std::map<TString, unsigned short> > mStationsPerDet; //! TODO probably, we don't need to stream this
 
 // ------------------------------------------------------------------------------------------------
 // MWPC specific

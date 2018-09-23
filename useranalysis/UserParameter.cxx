@@ -1,10 +1,16 @@
 #include "UserParameter.h"
 
+// STD
+#include <iostream>
+using std::cerr;
+using std::endl;
+
 // Project
 #include "setupconfigcppwrapper/SetupConfiguration.h"
 
 UserParameter::UserParameter(const char* name) :
-	TGo4Parameter(name)
+	TGo4Parameter(name),
+	fSetupConfiguration(nullptr)
 {
 }
 
@@ -17,6 +23,14 @@ void UserParameter::Init(void)
 UserParameter::~UserParameter()
 {
 	if (fSetupConfiguration) delete fSetupConfiguration;
+}
+
+Int_t UserParameter::PrintParameter(Text_t* buffer, Int_t buflen)
+{
+	cerr << "mInputFilename       = '" << mInputFilename << "'" << endl;
+	cerr << "mSetupConfigFilename = '" << mSetupConfigFilename << "'" << endl;
+	cerr << "mOutputFilename      = '" << mOutputFilename << "'" << endl;
+	fSetupConfiguration->Print();
 }
 
 ClassImp(UserParameter)
