@@ -25,7 +25,7 @@ DetEventStation::DetEventStation(const char* name, const char* title, Short_t id
 {
 	cerr << "DetEventStation::DetEventStation: name=" << name << " id=" << id << endl;
 
-	fData = new TClonesArray("DetMessage");
+	fData = new TClonesArray("DetMessage", 50);
 
 	//this->Clear(); // Not really needed
 }
