@@ -10,9 +10,20 @@ fi
 # Please specify these variables to your needs ================================
 
 INPUTLMDDIR=/home/evovch/Downloads/FLNR_data/exp201803
-OUTPUTROOTDIR=/home/evovch/Downloads/FLNR_data/exp201803
+
+if [ ! -d "${INPUTLMDDIR}" ]; then
+	echo -e "Directory ${INPUTLMDDIR} does not exist. Aborting."
+	exit;
+fi
+
+OUTPUTROOTDIR=/home/evovch/Downloads/FLNR_data/exp201803/result
+
+# TODO check that ${OUTPUTROOTDIR} exists ???
 
 SETUPFILE=./usr/setup2_exp201803.xml
+
+# TODO check that ${SETUPFILE} exists
+
 INPUTFILENAME=run13_0037.lmd
 
 NEVENTS=0 # Specify 0 to process the full file
