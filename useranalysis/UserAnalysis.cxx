@@ -134,7 +134,8 @@ void UserAnalysis::Construct(TString p_outfilename, TString p_setupfilename)
 	AddAnalysisStep(stepRepacking);
 
 	// STEP2.2 - provider - learn ===================================================================
-
+//TODO remove two leading slashes in the following line to disable this step
+///*
 	TGo4StepFactory* factoryUnpackedProvider2 = new TGo4StepFactory("factoryUnpackedProvider2");
 	factoryUnpackedProvider2->DefInputEvent("UserEventUnpacking1", "UserEventUnpacking"); // read full raw event without partial io
 	factoryUnpackedProvider2->DefEventProcessor("UserEventUnpacking1_2","MeshProviderProc"); // processorname must match name of input event + "_"
@@ -163,9 +164,10 @@ void UserAnalysis::Construct(TString p_outfilename, TString p_setupfilename)
 	stepLearn->SetStoreEnabled(kFALSE); //TODO enable/disable
 
 	AddAnalysisStep(stepLearn);
-
+//*/
 	// STEP2.3 - provider - raw monitoring ===============================================================
-
+//TODO remove two leading slashes in the following line to disable this step
+///*
 	TGo4StepFactory* factoryUnpackedProvider3 = new TGo4StepFactory("factoryUnpackedProvider3");
 	factoryUnpackedProvider3->DefInputEvent("UserEventUnpacking1", "UserEventUnpacking"); // read full raw event without partial io
 	factoryUnpackedProvider3->DefEventProcessor("UserEventUnpacking1_3","MeshProviderProc"); // processorname must match name of input event + "_"
@@ -189,15 +191,16 @@ void UserAnalysis::Construct(TString p_outfilename, TString p_setupfilename)
 	stepRawMonitoring->SetProcessEnabled(kTRUE);
 	stepRawMonitoring->SetErrorStopEnabled(kFALSE);
 
-	/*TGo4FileStoreParameter* storeRawMonitoring = new TGo4FileStoreParameter("rawmonitoring.root"); //TODO
-	stepRawMonitoring->SetEventStore(storeRawMonitoring);
-	stepRawMonitoring->SetStoreEnabled(kTRUE);*/
+	//TGo4FileStoreParameter* storeRawMonitoring = new TGo4FileStoreParameter("rawmonitoring.root"); //TODO
+	//stepRawMonitoring->SetEventStore(storeRawMonitoring);
+	//stepRawMonitoring->SetStoreEnabled(kTRUE);
 	stepRawMonitoring->SetStoreEnabled(kFALSE);
 
 	AddAnalysisStep(stepRawMonitoring);
-
+//*/
 	// STEP3.1 - provider - advanced monitoring ===============================================================
-
+//TODO remove two leading slashes in the following line to disable this step
+///*
 	TGo4StepFactory* factoryRepackedProvider1 = new TGo4StepFactory("factoryRepackedProvider1");
 	factoryRepackedProvider1->DefInputEvent("DetEventFull1", "DetEventFull"); // read full raw event without partial io
 	factoryRepackedProvider1->DefEventProcessor("DetEventFull1_1","MeshProviderProc"); // processorname must match name of input event + "_"
@@ -221,13 +224,13 @@ void UserAnalysis::Construct(TString p_outfilename, TString p_setupfilename)
 	stepAdvMonitoring->SetProcessEnabled(kTRUE);
 	stepAdvMonitoring->SetErrorStopEnabled(kFALSE);
 
-	/*TGo4FileStoreParameter* storeAdvMonitoring = new TGo4FileStoreParameter("advmonitoring.root"); //TODO
-	stepAdvMonitoring->SetEventStore(storeAdvMonitoring);
-	stepAdvMonitoring->SetStoreEnabled(kTRUE);*/
+	//TGo4FileStoreParameter* storeAdvMonitoring = new TGo4FileStoreParameter("advmonitoring.root"); //TODO
+	//stepAdvMonitoring->SetEventStore(storeAdvMonitoring);
+	//stepAdvMonitoring->SetStoreEnabled(kTRUE);
 	stepAdvMonitoring->SetStoreEnabled(kFALSE);
 
 	AddAnalysisStep(stepAdvMonitoring);
-
+//*/
 	// STEP3.2 - digibuilding =====================================================================
 /*
 	TGo4StepFactory* factoryDigiBuilding = new TGo4StepFactory("factoryDigiBuilding");
