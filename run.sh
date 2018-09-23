@@ -9,6 +9,8 @@ fi
 
 # Please specify these variables to your needs ================================
 
+# Please specify the path to a directory which contains the file you want to analyse
+# You should not put the trailing slash sign (but actually if you will, it should not affect the result...)
 INPUTLMDDIR=/home/evovch/Downloads/FLNR_data/exp201803
 
 if [ ! -d "${INPUTLMDDIR}" ]; then
@@ -16,16 +18,20 @@ if [ ! -d "${INPUTLMDDIR}" ]; then
 	exit;
 fi
 
+# Please specify the path to the output directory where the resulting root files will be written
 OUTPUTROOTDIR=/home/evovch/Downloads/FLNR_data/exp201803/result
 
 # TODO check that ${OUTPUTROOTDIR} exists ???
 
+# Please specify the input XML configuration file
 SETUPFILE=./usr/setup2_exp201803.xml
 
 # TODO check that ${SETUPFILE} exists
 
+# Please specify input file name
 INPUTFILENAME=run13_0037.lmd
 
+# Please specify number of events to process
 NEVENTS=0 # Specify 0 to process the full file
 
 TEXTERRFILE=textoutput/err.txt  # Default: textoutput/err.txt
@@ -33,6 +39,8 @@ TEXTERRFILE=textoutput/err.txt  # Default: textoutput/err.txt
 
 TEXTOUTFILE=textoutput/out.txt  # Default: textoutput/out.txt # No reason to suppress
 
+# =============================================================================
+# In principle, one should not change anything below this line
 # =============================================================================
 
 INPUTFILE=${INPUTLMDDIR}/${INPUTFILENAME}
