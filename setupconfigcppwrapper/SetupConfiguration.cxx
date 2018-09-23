@@ -49,6 +49,11 @@ SetupConfiguration::~SetupConfiguration()
 {
 }
 
+void SetupConfiguration::Print(Option_t* option) const
+{
+	DumpStcSetupConfig(&mConfiguration);
+}
+
 bool SetupConfiguration::IsMapped(unsigned short p_crateProcid,
                                   unsigned short p_addr,
                                   unsigned short p_elch) const

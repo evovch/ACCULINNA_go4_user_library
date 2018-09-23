@@ -37,6 +37,11 @@ public:
 	virtual ~SetupConfiguration();
 
 	/**
+	 * Print configuration into the stderr stream
+	 */
+	void Print(Option_t* option = "") const;
+
+	/**
 	 * Return true if the given electronics channel is mapped
 	 * to some detector channel.
 	 */

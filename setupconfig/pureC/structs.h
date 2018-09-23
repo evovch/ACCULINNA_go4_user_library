@@ -60,7 +60,7 @@ ClassImp(stc_mapping)
 class stc_setup_config : public TObject
 {
 public:
-	stc_setup_config() : TObject() {}
+	stc_setup_config() : TObject(), fMappingsList(nullptr) {}
 	virtual ~stc_setup_config() {}
 
 #else

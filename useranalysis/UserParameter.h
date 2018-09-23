@@ -25,6 +25,11 @@ public:
 	virtual ~UserParameter();
 
 	/**
+	 * Print the parameter set into the stderr stream
+	 */
+	virtual Int_t PrintParameter(Text_t* buffer=0, Int_t buflen=0); // *MENU*
+
+	/**
 	 * Import setup configuration XML file
 	 */
 	void Init(void);
