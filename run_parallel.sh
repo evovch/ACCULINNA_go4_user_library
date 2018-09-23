@@ -112,11 +112,14 @@ cat > ${TEXTOUTFILE} << EOF
 ${ANARUNINFO}
 EOF
 
-echo ${ANARUNINFO}
+echo -e "\e[1m\e[34m${ANARUNINFO}\e[0m"
+
+echo -e "\e[1m\e[32m"`date` "Analysis started.\e[0m"
+${GO4SYS}/bin/go4analysis -v -lib libAccDaqUserAnalysis.so -asf ${AUTOSAVEFILE} -file ${INPUTFILE} -args ${OUTPUTFILE} ${SETUPFILE} >> ${TEXTOUTFILE} 2> ${TEXTERRFILE} &
 
 done
 
-echo -e "\e[1m\e[32mWaiting\e[0m"
+echo -e "\e[1m\e[32mWaiting for all threads to finish\e[0m"
 wait
 
 echo -e "\e[1m\e[32m"`date` "Analysis finished.\e[0m"
