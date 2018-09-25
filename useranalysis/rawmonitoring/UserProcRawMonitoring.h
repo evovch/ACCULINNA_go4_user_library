@@ -13,7 +13,6 @@ class TGo4EventElement;
 
 class UserHistosRawMonitoring;
 class RawMessage;
-class SetupConfiguration;
 
 class UserProcRawMonitoring : public TGo4EventProcessor
 {
@@ -43,11 +42,6 @@ private: // data members
 	 * See UserHistosRawMonitoring class.
 	 */
 	UserHistosRawMonitoring* fHistoMan;
-
-	/**
-	 * 'this' object of the UserProcRawMonitoring class does not own this pointer
-	 */
-	const SetupConfiguration* fSetupConfig;
 
 	/**
 	 * Summary stream

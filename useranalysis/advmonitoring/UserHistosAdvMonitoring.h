@@ -9,6 +9,9 @@
 
 #include <TObject.h> // mother class
 
+// STD
+#include <map>
+
 class TH1;
 class TH2;
 
@@ -18,7 +21,17 @@ public:
 	UserHistosAdvMonitoring();
 	~UserHistosAdvMonitoring();
 
+	void GenerateAutoHistos(void);
+
 public:
+
+	TH1* mhHisto1;
+	TH2* mhHisto2;
+
+	/**
+	 * Automatically generated histograms
+	 */
+	std::map<unsigned int, TH1*> fAutoHistos; //!
 
 	ClassDef(UserHistosAdvMonitoring, 1);
 };

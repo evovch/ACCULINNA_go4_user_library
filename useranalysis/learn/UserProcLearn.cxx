@@ -233,6 +233,7 @@ void UserProcLearn::UserPostLoop()
 void UserProcLearn::ProcessUnmappedChannels(void) const
 {
 // This code snippet may be useful in the future
+// but you will not find it when you need it...
 /*
 	std::map<TString, unsigned short> v_detectorList = fSetupConfig->GetDetectorList();
 	std::map<TString, unsigned short>::const_iterator v_detIter = v_detectorList.begin();

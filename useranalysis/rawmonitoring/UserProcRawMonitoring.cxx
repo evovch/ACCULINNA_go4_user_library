@@ -14,8 +14,6 @@ using std::endl;
 #include "unpacking/UserEventUnpacking.h" // input event
 #include "data/RawMessage.h"
 #include "UserHistosRawMonitoring.h"
-#include "UserParameter.h"
-#include "setupconfigcppwrapper/SetupConfiguration.h"
 
 /**
   Uncomment this if you want to see all the debug information.
@@ -90,9 +88,6 @@ Bool_t UserProcRawMonitoring::BuildEvent(TGo4EventElement* p_dest)
 
 void UserProcRawMonitoring::UserPreLoop()
 {
-	// Get the all-accessible parameter-set object
-	UserParameter* v_params = (UserParameter*)GetParameter("UserParameter");
-	fSetupConfig = v_params->GetSetupConfig();
 }
 
 void UserProcRawMonitoring::UserPostLoop()

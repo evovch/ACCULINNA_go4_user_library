@@ -12,6 +12,8 @@
 class TGo4EventElement;
 
 class UserHistosAdvMonitoring;
+class SetupConfiguration;
+class DetMessage;
 
 class UserProcAdvMonitoring : public TGo4EventProcessor
 {
@@ -21,6 +23,15 @@ public: // methods
 	virtual ~UserProcAdvMonitoring();
 
 	virtual Bool_t BuildEvent(TGo4EventElement* p_dest);
+
+	/** Method called when analysis is created */
+	virtual void UserPreLoop();
+
+	/** Method called when analysis is stopping */
+	virtual void UserPostLoop();
+
+private: // methods
+	void ProcessMessage(DetMessage* p_message);
 
 private: // data members
 	/**
@@ -33,6 +44,11 @@ private: // data members
 	 * See UserHistosAdvMonitoring class.
 	 */
 	UserHistosAdvMonitoring* fHistoMan;
+
+	/**
+	 * 'this' object of the UserProcRawMonitoring class does not own this pointer
+	 */
+	const SetupConfiguration* fSetupConfig;
 
 	/**
 	 * Summary stream

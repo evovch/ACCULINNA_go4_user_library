@@ -31,6 +31,8 @@ Int_t UserParameter::PrintParameter(Text_t* buffer, Int_t buflen)
 	cerr << "mSetupConfigFilename = '" << mSetupConfigFilename << "'" << endl;
 	cerr << "mOutputFilename      = '" << mOutputFilename << "'" << endl;
 	fSetupConfiguration->Print();
+
+	return 1; //TODO what should it return?
 }
 
 ClassImp(UserParameter)
