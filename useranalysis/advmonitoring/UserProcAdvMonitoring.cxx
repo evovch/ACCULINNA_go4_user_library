@@ -1,6 +1,7 @@
 #include "UserProcAdvMonitoring.h"
 
 // STD
+#include <fstream>
 #include <iostream>
 using std::cerr;
 using std::endl;
@@ -20,6 +21,8 @@ using std::endl;
 #include "UserParameter.h"
 #include "setupconfigcppwrapper/SetupConfiguration.h"
 
+#include <stdlib.h>
+
 /**
   Uncomment this if you want to see all the debug information.
   This allows you to analyze the raw bytes and bits by your eyes.
@@ -33,6 +36,7 @@ UserProcAdvMonitoring::UserProcAdvMonitoring(const char* name) :
 	fEventCounter(0)
 {
 	fHistoMan = new UserHistosAdvMonitoring();
+	// readParFile("/media/user/work/data/analysisexp1804/presentPars/csi_r_ec.clb");
 	fFileSummary = fopen("textoutput/summaryAdvMonitoring.txt", "w");
 	if (fFileSummary == NULL) {
 		//TODO error
@@ -50,6 +54,8 @@ UserProcAdvMonitoring::~UserProcAdvMonitoring()
 
 Bool_t UserProcAdvMonitoring::BuildEvent(TGo4EventElement* p_dest)
 {
+	// cerr << "\t ### Build Event was called! next EVENT ### " <<  endl;
+
 	Bool_t v_isValid = kFALSE;
 
 	DetEventFull* v_input = (DetEventFull*)GetInputEvent("stepRepackedProvider1");
@@ -82,8 +88,9 @@ Bool_t UserProcAdvMonitoring::BuildEvent(TGo4EventElement* p_dest)
 
 		if (curName == "DetEventCommon") {
 			DetEventCommon* v_commSubEl = (DetEventCommon*)(v_subElement);
+			fHistoMan->fTrigger->Fill(v_commSubEl->trigger);
 			//cerr << endl;
-
+			// cerr << v_commSubEl->trigger << " trigger valu3 ### !!" << endl;
 			// Here you can process information from the 'common' sub-element
 
 		} else {
@@ -98,7 +105,9 @@ Bool_t UserProcAdvMonitoring::BuildEvent(TGo4EventElement* p_dest)
 				Short_t stId = curId*100 + j; //FIXME this is quite dangerous
 
 				DetEventStation* v_stSubsubEl = (DetEventStation*)(v_detSubEl->getEventElement(stId));
-				//cerr << "\t" << stId << ") " << v_stSubsubEl->GetName() << endl;
+				TString stName = v_stSubsubEl->GetName();
+				// if(stName!="Left_telescope_SQ300") continue;
+				// cerr << "\t THIS IS STATION NAME!!! " << stId << ") " << v_stSubsubEl->GetName() << endl;
 
 				TClonesArray* v_data = v_stSubsubEl->GetDetMessages();
 
@@ -118,7 +127,7 @@ Bool_t UserProcAdvMonitoring::BuildEvent(TGo4EventElement* p_dest)
 					// of several messages simultaneously
 
 					//TODO Look inside
-					this->ProcessMessage(v_curDetM);
+					this->ProcessMessage(v_curDetM,stName);
 
 
 				} // end of loop over messages
@@ -154,9 +163,101 @@ void UserProcAdvMonitoring::UserPostLoop()
 {
 }
 
-void UserProcAdvMonitoring::ProcessMessage(DetMessage* p_message)
+void UserProcAdvMonitoring::ProcessMessage(DetMessage* p_message, TString stName)
 {
 	//TODO implement your processing of independent messages here
+
+	if(stName=="Left_telescope_CsI_L"){
+		fHistoMan->fCsI_L[p_message->GetStChannel()]->Fill(p_message->GetValue());
+	}
+	if(stName=="Left_telescope_tCsI_L"){
+		fHistoMan->ftCsI_L[p_message->GetStChannel()]->Fill(p_message->GetValue());
+	}
+	if(stName=="Right_telescope_CsI_R"){
+		fHistoMan->fCsI_R[p_message->GetStChannel()]->Fill(p_message->GetValue());
+	}
+	if(stName=="Right_telescope_tCsI_R"){
+		fHistoMan->ftCsI_R[p_message->GetStChannel()]->Fill(p_message->GetValue());
+	}
+	if(stName=="Left_telescope_SQ300"){
+		fHistoMan->fSQ20[p_message->GetStChannel()]->Fill(p_message->GetValue());
+	}
+	if(stName=="Left_telescope_tSQ300"){
+		fHistoMan->ftSQ20[p_message->GetStChannel()]->Fill(p_message->GetValue());
+	}
+	if(stName=="Left_telescope_SQY_L"){
+		fHistoMan->fSQY_L[p_message->GetStChannel()]->Fill(p_message->GetValue());
+	}
+	if(stName=="Left_telescope_tSQY_L"){
+		fHistoMan->ftSQY_L[p_message->GetStChannel()]->Fill(p_message->GetValue());
+	}
+	if(stName=="Right_telescope_SQY_R"){
+		fHistoMan->fSQY_R[p_message->GetStChannel()]->Fill(p_message->GetValue());
+	}
+	if(stName=="Right_telescope_tSQY_R"){
+		fHistoMan->ftSQY_R[p_message->GetStChannel()]->Fill(p_message->GetValue());
+	}
+	if(stName=="Left_telescope_SQX_L"){
+		fHistoMan->fSQX_L[p_message->GetStChannel()]->Fill(p_message->GetValue());
+	}
+	if(stName=="Left_telescope_tSQX_L"){
+		fHistoMan->ftSQX_L[p_message->GetStChannel()]->Fill(p_message->GetValue());
+	}
+	if(stName=="Right_telescope_SQX_R"){
+		fHistoMan->fSQX_R[p_message->GetStChannel()]->Fill(p_message->GetValue());
+	}
+	if(stName=="Right_telescope_tSQX_R"){
+		fHistoMan->ftSQX_R[p_message->GetStChannel()]->Fill(p_message->GetValue());
+	}
+	if(stName=="Beam_detector_F5"){
+		fHistoMan->fF5[p_message->GetStChannel()]->Fill(p_message->GetValue());
+	}
+	if(stName=="Beam_detector_tF5"){
+		fHistoMan->ftF5[p_message->GetStChannel()]->Fill(p_message->GetValue());
+	}
+	if(stName=="Beam_detector_F3"){
+		fHistoMan->fF3[p_message->GetStChannel()]->Fill(p_message->GetValue());
+	}
+	if(stName=="Beam_detector_tF3"){
+		fHistoMan->ftF3[p_message->GetStChannel()]->Fill(p_message->GetValue());
+	}
+	if(stName=="Beam_detector_tMWPC"){
+		fHistoMan->ftMWPC[p_message->GetStChannel()]->Fill(p_message->GetValue());
+	}
+	if(stName=="Beam_detector_MWPC1"){
+		fHistoMan->fNX1->Fill(p_message->GetStChannel());
+	}
+	if(stName=="Beam_detector_MWPC2"){
+		fHistoMan->fNY1->Fill(p_message->GetStChannel());
+	}
+	if(stName=="Beam_detector_MWPC3"){
+		fHistoMan->fNX2->Fill(p_message->GetStChannel());
+	}
+	if(stName=="Beam_detector_MWPC4"){
+		fHistoMan->fNY2->Fill(p_message->GetStChannel());
+	}
+
+
+}
+
+void UserProcAdvMonitoring::readParFile(TString parFile){
+	// ifstream myfile;
+ //  TString line;
+ //  Int_t count=-2;
+ //  myfile.open("/media/user/work/data/analysisexp1804/presentPars/csi_r_ec.clb");
+ //  while (! myfile.eof() ) {
+ //    line.ReadLine(myfile7);
+ //    if(count < 0){
+ //      count++;
+ //      continue;
+ //    }
+ //    if(line.IsNull()) break;
+ //    sscanf(line.Data(),"%g %g", parCsI_R_1+count,parCsI_R_2+count);
+ //    count++;
+ //  }  
+
+ //  cerr << endl << " pars for CsR crystals" << endl;
+ //  for(Int_t i=0;i<16;i++) cerr << parCsI_R_1[i] << " " << parCsI_R_2[i] << endl; 
 }
 
 ClassImp(UserProcAdvMonitoring)

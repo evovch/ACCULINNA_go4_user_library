@@ -30,8 +30,11 @@ public: // methods
 	/** Method called when analysis is stopping */
 	virtual void UserPostLoop();
 
+	// reading input parameters
+	void readParFile(TString parFile);
+
 private: // methods
-	void ProcessMessage(DetMessage* p_message);
+	void ProcessMessage(DetMessage* p_message, TString stName);
 
 private: // data members
 	/**
@@ -54,6 +57,8 @@ private: // data members
 	 * Summary stream
 	 */
 	FILE* fFileSummary;
+
+	Double_t parCsI_R_1[16],parCsI_R_2[16];
 
 	ClassDef(UserProcAdvMonitoring, 1);
 };
