@@ -56,8 +56,12 @@ public:
 	TH1* fNX2;
 	TH1* fNY2;
 
-	//not raw data
+	//reconstructed
 	TH2* fY1_X1;
+
+	//calibrated
+	TH1* fCsI_R_C[16];
+
 	/**
 	 * Automatically generated histograms
 	 */

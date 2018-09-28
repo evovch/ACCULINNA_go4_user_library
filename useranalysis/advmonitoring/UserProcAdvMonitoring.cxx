@@ -23,6 +23,7 @@ using std::endl;
 
 #include <stdlib.h>
 
+using namespace std;
 /**
   Uncomment this if you want to see all the debug information.
   This allows you to analyze the raw bytes and bits by your eyes.
@@ -36,7 +37,8 @@ UserProcAdvMonitoring::UserProcAdvMonitoring(const char* name) :
 	fEventCounter(0)
 {
 	fHistoMan = new UserHistosAdvMonitoring();
-	// readParFile("/media/user/work/data/analysisexp1804/presentPars/csi_r_ec.clb");
+	readParFile("/media/user/work/data/analysisexp1804/presentPars/csi_r_ec.clb");
+	// cerr << " UserProcAdvMonitoring CALLED !!! ## &Y$@!UHNEFJNASJDf " << endl;
 	fFileSummary = fopen("textoutput/summaryAdvMonitoring.txt", "w");
 	if (fFileSummary == NULL) {
 		//TODO error
@@ -175,6 +177,7 @@ void UserProcAdvMonitoring::ProcessMessage(DetMessage* p_message, TString stName
 	}
 	if(stName=="Right_telescope_CsI_R"){
 		fHistoMan->fCsI_R[p_message->GetStChannel()]->Fill(p_message->GetValue());
+		fHistoMan->fCsI_R_C[p_message->GetStChannel()]->Fill(p_message->GetValue()*parCsI_R_2[p_message->GetStChannel()]+parCsI_R_1[p_message->GetStChannel()]);
 	}
 	if(stName=="Right_telescope_tCsI_R"){
 		fHistoMan->ftCsI_R[p_message->GetStChannel()]->Fill(p_message->GetValue());
@@ -241,23 +244,23 @@ void UserProcAdvMonitoring::ProcessMessage(DetMessage* p_message, TString stName
 }
 
 void UserProcAdvMonitoring::readParFile(TString parFile){
-	// ifstream myfile;
- //  TString line;
- //  Int_t count=-2;
- //  myfile.open("/media/user/work/data/analysisexp1804/presentPars/csi_r_ec.clb");
- //  while (! myfile.eof() ) {
- //    line.ReadLine(myfile7);
- //    if(count < 0){
- //      count++;
- //      continue;
- //    }
- //    if(line.IsNull()) break;
- //    sscanf(line.Data(),"%g %g", parCsI_R_1+count,parCsI_R_2+count);
- //    count++;
- //  }  
+	ifstream myfile;
+  TString line;
+  Int_t count=-2;
+  myfile.open("/media/user/work/data/analysisexp1804/presentPars/csi_r_ec.clb");
+  while (! myfile.eof() ) {
+    line.ReadLine(myfile);
+    if(count < 0){
+      count++;
+      continue;
+    }
+    if(line.IsNull()) break;
+    sscanf(line.Data(),"%lf %lf", parCsI_R_1+count,parCsI_R_2+count);
+    count++;
+  }  
 
- //  cerr << endl << " pars for CsR crystals" << endl;
- //  for(Int_t i=0;i<16;i++) cerr << parCsI_R_1[i] << " " << parCsI_R_2[i] << endl; 
+  // cerr << endl << " pars for CsR crystals" << endl;
+  // for(Int_t i=0;i<16;i++) cerr << parCsI_R_1[i] << " " << parCsI_R_2[i] << endl; 
 }
 
 ClassImp(UserProcAdvMonitoring)

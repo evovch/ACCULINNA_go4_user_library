@@ -40,6 +40,10 @@ UserHistosAdvMonitoring::UserHistosAdvMonitoring()
 				, Form("Square right DSSD Y stripes CH %2.2d",i), 4096, 0., 4095.);
 		ftSQY_R[i] = a->MakeTH1('I', Form("Right_telescope/SQY_R/tdc/tSQY_R_%d",i)
 				, Form("Square right DSSD Y tdc %d",i), 4096, 0., 4095.);
+
+		//CALIBRATED
+		fCsI_R_C[i] = a->MakeTH1('D', Form("Right_telescope/CsI_R_C/CsI_R_C_%d",i)
+				, Form("Square RIGHT CsI CALIBRATED crystal CH %d",i), 8000, 0., 240.);
 	}
 
 	for (Int_t i = 0; i < 32; i++){
@@ -82,8 +86,9 @@ UserHistosAdvMonitoring::UserHistosAdvMonitoring()
 	fNX2 = a->MakeTH1('I', "WIRES/NX2","WIRES X2",32,0.,32.);
 	fNY2 = a->MakeTH1('I', "WIRES/NY2","WIRES Y2",32,0.,32.);
 
-	// not raw
+	//RECONSTRUCTED
 	fY1_X1 = a->MakeTH2('I', "WIRES/XY1", "WIRES 1 Y1 vs X1", 32,0.,32.,32,0.,32.,"X1","Y1");
+
 }
 
 UserHistosAdvMonitoring::~UserHistosAdvMonitoring()
