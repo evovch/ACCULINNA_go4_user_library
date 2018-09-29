@@ -14,6 +14,7 @@ using std::endl;
 #include <TGo4MbsSubEvent.h>
 
 // Project
+////#include "base/Support.h" // included in the header
 #include "UserEventUnpacking.h" // output event
 #include "UserHistosUnpacking.h"
 
@@ -43,10 +44,15 @@ UserProcUnpacking::UserProcUnpacking(const char* name) :
 	fNunknownWords(0)
 {
 	fHistoMan = new UserHistosUnpacking();
+
+	support::CheckThatDirExists("textoutput");
+
 	fFileSummary = fopen("textoutput/summaryUnpacking.txt", "w");
 	if (fFileSummary == NULL) {
-		//TODO error
-		cerr << "[WARN  ] " << "Could not open output text summary file '" << "summaryUnpacking.txt" << "'" << endl;
+		//TODO warning or fatal?
+		//cerr << "[WARN  ] " << "Could not open output text summary file '" << "summaryUnpacking.txt" << "'" << endl;
+		cerr << "[FATAL ] " << "Could not open output text summary file '" << "textoutput/summaryUnpacking.txt" << "'" << endl;
+		exit(EXIT_FAILURE);
 	}
 }
 

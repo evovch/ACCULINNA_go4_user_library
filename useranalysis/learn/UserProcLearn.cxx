@@ -13,6 +13,7 @@ using std::endl;
 #include <TGo4Analysis.h>
 
 // Project
+#include "base/Support.h"
 #include "UserEventLearn.h"
 #include "UserParameter.h"
 #include "data/RawMessage.h"
@@ -46,11 +47,14 @@ UserProcLearn::UserProcLearn(const char* name) :
 	fHistoAddrVsProcid = a->MakeTH2('D', "fHistoAddrVsProcid", "Messages per block;procid;addr",
 	                                3, 0., 3., 32, 0., 32.);
 
+	support::CheckThatDirExists("textoutput");
+
 	fFileSummary = fopen("textoutput/summaryLearn.txt", "w");
 	if (fFileSummary == NULL) {
-		//TODO error
-		cerr << "[WARN  ] " << "Could not open output text summary file '"
-		     << "summaryLearn.txt" << "'" << endl;
+		//TODO warning or fatal?
+		//cerr << "[WARN  ] " << "Could not open output text summary file '" << "summaryLearn.txt" << "'" << endl;
+		cerr << "[FATAL ] " << "Could not open output text summary file '" << "textoutput/summaryLearn.txt" << "'" << endl;
+		exit(EXIT_FAILURE);
 	}
 }
 

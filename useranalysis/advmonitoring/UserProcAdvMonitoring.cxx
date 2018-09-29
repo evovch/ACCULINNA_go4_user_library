@@ -11,6 +11,7 @@ using std::endl;
 #include <TH2D.h>
 
 // Project
+#include "base/Support.h"
 #include "data/DetEventFull.h" // input event
 #include "data/DetEventCommon.h"
 #include "data/DetEventStation.h"
@@ -33,10 +34,15 @@ UserProcAdvMonitoring::UserProcAdvMonitoring(const char* name) :
 	fEventCounter(0)
 {
 	fHistoMan = new UserHistosAdvMonitoring();
+
+	support::CheckThatDirExists("textoutput");
+
 	fFileSummary = fopen("textoutput/summaryAdvMonitoring.txt", "w");
 	if (fFileSummary == NULL) {
-		//TODO error
-		cerr << "[WARN  ] " << "Could not open output text summary file '" << "summaryAdvMonitoring.txt" << "'" << endl;
+		//TODO warning or fatal?
+		//cerr << "[WARN  ] " << "Could not open output text summary file '" << "summaryAdvMonitoring.txt" << "'" << endl;
+		cerr << "[FATAL ] " << "Could not open output text summary file '" << "textoutput/summaryAdvMonitoring.txt" << "'" << endl;
+		exit(EXIT_FAILURE);
 	}
 }
 
