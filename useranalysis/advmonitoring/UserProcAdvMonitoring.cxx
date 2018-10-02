@@ -78,7 +78,8 @@ Bool_t UserProcAdvMonitoring::BuildEvent(TGo4EventElement* p_dest)
 
 	Short_t v_NsubElems = v_input->getNElements();
 	//cerr << v_NsubElems << " subelements in the input full event." << endl;
-
+	Int_t trigger;
+	Int_t x1,y1;
 	// Loop over sub-elements. There is one sub-element which is the 'DetEventCommon'
 	// and all other are 'DetEventDetector's
 	for (Short_t i=0; i<v_NsubElems; i++) {
@@ -86,20 +87,23 @@ Bool_t UserProcAdvMonitoring::BuildEvent(TGo4EventElement* p_dest)
 
 		TString curName = v_subElement->GetName();
 		Short_t curId = v_subElement->getId();
-		//cerr << curId << ") " << curName;
-
+		// cerr << curId << ") " << curName << " this is it!! " << endl;
 		if (curName == "DetEventCommon") {
 			DetEventCommon* v_commSubEl = (DetEventCommon*)(v_subElement);
+			trigger = v_commSubEl->trigger;
 			fHistoMan->fTrigger->Fill(v_commSubEl->trigger);
-			//cerr << endl;
-			// cerr << v_commSubEl->trigger << " trigger valu3 ### !!" << endl;
+			//cerr << endl; 
 			// Here you can process information from the 'common' sub-element
-
 		} else {
 			TGo4CompositeEvent* v_detSubEl = (TGo4CompositeEvent*)(v_subElement);
 
 			Short_t v_NsubSubElems = v_detSubEl->getNElements();
 			//cerr << " - " << v_NsubSubElems << " subsubelements." << endl;
+
+			if(curName == "Beam_detector" || trigger==1) {
+				// cerr << curId << ") " << curName << " BeamDet detector found " << endl;
+				fill2D(v_detSubEl);
+			}
 
 			// Loop over the stations of the current detector
 			for (Short_t j=0; j<v_NsubSubElems; j++) {
@@ -120,6 +124,7 @@ Bool_t UserProcAdvMonitoring::BuildEvent(TGo4EventElement* p_dest)
 				while ((v_curDetM = (DetMessage*)v_detMiter.Next())) {
 					//v_curDetM->Print();
 
+
 					unsigned int chFullId = stId*100 + v_curDetM->GetStChannel();
 
 					// Fill automatically generated histograms
@@ -130,8 +135,6 @@ Bool_t UserProcAdvMonitoring::BuildEvent(TGo4EventElement* p_dest)
 
 					//TODO Look inside
 					this->ProcessMessage(v_curDetM,stName);
-
-
 				} // end of loop over messages
 			} // end of loop over the stations
 		} // end of if
@@ -239,8 +242,6 @@ void UserProcAdvMonitoring::ProcessMessage(DetMessage* p_message, TString stName
 	if(stName=="Beam_detector_MWPC4"){
 		fHistoMan->fNY2->Fill(p_message->GetStChannel());
 	}
-
-
 }
 
 void UserProcAdvMonitoring::readParFile(TString parFile){
@@ -261,6 +262,46 @@ void UserProcAdvMonitoring::readParFile(TString parFile){
 
   // cerr << endl << " pars for CsR crystals" << endl;
   // for(Int_t i=0;i<16;i++) cerr << parCsI_R_1[i] << " " << parCsI_R_2[i] << endl; 
+}
+
+void UserProcAdvMonitoring::fill2D(TGo4CompositeEvent* dEvent){
+	vector <Int_t> nx1;
+	vector <Int_t> nx2;
+	// cerr << " number of stations is: " << dEvent->getNElements() << endl;
+	Short_t curId = dEvent->getId();
+	// Loop over the stations of the detector
+	for (Short_t j=0; j<dEvent->getNElements(); j++) {
+		Short_t stId = curId*100 + j; //FIXME this is quite dangerous
+		DetEventStation* v_stSubsubEl = (DetEventStation*)(dEvent->getEventElement(stId));
+		TString stName = v_stSubsubEl->GetName();
+		// cerr << stName << endl;
+		TClonesArray* v_data = v_stSubsubEl->GetDetMessages();
+
+		if(stName == "Beam_detector_MWPC1"){
+			Int_t mx = v_data->GetEntriesFast();
+			for(Int_t i = 0; i < mx; i++){
+				DetMessage *mes_MWPC = (DetMessage*)v_data->At(i);
+				// cerr << " this is wire number in MWPC1 " << mes_MWPC1->GetStChannel() << endl;
+				nx1.push_back(mes_MWPC->GetStChannel());
+			}
+		}
+
+		if(stName == "Beam_detector_MWPC2"){
+			Int_t mx = v_data->GetEntriesFast();
+			for(Int_t i = 0; i < mx; i++){
+				DetMessage *mes_MWPC = (DetMessage*)v_data->At(i);
+				// cerr << " this is wire number in MWPC1 " << mes_MWPC1->GetStChannel() << endl;
+				nx2.push_back(mes_MWPC->GetStChannel());
+			}
+		}
+	}
+	for(Int_t i = 0; i < nx1.size();i++){
+		for(Int_t j = 0; j < nx2.size(); j++){
+			fHistoMan->fY1_X1->Fill(nx1.at(i),nx2.at(j));
+		}
+	}
+	// cerr << " number of fired wires in 1 and 2 planes: " << nx1.size() << " " << nx2.size() << endl;
+
 }
 
 ClassImp(UserProcAdvMonitoring)

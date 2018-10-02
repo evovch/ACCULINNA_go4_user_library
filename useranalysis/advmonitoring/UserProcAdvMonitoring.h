@@ -10,6 +10,7 @@
 #include <TGo4EventProcessor.h> // mother class
 
 class TGo4EventElement;
+class TGo4CompositeEvent;
 
 class UserHistosAdvMonitoring;
 class SetupConfiguration;
@@ -35,6 +36,9 @@ public: // methods
 
 private: // methods
 	void ProcessMessage(DetMessage* p_message, TString stName);
+
+	// example of 2-D histogram filling
+	void fill2D(TGo4CompositeEvent* dEvent);
 
 private: // data members
 	/**
