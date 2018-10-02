@@ -80,28 +80,6 @@ Bool_t UserProcAdvMonitoring::BuildEvent(TGo4EventElement* p_dest)
 	//cerr << v_NsubElems << " subelements in the input full event." << endl;
 	Int_t trigger;
 	Int_t x1,y1;
-
-	TGo4EventElement* v_common = v_input->getEventElement("DetEventCommon",1);
-	if(!v_common) {
-		cerr << "detector DetEventCommon was not found ####IAJSDUIASDI!!!" << endl;
-		return kFALSE;
-	}
-	else {
-		DetEventCommon* v_commSubEl = (DetEventCommon*)(v_common);
-		trigger = v_commSubEl->trigger;
-		fHistoMan->fTrigger->Fill(v_commSubEl->trigger);
-	}
-
-	TGo4EventElement* v_beamdet = v_input->getEventElement("Beam_detector",1);
-	TGo4CompositeEvent* c_beamdet = (TGo4CompositeEvent*)(v_beamdet);
-	if(!c_beamdet) {
-		cerr << "detector Beam_detector was not found " << endl;
-		return kFALSE;
-	}
-	else {
-		if(trigger ==1) fill2D(c_beamdet);
-	}
-
 	// Loop over sub-elements. There is one sub-element which is the 'DetEventCommon'
 	// and all other are 'DetEventDetector's
 	for (Short_t i=0; i<v_NsubElems; i++) {
@@ -110,11 +88,22 @@ Bool_t UserProcAdvMonitoring::BuildEvent(TGo4EventElement* p_dest)
 		TString curName = v_subElement->GetName();
 		Short_t curId = v_subElement->getId();
 		// cerr << curId << ") " << curName << " this is it!! " << endl;
-		if(curName!= "DetEventCommon"){
+		if (curName == "DetEventCommon") {
+			DetEventCommon* v_commSubEl = (DetEventCommon*)(v_subElement);
+			trigger = v_commSubEl->trigger;
+			fHistoMan->fTrigger->Fill(v_commSubEl->trigger);
+			//cerr << endl; 
+			// Here you can process information from the 'common' sub-element
+		} else {
 			TGo4CompositeEvent* v_detSubEl = (TGo4CompositeEvent*)(v_subElement);
 
 			Short_t v_NsubSubElems = v_detSubEl->getNElements();
-			// cerr << " - " << v_NsubSubElems << " subsubelements." << endl;
+			//cerr << " - " << v_NsubSubElems << " subsubelements." << endl;
+
+			if(curName == "Beam_detector" || trigger==1) {
+				// cerr << curId << ") " << curName << " BeamDet detector found " << endl;
+				fill2D(v_detSubEl);
+			}
 
 			// Loop over the stations of the current detector
 			for (Short_t j=0; j<v_NsubSubElems; j++) {
@@ -278,38 +267,34 @@ void UserProcAdvMonitoring::readParFile(TString parFile){
 void UserProcAdvMonitoring::fill2D(TGo4CompositeEvent* dEvent){
 	vector <Int_t> nx1;
 	vector <Int_t> nx2;
+	// cerr << " number of stations is: " << dEvent->getNElements() << endl;
 	Short_t curId = dEvent->getId();
 	// Loop over the stations of the detector
+	for (Short_t j=0; j<dEvent->getNElements(); j++) {
+		Short_t stId = curId*100 + j; //FIXME this is quite dangerous
+		DetEventStation* v_stSubsubEl = (DetEventStation*)(dEvent->getEventElement(stId));
+		TString stName = v_stSubsubEl->GetName();
+		// cerr << stName << endl;
+		TClonesArray* v_data = v_stSubsubEl->GetDetMessages();
 
-	DetEventStation* stMWPC1 = (DetEventStation*)(dEvent->getEventElement("Beam_detector_MWPC1",1));
-	DetEventStation* stMWPC2 = (DetEventStation*)(dEvent->getEventElement("Beam_detector_MWPC2",1));
-	if(!stMWPC1) {
-		// cerr << "Station Beam_detector_MWPC1 was not found " << endl;
-		return;
-	}
-	if(!stMWPC2) {
-		// cerr << "Station Beam_detector_MWPC2 was not found " << endl;
-		return;
-	}
-	TString stName = stMWPC1->GetName();
-	// cerr << stName << endl;
+		if(stName == "Beam_detector_MWPC1"){
+			Int_t mx = v_data->GetEntriesFast();
+			for(Int_t i = 0; i < mx; i++){
+				DetMessage *mes_MWPC = (DetMessage*)v_data->At(i);
+				// cerr << " this is wire number in MWPC1 " << mes_MWPC1->GetStChannel() << endl;
+				nx1.push_back(mes_MWPC->GetStChannel());
+			}
+		}
 
-	TClonesArray* v_MWPC1 = stMWPC1->GetDetMessages();
-	TClonesArray* v_MWPC2 = stMWPC2->GetDetMessages();
-
-	Int_t mMWPC1 = v_MWPC1->GetEntriesFast();
-	for(Int_t i = 0; i < mMWPC1; i++){
-		DetMessage *mes_MWPC = (DetMessage*)v_MWPC1->At(i);
-		// cerr << " this is wire number in MWPC1 " << mes_MWPC1->GetStChannel() << endl;
-		nx1.push_back(mes_MWPC->GetStChannel());
+		if(stName == "Beam_detector_MWPC2"){
+			Int_t mx = v_data->GetEntriesFast();
+			for(Int_t i = 0; i < mx; i++){
+				DetMessage *mes_MWPC = (DetMessage*)v_data->At(i);
+				// cerr << " this is wire number in MWPC1 " << mes_MWPC1->GetStChannel() << endl;
+				nx2.push_back(mes_MWPC->GetStChannel());
+			}
+		}
 	}
-	Int_t mMWPC2 = v_MWPC2->GetEntriesFast();
-	for(Int_t i = 0; i < mMWPC2; i++){
-		DetMessage *mes_MWPC = (DetMessage*)v_MWPC2->At(i);
-		// cerr << " this is wire number in MWPC1 " << mes_MWPC1->GetStChannel() << endl;
-		nx2.push_back(mes_MWPC->GetStChannel());
-	}
-
 	for(Int_t i = 0; i < nx1.size();i++){
 		for(Int_t j = 0; j < nx2.size(); j++){
 			fHistoMan->fY1_X1->Fill(nx1.at(i),nx2.at(j));
