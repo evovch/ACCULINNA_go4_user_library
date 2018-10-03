@@ -58,6 +58,7 @@ public:
 
 	//reconstructed
 	TH2* fY1_X1;
+	TH2* fY1_X1_C;
 
 	//calibrated
 	TH1* fCsI_R_C[16];

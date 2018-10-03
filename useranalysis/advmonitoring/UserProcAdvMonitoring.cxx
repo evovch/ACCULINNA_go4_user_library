@@ -56,7 +56,7 @@ UserProcAdvMonitoring::~UserProcAdvMonitoring()
 
 Bool_t UserProcAdvMonitoring::BuildEvent(TGo4EventElement* p_dest)
 {
-	// cerr << "\t ### Build Event was called! next EVENT ### " <<  endl;
+	cerr << "\t ### Build Event was called! next EVENT ### " <<  endl;
 
 	Bool_t v_isValid = kFALSE;
 
@@ -310,11 +310,21 @@ void UserProcAdvMonitoring::fill2D(TGo4CompositeEvent* dEvent){
 		nx2.push_back(mes_MWPC->GetStChannel());
 	}
 
-	for(Int_t i = 0; i < nx1.size();i++){
-		for(Int_t j = 0; j < nx2.size(); j++){
-			fHistoMan->fY1_X1->Fill(nx1.at(i),nx2.at(j));
-		}
-	}
+	// for(Int_t i = 0; i < nx1.size();i++){
+	// 	for(Int_t j = 0; j < nx2.size(); j++){
+	fHistoMan->fY1_X1->Fill(nx1.at(0),nx2.at(0));
+	// 	}
+	// }
+	Float_t MWPC1_X_displacement  = -1.0;
+	Float_t MWPC1_Y_displacement  = -2.137;
+	Float_t MWPC1_X_zero_position = -15.5*1.25;
+	Float_t MWPC1_Y_zero_position = -15.5*1.25;
+
+  Float_t xMWPC1 = MWPC1_X_zero_position + MWPC1_X_displacement+nx1.at(0)*1.25;
+  Float_t yMWPC1 = MWPC1_Y_zero_position + MWPC1_Y_displacement + nx2.at(0)*1.25;
+
+  cerr << " ### filling 2d histo with ### " << xMWPC1 << " " << yMWPC1 << endl;
+	fHistoMan->fY1_X1_C->Fill(xMWPC1,yMWPC1);
 	// cerr << " number of fired wires in 1 and 2 planes: " << nx1.size() << " " << nx2.size() << endl;
 
 }

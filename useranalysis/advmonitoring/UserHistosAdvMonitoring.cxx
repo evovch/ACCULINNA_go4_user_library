@@ -88,6 +88,7 @@ UserHistosAdvMonitoring::UserHistosAdvMonitoring()
 
 	//RECONSTRUCTED
 	fY1_X1 = a->MakeTH2('I', "WIRES/XY1", "WIRES 1 Y1 vs X1", 32,0.,32.,32,0.,32.,"X1","Y1");
+	fY1_X1_C = a->MakeTH2('F', "WIRES/XY1_C", "beam profile at the MWPC1 plane", 32,-20.,20.,32,-20.,20.,"X1_C","Y1_C");
 
 }
 
