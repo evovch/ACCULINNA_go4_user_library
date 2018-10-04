@@ -63,7 +63,7 @@ private: // data members
 	FILE* fFileSummary;
 
 	Double_t parCsI_R_1[16],parCsI_R_2[16];
-
+	
 	ClassDef(UserProcAdvMonitoring, 1);
 };
 

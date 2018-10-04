@@ -4,6 +4,7 @@
 #include <fstream>
 #include <iostream>
 using std::cerr;
+using std::cout;
 using std::endl;
 
 // ROOT
@@ -56,7 +57,7 @@ UserProcAdvMonitoring::~UserProcAdvMonitoring()
 
 Bool_t UserProcAdvMonitoring::BuildEvent(TGo4EventElement* p_dest)
 {
-	cerr << "\t ### Build Event was called! next EVENT ### " <<  endl;
+	// cerr << "\t ### Build Event was called! next EVENT ### " <<  endl;
 
 	Bool_t v_isValid = kFALSE;
 
@@ -80,41 +81,32 @@ Bool_t UserProcAdvMonitoring::BuildEvent(TGo4EventElement* p_dest)
 	//cerr << v_NsubElems << " subelements in the input full event." << endl;
 	Int_t trigger;
 	Int_t x1,y1;
-
-	TGo4EventElement* v_common = v_input->getEventElement("DetEventCommon",1);
-	if(!v_common) {
-		cerr << "detector DetEventCommon was not found ####IAJSDUIASDI!!!" << endl;
-		return kFALSE;
-	}
-	else {
-		DetEventCommon* v_commSubEl = (DetEventCommon*)(v_common);
-		trigger = v_commSubEl->trigger;
-		fHistoMan->fTrigger->Fill(v_commSubEl->trigger);
-	}
-
-	TGo4EventElement* v_beamdet = v_input->getEventElement("Beam_detector",1);
-	TGo4CompositeEvent* c_beamdet = (TGo4CompositeEvent*)(v_beamdet);
-	if(!c_beamdet) {
-		cerr << "detector Beam_detector was not found " << endl;
-		return kFALSE;
-	}
-	else {
-		if(trigger ==1) fill2D(c_beamdet);
-	}
-
 	// Loop over sub-elements. There is one sub-element which is the 'DetEventCommon'
 	// and all other are 'DetEventDetector's
+
+	TGo4EventElement* v_comElement = v_input->getEventElement("DetEventCommon",1);
+	if(!v_comElement) {
+		cout << "Detector DetEventCommon was not found " << endl;
+		return kFALSE;
+	}
+	DetEventCommon* v_commSubEl = (DetEventCommon*)(v_comElement);
+	trigger = v_commSubEl->trigger;
+	fHistoMan->fTrigger->Fill(v_commSubEl->trigger);
+
 	for (Short_t i=0; i<v_NsubElems; i++) {
 		TGo4EventElement* v_subElement = v_input->getEventElement(i);
 
 		TString curName = v_subElement->GetName();
 		Short_t curId = v_subElement->getId();
 		// cerr << curId << ") " << curName << " this is it!! " << endl;
-		if(curName!= "DetEventCommon"){
+		if (curName != "DetEventCommon") {
 			TGo4CompositeEvent* v_detSubEl = (TGo4CompositeEvent*)(v_subElement);
 
 			Short_t v_NsubSubElems = v_detSubEl->getNElements();
-			// cerr << " - " << v_NsubSubElems << " subsubelements." << endl;
+
+			if(curName == "Beam_detector") {
+				if(trigger==1) fill2D(v_detSubEl);
+			}
 
 			// Loop over the stations of the current detector
 			for (Short_t j=0; j<v_NsubSubElems; j++) {
@@ -123,8 +115,6 @@ Bool_t UserProcAdvMonitoring::BuildEvent(TGo4EventElement* p_dest)
 
 				DetEventStation* v_stSubsubEl = (DetEventStation*)(v_detSubEl->getEventElement(stId));
 				TString stName = v_stSubsubEl->GetName();
-				// if(stName!="Left_telescope_SQ300") continue;
-				// cerr << "\t THIS IS STATION NAME!!! " << stId << ") " << v_stSubsubEl->GetName() << endl;
 
 				TClonesArray* v_data = v_stSubsubEl->GetDetMessages();
 
@@ -134,7 +124,6 @@ Bool_t UserProcAdvMonitoring::BuildEvent(TGo4EventElement* p_dest)
 				// Loop over the messages of the current station 
 				while ((v_curDetM = (DetMessage*)v_detMiter.Next())) {
 					//v_curDetM->Print();
-
 
 					unsigned int chFullId = stId*100 + v_curDetM->GetStChannel();
 
@@ -278,55 +267,47 @@ void UserProcAdvMonitoring::readParFile(TString parFile){
 void UserProcAdvMonitoring::fill2D(TGo4CompositeEvent* dEvent){
 	vector <Int_t> nx1;
 	vector <Int_t> nx2;
-	Short_t curId = dEvent->getId();
-	// Loop over the stations of the detector
 
-	DetEventStation* stMWPC1 = (DetEventStation*)(dEvent->getEventElement("Beam_detector_MWPC1",1));
-	DetEventStation* stMWPC2 = (DetEventStation*)(dEvent->getEventElement("Beam_detector_MWPC2",1));
-	if(!stMWPC1) {
-		// cerr << "Station Beam_detector_MWPC1 was not found " << endl;
+	DetEventStation* st_MWPC1 = (DetEventStation*)(dEvent->getEventElement("Beam_detector_MWPC1",1));
+	if(!st_MWPC1) {
+		cout << " station Beam_detector_MWPC1 was not found " << endl;
 		return;
 	}
-	if(!stMWPC2) {
-		// cerr << "Station Beam_detector_MWPC2 was not found " << endl;
+	DetEventStation* st_MWPC2 = (DetEventStation*)(dEvent->getEventElement("Beam_detector_MWPC2",1));
+	if(!st_MWPC2) {
+		cout << " station Beam_detector_MWPC2 was not found " << endl;
 		return;
 	}
-	TString stName = stMWPC1->GetName();
-	// cerr << stName << endl;
 
-	TClonesArray* v_MWPC1 = stMWPC1->GetDetMessages();
-	TClonesArray* v_MWPC2 = stMWPC2->GetDetMessages();
+	TClonesArray* v_MWPC1 = st_MWPC1->GetDetMessages();
+	TClonesArray* v_MWPC2 = st_MWPC2->GetDetMessages();
 
-	Int_t mMWPC1 = v_MWPC1->GetEntriesFast();
-	for(Int_t i = 0; i < mMWPC1; i++){
-		DetMessage *mes_MWPC = (DetMessage*)v_MWPC1->At(i);
-		// cerr << " this is wire number in MWPC1 " << mes_MWPC1->GetStChannel() << endl;
-		nx1.push_back(mes_MWPC->GetStChannel());
+	Int_t mx1 = v_MWPC1->GetEntriesFast();
+	Int_t mx2 = v_MWPC2->GetEntriesFast();
+	if(mx1<1 || mx2<1) {
+		return;
 	}
-	Int_t mMWPC2 = v_MWPC2->GetEntriesFast();
-	for(Int_t i = 0; i < mMWPC2; i++){
-		DetMessage *mes_MWPC = (DetMessage*)v_MWPC2->At(i);
-		// cerr << " this is wire number in MWPC1 " << mes_MWPC1->GetStChannel() << endl;
-		nx2.push_back(mes_MWPC->GetStChannel());
+	for(Int_t i = 0; i < mx1; i++){
+		DetMessage *mes_MWPC1 = (DetMessage*)v_MWPC1->At(i);
+		nx1.push_back(mes_MWPC1->GetStChannel());
 	}
 
-	// for(Int_t i = 0; i < nx1.size();i++){
-	// 	for(Int_t j = 0; j < nx2.size(); j++){
+	for(Int_t i = 0; i < mx2; i++){
+		DetMessage *mes_MWPC2 = (DetMessage*)v_MWPC2->At(i);
+		nx2.push_back(mes_MWPC2->GetStChannel());
+	}
+
 	fHistoMan->fY1_X1->Fill(nx1.at(0),nx2.at(0));
-	// 	}
-	// }
-	Float_t MWPC1_X_displacement  = -1.0;
-	Float_t MWPC1_Y_displacement  = -2.137;
-	Float_t MWPC1_X_zero_position = -15.5*1.25;
-	Float_t MWPC1_Y_zero_position = -15.5*1.25;
+
+  const Float_t    MWPC1_X_displacement  = -1.0;
+  const Float_t    MWPC1_Y_displacement  = -2.1375;
+  const Float_t    MWPC1_X_zero_position = -15.5*1.25;
+  const Float_t    MWPC1_Y_zero_position = -15.5*1.25;
 
   Float_t xMWPC1 = MWPC1_X_zero_position + MWPC1_X_displacement+nx1.at(0)*1.25;
   Float_t yMWPC1 = MWPC1_Y_zero_position + MWPC1_Y_displacement + nx2.at(0)*1.25;
 
-  cerr << " ### filling 2d histo with ### " << xMWPC1 << " " << yMWPC1 << endl;
 	fHistoMan->fY1_X1_C->Fill(xMWPC1,yMWPC1);
-	// cerr << " number of fired wires in 1 and 2 planes: " << nx1.size() << " " << nx2.size() << endl;
-
 }
 
 ClassImp(UserProcAdvMonitoring)
