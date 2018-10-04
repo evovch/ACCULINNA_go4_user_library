@@ -168,35 +168,35 @@ void UserAnalysis::Construct(TString p_outfilename, TString p_setupfilename)
 	// STEP2.3 - provider - raw monitoring ===============================================================
 //TODO remove two leading slashes in the following line to disable this step
 ///*
-	TGo4StepFactory* factoryUnpackedProvider3 = new TGo4StepFactory("factoryUnpackedProvider3");
-	factoryUnpackedProvider3->DefInputEvent("UserEventUnpacking1", "UserEventUnpacking"); // read full raw event without partial io
-	factoryUnpackedProvider3->DefEventProcessor("UserEventUnpacking1_3","MeshProviderProc"); // processorname must match name of input event + "_"
-	factoryUnpackedProvider3->DefOutputEvent("Dummy", "MeshDummyEvent");
-	TGo4AnalysisStep* stepUnpackedProvider3 = new TGo4AnalysisStep("stepUnpackedProvider3", factoryUnpackedProvider3);
-	stepUnpackedProvider3->SetSourceEnabled(kFALSE);
-	stepUnpackedProvider3->SetStoreEnabled(kFALSE);
-	stepUnpackedProvider3->SetProcessEnabled(kTRUE);
-	AddAnalysisStep(stepUnpackedProvider3);
+	// TGo4StepFactory* factoryUnpackedProvider3 = new TGo4StepFactory("factoryUnpackedProvider3");
+	// factoryUnpackedProvider3->DefInputEvent("UserEventUnpacking1", "UserEventUnpacking"); // read full raw event without partial io
+	// factoryUnpackedProvider3->DefEventProcessor("UserEventUnpacking1_3","MeshProviderProc"); // processorname must match name of input event + "_"
+	// factoryUnpackedProvider3->DefOutputEvent("Dummy", "MeshDummyEvent");
+	// TGo4AnalysisStep* stepUnpackedProvider3 = new TGo4AnalysisStep("stepUnpackedProvider3", factoryUnpackedProvider3);
+	// stepUnpackedProvider3->SetSourceEnabled(kFALSE);
+	// stepUnpackedProvider3->SetStoreEnabled(kFALSE);
+	// stepUnpackedProvider3->SetProcessEnabled(kTRUE);
+	// AddAnalysisStep(stepUnpackedProvider3);
 
-	// STEP2.3 - processor - raw monitoring =============================================================
+	// // STEP2.3 - processor - raw monitoring =============================================================
 
-	TGo4StepFactory* factoryRawMonitoring = new TGo4StepFactory("factoryRawMonitoring");
-	//factoryRawMonitoring->DefInputEvent("UserEventUnpacking1", "UserEventUnpacking"); // object name, class name
-	factoryRawMonitoring->DefEventProcessor("UserProcRawMonitoring1", "UserProcRawMonitoring"); // object name, class name
-	factoryRawMonitoring->DefOutputEvent("UserEventRawMonitoring1", "UserEventRawMonitoring"); // object name, class name
+	// TGo4StepFactory* factoryRawMonitoring = new TGo4StepFactory("factoryRawMonitoring");
+	// //factoryRawMonitoring->DefInputEvent("UserEventUnpacking1", "UserEventUnpacking"); // object name, class name
+	// factoryRawMonitoring->DefEventProcessor("UserProcRawMonitoring1", "UserProcRawMonitoring"); // object name, class name
+	// factoryRawMonitoring->DefOutputEvent("UserEventRawMonitoring1", "UserEventRawMonitoring"); // object name, class name
 
-	TGo4AnalysisStep* stepRawMonitoring = new TGo4AnalysisStep("stepRawMonitoring", factoryRawMonitoring);
+	// TGo4AnalysisStep* stepRawMonitoring = new TGo4AnalysisStep("stepRawMonitoring", factoryRawMonitoring);
 
-	stepRawMonitoring->SetSourceEnabled(kFALSE);
-	stepRawMonitoring->SetProcessEnabled(kTRUE);
-	stepRawMonitoring->SetErrorStopEnabled(kFALSE);
+	// stepRawMonitoring->SetSourceEnabled(kFALSE);
+	// stepRawMonitoring->SetProcessEnabled(kTRUE);
+	// stepRawMonitoring->SetErrorStopEnabled(kFALSE);
 
-	//TGo4FileStoreParameter* storeRawMonitoring = new TGo4FileStoreParameter("rawmonitoring.root"); //TODO
-	//stepRawMonitoring->SetEventStore(storeRawMonitoring);
-	//stepRawMonitoring->SetStoreEnabled(kTRUE);
-	stepRawMonitoring->SetStoreEnabled(kFALSE);
+	// //TGo4FileStoreParameter* storeRawMonitoring = new TGo4FileStoreParameter("rawmonitoring.root"); //TODO
+	// //stepRawMonitoring->SetEventStore(storeRawMonitoring);
+	// //stepRawMonitoring->SetStoreEnabled(kTRUE);
+	// stepRawMonitoring->SetStoreEnabled(kFALSE);
 
-	AddAnalysisStep(stepRawMonitoring);
+	// AddAnalysisStep(stepRawMonitoring);
 //*/
 	// STEP3.1 - provider - advanced monitoring ===============================================================
 //TODO remove two leading slashes in the following line to disable this step
@@ -230,8 +230,29 @@ void UserAnalysis::Construct(TString p_outfilename, TString p_setupfilename)
 	stepAdvMonitoring->SetStoreEnabled(kFALSE);
 
 	AddAnalysisStep(stepAdvMonitoring);
+
+// STEP3.2 - processor - test monitoring =============================================================
+
+	TGo4StepFactory* factoryTestMonitoring = new TGo4StepFactory("factoryTestMonitoring");
+	//factoryAdvMonitoring->DefInputEvent("DetEventFull1", "DetEventFull"); // object name, class name
+	factoryTestMonitoring->DefEventProcessor("UserProcTestMonitoring1", "UserProcTestMonitoring"); // object name, class name
+	factoryTestMonitoring->DefOutputEvent("UserEventTestMonitoring1", "UserEventTestMonitoring"); // object name, class name
+
+	TGo4AnalysisStep* stepTestMonitoring = new TGo4AnalysisStep("stepTestMonitoring", factoryTestMonitoring);
+
+	stepTestMonitoring->SetSourceEnabled(kFALSE);
+	stepTestMonitoring->SetProcessEnabled(kTRUE);
+	stepTestMonitoring->SetErrorStopEnabled(kFALSE);
+
+	//TGo4FileStoreParameter* storeAdvMonitoring = new TGo4FileStoreParameter("advmonitoring.root"); //TODO
+	//stepAdvMonitoring->SetEventStore(storeAdvMonitoring);
+	//stepAdvMonitoring->SetStoreEnabled(kTRUE);
+	stepTestMonitoring->SetStoreEnabled(kFALSE);
+
+	AddAnalysisStep(stepTestMonitoring);
+
 //*/
-	// STEP3.2 - digibuilding =====================================================================
+	// STEP3.3 - digibuilding =====================================================================
 /*
 	TGo4StepFactory* factoryDigiBuilding = new TGo4StepFactory("factoryDigiBuilding");
 	factoryDigiBuilding->DefInputEvent("DetEventFull1", "DetEventFull"); // object name, class name

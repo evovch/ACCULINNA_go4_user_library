@@ -30,6 +30,11 @@
 #pragma link C++ class UserProcAdvMonitoring+;
 #pragma link C++ class UserHistosAdvMonitoring+;
 
+// Test monitoring step
+#pragma link C++ class UserEventTestMonitoring+;
+#pragma link C++ class UserProcTestMonitoring+;
+#pragma link C++ class UserHistosTestMonitoring+;
+
 // Learn step
 #pragma link C++ class UserEventLearn+;
 #pragma link C++ class UserProcLearn+;

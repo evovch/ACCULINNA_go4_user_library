@@ -25,6 +25,9 @@ set(ROOTCLING_HEADERS UserAnalysis.h
                       advmonitoring/UserEventAdvMonitoring.h
                       advmonitoring/UserProcAdvMonitoring.h
                       advmonitoring/UserHistosAdvMonitoring.h
+                      testmonitoring/UserEventTestMonitoring.h
+                      testmonitoring/UserProcTestMonitoring.h
+                      testmonitoring/UserHistosTestMonitoring.h
                       learn/UserEventLearn.h
                       learn/UserProcLearn.h
                       digibuilding/UserEventDigiBuilding.h
@@ -53,6 +56,9 @@ set(SOURCE_LIB G__${COMPNAME}.cxx
                advmonitoring/UserEventAdvMonitoring.cxx
                advmonitoring/UserProcAdvMonitoring.cxx
                advmonitoring/UserHistosAdvMonitoring.cxx
+               testmonitoring/UserEventTestMonitoring.cxx
+               testmonitoring/UserProcTestMonitoring.cxx
+               testmonitoring/UserHistosTestMonitoring.cxx
                learn/UserEventLearn.cxx
                learn/UserProcLearn.cxx
                digibuilding/UserEventDigiBuilding.cxx
