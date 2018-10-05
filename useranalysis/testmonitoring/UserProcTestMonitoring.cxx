@@ -57,7 +57,7 @@ UserProcTestMonitoring::~UserProcTestMonitoring()
 
 Bool_t UserProcTestMonitoring::BuildEvent(TGo4EventElement* p_dest)
 {
-	// cerr << "\t ### Build Event was called! next EVENT ### " <<  endl;
+	// cerr << "\t ### UserProcTestMonitoring::BuildEvent was called ### " <<  endl;
 
 	Bool_t v_isValid = kFALSE;
 
@@ -91,7 +91,11 @@ Bool_t UserProcTestMonitoring::BuildEvent(TGo4EventElement* p_dest)
 	}
 	DetEventCommon* v_commSubEl = (DetEventCommon*)(v_comElement);
 	trigger = v_commSubEl->trigger;
-	// fHistoMan_test->fTrigger->Fill(v_commSubEl->trigger);
+	if(trigger>5) {
+		cout << " Event wont be processed " << endl;
+		return kFALSE;
+	}
+	fHistoMan_test->fTrigger_test->Fill(trigger);
 
 	for (Short_t i=0; i<v_NsubElems; i++) {
 		TGo4EventElement* v_subElement = v_input->getEventElement(i);
@@ -124,7 +128,12 @@ Bool_t UserProcTestMonitoring::BuildEvent(TGo4EventElement* p_dest)
 					unsigned int chFullId = stId*100 + v_curDetM->GetStChannel();
 
 					// Fill automatically generated histograms
-					fHistoMan_test->fAutoHistos_test.at(chFullId)->Fill(v_curDetM->GetValue());
+					if(stName.Contains("Beam_detector_MWPC")){
+						fHistoMan_test->fAutoHistos_test.at(chFullId)->Fill(v_curDetM->GetStChannel());
+					}
+					else {
+						fHistoMan_test->fAutoHistos_test.at(chFullId)->Fill(v_curDetM->GetValue());
+					}
 
 					//TODO implement here your actions which require processing
 					// of several messages simultaneously

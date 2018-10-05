@@ -13,13 +13,11 @@
 UserHistosTestMonitoring::UserHistosTestMonitoring()
 {
 	TGo4Analysis* a = TGo4Analysis::Instance();
-
+	fTrigger_test = a->MakeTH1('I', "Trigger", "Values of trigger_test",   5, 0., 4.);
 }
 
 UserHistosTestMonitoring::~UserHistosTestMonitoring()
 {
-	// TGo4Analysis* a = TGo4Analysis::Instance();
-	// fTrigger = a->MakeTH1('I', "TestMon/Trigger", "Values of trigger",   16, 0., 15.);
 	/**
 	 * Not 100% sure, but it looks as if you do not need to delete your histograms yourself.
 	 * TGo4AnalysisObjectManager, as part of the singleton TGo4Analysis, will take care.
@@ -55,10 +53,28 @@ void UserHistosTestMonitoring::GenerateAutoHistos(void)
 
 		//TODO check duplicates
 		TString newHistoName;
-		newHistoName.Form("TestMon/AutoHistos/%d_%s_%s_%d_test", v_statid*100+v_det_ch, v_detector.Data(), v_station.Data(), v_det_ch);
-		TH1* v_histo_test = a->MakeTH1('D', newHistoName, newHistoName, 500, 0., 10000.); //TODO ranges
-		fAutoHistos_test.insert(std::pair<unsigned int, TH1*>(v_statid*100+v_det_ch, v_histo_test));
+		// newHistoName.Form("TestMon/AutoHistos/%d_%s_%s_%d_test", v_statid*100+v_det_ch, v_detector.Data(), v_station.Data(), v_det_ch);
 
+
+		Int_t nBins,nLow,nUp;
+		TString stationNameFull;
+		stationNameFull = v_detector + "_" + v_station;
+		if(stationNameFull.Contains("DAQ")) continue;
+		if(stationNameFull.Contains("Beam_detector_MWPC")) {
+			// cout << stationNameFull << endl;
+			nBins = 32;
+			nLow = 0;
+			nUp = 31;
+			newHistoName.Form("%s/WIRES/%s", v_detector.Data(), v_station.Data());
+		}
+		else {
+			nBins = 500;
+			nLow = 0;
+			nUp = 10000;
+			newHistoName.Form("%s/%s/%s_%d", v_detector.Data(), v_station.Data(), v_station.Data(), v_det_ch);
+		}
+		TH1* v_histo = a->MakeTH1('D', newHistoName, newHistoName, nBins, nLow, nUp); //TODO ranges
+		fAutoHistos_test.insert(std::pair<unsigned int, TH1*>(v_statid*100+v_det_ch, v_histo));
 	}
 }
 

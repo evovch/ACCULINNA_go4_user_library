@@ -24,7 +24,7 @@ public:
 
 	void GenerateAutoHistos(void);
 
-	TH1* fTrigger;	
+	TH1* fTrigger_test;	
 
 
 	/**
