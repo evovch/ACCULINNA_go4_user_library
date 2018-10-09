@@ -25,6 +25,11 @@
 #pragma link C++ class UserProcRepacking+;
 #pragma link C++ class UserHistosRepacking+;
 
+// Beam monitoring step
+#pragma link C++ class UserEventBeamMonitoring+;
+#pragma link C++ class UserProcBeamMonitoring+;
+#pragma link C++ class UserHistosBeamMonitoring+;
+
 // Advanced monitoring step
 #pragma link C++ class UserEventAdvMonitoring+;
 #pragma link C++ class UserProcAdvMonitoring+;

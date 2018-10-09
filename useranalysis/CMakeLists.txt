@@ -28,6 +28,9 @@ set(ROOTCLING_HEADERS UserAnalysis.h
                       testmonitoring/UserEventTestMonitoring.h
                       testmonitoring/UserProcTestMonitoring.h
                       testmonitoring/UserHistosTestMonitoring.h
+                      beammonitoring/UserEventBeamMonitoring.h
+                      beammonitoring/UserProcBeamMonitoring.h
+                      beammonitoring/UserHistosBeamMonitoring.h
                       learn/UserEventLearn.h
                       learn/UserProcLearn.h
                       digibuilding/UserEventDigiBuilding.h
@@ -59,6 +62,9 @@ set(SOURCE_LIB G__${COMPNAME}.cxx
                testmonitoring/UserEventTestMonitoring.cxx
                testmonitoring/UserProcTestMonitoring.cxx
                testmonitoring/UserHistosTestMonitoring.cxx
+               beammonitoring/UserEventBeamMonitoring.cxx
+               beammonitoring/UserProcBeamMonitoring.cxx
+               beammonitoring/UserHistosBeamMonitoring.cxx
                learn/UserEventLearn.cxx
                learn/UserProcLearn.cxx
                digibuilding/UserEventDigiBuilding.cxx
