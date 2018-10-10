@@ -35,7 +35,7 @@ private: // methods
 	void ProcessMessage(DetMessage* p_message, TString stName);
 
 	// example of 2-D histogram filling
-	void fill2D(TGo4EventElement* v_subElement);
+	void fill2D(TGo4CompositeEvent* dEvent);
 
 	void profileMWPC(TGo4CompositeEvent* dEvent,TString st_Name1,TString st_Name2,TH2* histo,TH2* histo_Cal,Float_t X0,Float_t dX,Float_t Y0,Float_t dY);
  // data members

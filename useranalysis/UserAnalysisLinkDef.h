@@ -30,6 +30,11 @@
 #pragma link C++ class UserProcBeamMonitoring+;
 #pragma link C++ class UserHistosBeamMonitoring+;
 
+// Beam monitoring step 2
+#pragma link C++ class UserEventBeamMonitoring2+;
+#pragma link C++ class UserProcBeamMonitoring2+;
+#pragma link C++ class UserHistosBeamMonitoring2+;
+
 // Advanced monitoring step
 #pragma link C++ class UserEventAdvMonitoring+;
 #pragma link C++ class UserProcAdvMonitoring+;

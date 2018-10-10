@@ -116,45 +116,45 @@ Bool_t UserProcBeamMonitoring::BuildEvent(TGo4EventElement* p_dest)
 
 	Short_t curId = v_subElement->getId();
 	// cerr << curId << ") " << curName << " this is it!! " << endl;
+	TGo4CompositeEvent* dEvent = (TGo4CompositeEvent*)(v_subElement);
+	fill2D(dEvent);
 
-	fill2D(v_subElement);
+	Short_t v_NsubSubElems = dEvent->getNElements();
 
-	// Short_t v_NsubSubElems = v_detSubEl->getNElements();
+	// Loop over the stations of the current detector
+	for (Short_t j=0; j<v_NsubSubElems; j++) {
 
-	// // Loop over the stations of the current detector
-	// for (Short_t j=0; j<v_NsubSubElems; j++) {
+		Short_t stId = curId*100 + j; //FIXME this is quite dangerous
 
-	// 	Short_t stId = curId*100 + j; //FIXME this is quite dangerous
+		DetEventStation* v_stSubsubEl = (DetEventStation*)(dEvent->getEventElement(stId));
+		TString stName = v_stSubsubEl->GetName();
 
-	// 	DetEventStation* v_stSubsubEl = (DetEventStation*)(v_detSubEl->getEventElement(stId));
-	// 	TString stName = v_stSubsubEl->GetName();
+		TClonesArray* v_data = v_stSubsubEl->GetDetMessages();
 
-	// 	TClonesArray* v_data = v_stSubsubEl->GetDetMessages();
+		TIter v_detMiter(v_data);
+		DetMessage* v_curDetM;
 
-	// 	TIter v_detMiter(v_data);
-	// 	DetMessage* v_curDetM;
+		// Loop over the messages of the current station 
+		while ((v_curDetM = (DetMessage*)v_detMiter.Next())) {
+			//v_curDetM->Print();
 
-	// 	// Loop over the messages of the current station 
-	// 	while ((v_curDetM = (DetMessage*)v_detMiter.Next())) {
-	// 		//v_curDetM->Print();
+			unsigned int chFullId = stId*100 + v_curDetM->GetStChannel();
 
-	// 		unsigned int chFullId = stId*100 + v_curDetM->GetStChannel();
+			// Fill automatically generated histograms
+			if(stName.Contains("Beam_detector_MWPC")){
+				fHistoMan->fAutoHistos_Beam.at(chFullId)->Fill(v_curDetM->GetStChannel());
+			}
+			else {
+				fHistoMan->fAutoHistos_Beam.at(chFullId)->Fill(v_curDetM->GetValue());
+			}
 
-	// 		// Fill automatically generated histograms
-	// 		if(stName.Contains("Beam_detector_MWPC")){
-	// 			fHistoMan->fAutoHistos_Beam.at(chFullId)->Fill(v_curDetM->GetStChannel());
-	// 		}
-	// 		else {
-	// 			fHistoMan->fAutoHistos_Beam.at(chFullId)->Fill(v_curDetM->GetValue());
-	// 		}
+			//TODO implement here your actions which require processing
+			// of several messages simultaneously
 
-	// 		//TODO implement here your actions which require processing
-	// 		// of several messages simultaneously
-
-	// 		//TODO Look inside
-	// 		// this->ProcessMessage(v_curDetM,stName);
-	// 	} // end of loop over messages
-	// } // end of loop over the stations
+			//TODO Look inside
+			// this->ProcessMessage(v_curDetM,stName);
+		} // end of loop over messages
+	} // end of loop over the stations
 
 	// --------------------------
 
@@ -190,8 +190,7 @@ void UserProcBeamMonitoring::ProcessMessage(DetMessage* p_message, TString stNam
 
 }
 
-void UserProcBeamMonitoring::fill2D(TGo4EventElement* v_subElement){
-	TGo4CompositeEvent* dEvent = (TGo4CompositeEvent*)(v_subElement);
+void UserProcBeamMonitoring::fill2D(TGo4CompositeEvent* dEvent){
 	profileMWPC(dEvent,fst_MWPC1,fst_MWPC2,fHistoMan->fY1_X1,fHistoMan->fY1_X1_C,fMWPC1_X_zero_position,fMWPC1_X_displacement,fMWPC1_Y_zero_position,fMWPC1_Y_displacement);
 	profileMWPC(dEvent,fst_MWPC3,fst_MWPC4,fHistoMan->fY2_X2,fHistoMan->fY2_X2_C,fMWPC2_X_zero_position,fMWPC2_X_displacement,fMWPC2_Y_zero_position,fMWPC2_Y_displacement);
 }
