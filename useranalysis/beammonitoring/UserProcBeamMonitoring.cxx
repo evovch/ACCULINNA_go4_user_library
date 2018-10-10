@@ -67,12 +67,15 @@ UserProcBeamMonitoring::UserProcBeamMonitoring(const char* name) :
 	fMWPC2_Y_zero_position = -15.5*1.25;
 	fMWPC1z = -816.;
 	fMWPC2z = -270.;
-	fBeamPlaneZ = -800.;
+	fBeamPlaneZ = 0.;
   fst_MWPC1 = "Beam_detector_MWPC1";
 	fst_MWPC2 = "Beam_detector_MWPC2";
 	fst_MWPC3 = "Beam_detector_MWPC3";
 	fst_MWPC4 = "Beam_detector_MWPC4";
-
+	fst_F3 = "Beam_detector_F3";
+	fst_tF3 = "Beam_detector_tF3";
+	fst_F5 = "Beam_detector_F5";
+	fst_tF5 = "Beam_detector_tF5";	
 
 	fHistoMan = new UserHistosBeamMonitoring();
 	// cerr << " UserProcBeamMonitoring CALLED !!! ## &Y$@!UHNEFJNASJDf " << endl;
@@ -215,16 +218,16 @@ void UserProcBeamMonitoring::ProcessMessage(DetMessage* p_message, TString stNam
 
 void UserProcBeamMonitoring::fill2D(TGo4CompositeEvent* dEvent){
 	TVector3 hitFar(-1000.,-1000.,fMWPC1z);
-	TVector3 hitClose(-1000.,-1000.,fMWPC2z);
+	TVector3 hitClose(1000.,1000.,fMWPC2z);
 	TVector3 beamVector;
 
 	hitFar = profileMWPC(dEvent,fst_MWPC1,fst_MWPC2,fHistoMan->fY1_X1,fHistoMan->fY1_X1_C,fMWPC1_X_zero_position,fMWPC1_X_displacement,fMWPC1_Y_zero_position,fMWPC1_Y_displacement,hitFar);
 	hitClose = profileMWPC(dEvent,fst_MWPC3,fst_MWPC4,fHistoMan->fY2_X2,fHistoMan->fY2_X2_C,fMWPC2_X_zero_position,fMWPC2_X_displacement,fMWPC2_Y_zero_position,fMWPC2_Y_displacement,hitClose);
  
   beamVector = hitClose - hitFar;	
-
   profileTarget(beamVector,hitClose,fBeamPlaneZ,fHistoMan->fTarget);
- 
+
+	IDdeToF(dEvent,fHistoMan->fdEToF);
 
 
 }
@@ -314,6 +317,11 @@ void UserProcBeamMonitoring::profileTarget(TVector3 beamVector,TVector3 xyMWPCcl
 	xt = xyMWPCclose.X() + (z-xyMWPCclose.Z())*TMath::Tan(beamVector.Theta())*TMath::Sin(beamVector.Phi());
   yt = xyMWPCclose.Y() + (z-xyMWPCclose.Z())*TMath::Tan(beamVector.Theta())*TMath::Cos(beamVector.Phi());
 
+  if(abs(xt)>100 || abs(yt)>100){
+  	// cout << " such beam track does not make sense " << endl;
+  	return;
+  }
+
  	histo->Fill(xt,yt);
 }
 
@@ -331,8 +339,72 @@ Bool_t UserProcBeamMonitoring::IsCluster (TClonesArray* v_MWPC) {
   return isCluster;
 }
 
-void UserProcBeamMonitoring::IDdeToF(){
-	
+void UserProcBeamMonitoring::IDdeToF(TGo4CompositeEvent* dEvent,TH2* histo){
+	DetEventStation* st_F3 = (DetEventStation*)(dEvent->getEventElement(fst_F3.Data(),1));
+	if(!st_F3) {
+		cout << " station " << fst_F3.Data() <<  " was not found " << endl;
+		return;
+	}
+	DetEventStation* st_F5 = (DetEventStation*)(dEvent->getEventElement(fst_F5.Data(),1));
+	if(!st_F5) {
+		cout << " station " << fst_F5.Data() <<  " was not found " << endl;
+		return;
+	}
+	DetEventStation* st_tF3 = (DetEventStation*)(dEvent->getEventElement(fst_tF3.Data(),1));
+	if(!st_tF3) {
+		cout << " station " << fst_tF3.Data() <<  " was not found " << endl;
+		return;
+	}
+	DetEventStation* st_tF5 = (DetEventStation*)(dEvent->getEventElement(fst_tF5.Data(),1));
+	if(!st_tF5) {
+		cout << " station " << fst_tF5.Data() <<  " was not found " << endl;
+		return;
+	}
+
+	TClonesArray* v_F3 = st_F3->GetDetMessages();
+	TClonesArray* v_F5 = st_F5->GetDetMessages();
+	TClonesArray* v_tF3 = st_tF3->GetDetMessages();
+	TClonesArray* v_tF5 = st_tF5->GetDetMessages();
+
+	Int_t nF3 = v_F3->GetEntriesFast();
+	Int_t ntF3 = v_tF3->GetEntriesFast();
+	Int_t nF5 = v_F5->GetEntriesFast();
+	Int_t ntF5 = v_tF5->GetEntriesFast();
+
+	if(nF3<1 || ntF3<1 || nF5<1 || ntF5<1) {
+		return;
+	}
+
+	Float_t av_F3 = 0.;
+	for(Int_t i = 0; i < nF3; i++){
+		DetMessage *mes_F3 = (DetMessage*)v_F3->At(i);
+		av_F3 += mes_F3->GetValue();
+	}
+	av_F3 = av_F3/nF3;
+
+	Float_t av_tF3 = 0.;
+	for(Int_t i = 0; i < ntF3; i++){
+		DetMessage *mes_tF3 = (DetMessage*)v_tF3->At(i);
+		av_tF3 += mes_tF3->GetValue();
+	}
+	av_tF3 = av_tF3/ntF3;
+
+	Float_t av_F5 = 0.;
+	for(Int_t i = 0; i < nF5; i++){
+		DetMessage *mes_F5 = (DetMessage*)v_F5->At(i);
+		av_F5 += mes_F5->GetValue();
+	}
+	av_F5 = av_F5/nF5;
+
+	Float_t av_tF5 = 0.;
+	for(Int_t i = 0; i < ntF5; i++){
+		DetMessage *mes_tF5 = (DetMessage*)v_tF5->At(i);
+		av_tF5 += mes_tF5->GetValue();
+	}
+	av_tF5 = av_tF5/ntF5;
+
+	// cout << av_F3 << " " << av_F5 << " " << av_tF3 << " " << av_tF5 << endl;
+	histo->Fill(av_tF5-av_tF3, av_F3+av_F5);
 }
 
 ClassImp(UserProcBeamMonitoring)

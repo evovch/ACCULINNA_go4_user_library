@@ -33,6 +33,8 @@ public:
 	TH2* fY2_X2_C;
 	TH2* fTarget;
 
+	TH2* fdEToF;
+
 	/**
 	 * Automatically generated histograms
 	 */

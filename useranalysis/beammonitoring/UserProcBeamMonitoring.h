@@ -44,7 +44,7 @@ private: // methods
 
   Bool_t IsCluster (TClonesArray* v_MWPC);
 
-  void IDdeToF(TGo4CompositeEvent* dEvent);
+  void IDdeToF(TGo4CompositeEvent* dEvent,TH2* histo);
 
  // data members
 	/**
@@ -86,6 +86,11 @@ private: // methods
   TString fst_MWPC2;
   TString fst_MWPC3;
   TString fst_MWPC4;
+
+  TString fst_F3;
+  TString fst_tF3; 
+  TString fst_F5;
+  TString fst_tF5;   
 
   Float_t fBeamPlaneZ;
 
