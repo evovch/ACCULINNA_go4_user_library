@@ -140,47 +140,47 @@ Bool_t UserProcBeamMonitoring::BuildEvent(TGo4EventElement* p_dest)
 		return kFALSE;
 	}
 
-	Short_t curId = v_subElement->getId();
+	// Short_t curId = v_subElement->getId();
 	// cerr << curId << ") " << curName << " this is it!! " << endl;
 	TGo4CompositeEvent* dEvent = (TGo4CompositeEvent*)(v_subElement);
 	fill2D(dEvent);
 
-	Short_t v_NsubSubElems = dEvent->getNElements();
+	// Short_t v_NsubSubElems = dEvent->getNElements();
 
-	// Loop over the stations of the current detector
-	for (Short_t j=0; j<v_NsubSubElems; j++) {
+	// // Loop over the stations of the current detector
+	// for (Short_t j=0; j<v_NsubSubElems; j++) {
 
-		Short_t stId = curId*100 + j; //FIXME this is quite dangerous
+	// 	Short_t stId = curId*100 + j; //FIXME this is quite dangerous
 
-		DetEventStation* v_stSubsubEl = (DetEventStation*)(dEvent->getEventElement(stId));
-		TString stName = v_stSubsubEl->GetName();
+	// 	DetEventStation* v_stSubsubEl = (DetEventStation*)(dEvent->getEventElement(stId));
+	// 	TString stName = v_stSubsubEl->GetName();
 
-		TClonesArray* v_data = v_stSubsubEl->GetDetMessages();
+	// 	TClonesArray* v_data = v_stSubsubEl->GetDetMessages();
 
-		TIter v_detMiter(v_data);
-		DetMessage* v_curDetM;
+	// 	TIter v_detMiter(v_data);
+	// 	DetMessage* v_curDetM;
 
-		// Loop over the messages of the current station 
-		while ((v_curDetM = (DetMessage*)v_detMiter.Next())) {
-			//v_curDetM->Print();
+	// 	// Loop over the messages of the current station 
+	// 	while ((v_curDetM = (DetMessage*)v_detMiter.Next())) {
+	// 		//v_curDetM->Print();
 
-			unsigned int chFullId = stId*100 + v_curDetM->GetStChannel();
+	// 		unsigned int chFullId = stId*100 + v_curDetM->GetStChannel();
 
-			// Fill automatically generated histograms
-			if(stName.Contains("Beam_detector_MWPC")){
-				fHistoMan->fAutoHistos_Beam.at(chFullId)->Fill(v_curDetM->GetStChannel());
-			}
-			else {
-				fHistoMan->fAutoHistos_Beam.at(chFullId)->Fill(v_curDetM->GetValue());
-			}
+	// 		// Fill automatically generated histograms
+	// 		if(stName.Contains("Beam_detector_MWPC")){
+	// 			fHistoMan->fAutoHistos_Beam.at(chFullId)->Fill(v_curDetM->GetStChannel());
+	// 		}
+	// 		else {
+	// 			fHistoMan->fAutoHistos_Beam.at(chFullId)->Fill(v_curDetM->GetValue());
+	// 		}
 
-			//TODO implement here your actions which require processing
-			// of several messages simultaneously
+	// 		//TODO implement here your actions which require processing
+	// 		// of several messages simultaneously
 
-			//TODO Look inside
-			// this->ProcessMessage(v_curDetM,stName);
-		} // end of loop over messages
-	} // end of loop over the stations
+	// 		//TODO Look inside
+	// 		// this->ProcessMessage(v_curDetM,stName);
+	// 	} // end of loop over messages
+	// } // end of loop over the stations
 
 	// --------------------------
 
@@ -199,7 +199,7 @@ void UserProcBeamMonitoring::UserPreLoop()
 	cerr << "[DEBUG ] " << "UserProcBeamMonitoring::UserPreLoop ====================================" << endl;
 	#endif
 
-	fHistoMan->GenerateAutoHistos();
+	// fHistoMan->GenerateAutoHistos();
 
 	#ifdef DEBUGBeamMON
 	cerr << "[DEBUG ] " << "=======================================================================" << endl;
