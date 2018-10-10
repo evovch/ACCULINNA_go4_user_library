@@ -37,8 +37,10 @@ UserProcAdvMonitoring::UserProcAdvMonitoring(const char* name) :
 	TGo4EventProcessor(name),
 	fEventCounter(0)
 {
+	fTrigger = 1; 
+	fst_MWPC = "Beam_detector_MWPC";
+
 	fHistoMan = new UserHistosAdvMonitoring();
-	readParFile("/media/user/work/data/analysisexp1804/presentPars/csi_r_ec.clb");
 	// cerr << " UserProcAdvMonitoring CALLED !!! ## &Y$@!UHNEFJNASJDf " << endl;
 	fFileSummary = fopen("textoutput/summaryAdvMonitoring.txt", "w");
 	if (fFileSummary == NULL) {
@@ -79,10 +81,9 @@ Bool_t UserProcAdvMonitoring::BuildEvent(TGo4EventElement* p_dest)
 
 	Short_t v_NsubElems = v_input->getNElements();
 	//cerr << v_NsubElems << " subelements in the input full event." << endl;
-	Int_t trigger;
-	Int_t x1,y1;
 	// Loop over sub-elements. There is one sub-element which is the 'DetEventCommon'
 	// and all other are 'DetEventDetector's
+	UInt_t trigger;
 
 	TGo4EventElement* v_comElement = v_input->getEventElement("DetEventCommon",1);
 	if(!v_comElement) {
@@ -91,7 +92,11 @@ Bool_t UserProcAdvMonitoring::BuildEvent(TGo4EventElement* p_dest)
 	}
 	DetEventCommon* v_commSubEl = (DetEventCommon*)(v_comElement);
 	trigger = v_commSubEl->trigger;
-	fHistoMan->fTrigger->Fill(v_commSubEl->trigger);
+	if(trigger>5) {
+		cout << " Event wont befst_MWPC processed " << endl;
+		return kFALSE;
+	}
+	fHistoMan->fTrigger->Fill(trigger);
 
 	for (Short_t i=0; i<v_NsubElems; i++) {
 		TGo4EventElement* v_subElement = v_input->getEventElement(i);
@@ -103,10 +108,6 @@ Bool_t UserProcAdvMonitoring::BuildEvent(TGo4EventElement* p_dest)
 			TGo4CompositeEvent* v_detSubEl = (TGo4CompositeEvent*)(v_subElement);
 
 			Short_t v_NsubSubElems = v_detSubEl->getNElements();
-
-			if(curName == "Beam_detector") {
-				if(trigger==1) fill2D(v_detSubEl);
-			}
 
 			// Loop over the stations of the current detector
 			for (Short_t j=0; j<v_NsubSubElems; j++) {
@@ -128,13 +129,18 @@ Bool_t UserProcAdvMonitoring::BuildEvent(TGo4EventElement* p_dest)
 					unsigned int chFullId = stId*100 + v_curDetM->GetStChannel();
 
 					// Fill automatically generated histograms
-					fHistoMan->fAutoHistos.at(chFullId)->Fill(v_curDetM->GetValue());
+					if(stName.Contains(fst_MWPC.Data()) && trigger==fTrigger){
+						fHistoMan->fAutoHistos.at(chFullId)->Fill(v_curDetM->GetStChannel());
+					}
+					else {
+						fHistoMan->fAutoHistos.at(chFullId)->Fill(v_curDetM->GetValue());
+					}
 
 					//TODO implement here your actions which require processing
 					// of several messages simultaneously
 
 					//TODO Look inside
-					this->ProcessMessage(v_curDetM,stName);
+					// this->ProcessMessage(v_curDetM,stName);
 				} // end of loop over messages
 			} // end of loop over the stations
 		} // end of if
@@ -171,143 +177,6 @@ void UserProcAdvMonitoring::UserPostLoop()
 void UserProcAdvMonitoring::ProcessMessage(DetMessage* p_message, TString stName)
 {
 	//TODO implement your processing of independent messages here
-
-	if(stName=="Left_telescope_CsI_L"){
-		fHistoMan->fCsI_L[p_message->GetStChannel()]->Fill(p_message->GetValue());
-	}
-	if(stName=="Left_telescope_tCsI_L"){
-		fHistoMan->ftCsI_L[p_message->GetStChannel()]->Fill(p_message->GetValue());
-	}
-	if(stName=="Right_telescope_CsI_R"){
-		fHistoMan->fCsI_R[p_message->GetStChannel()]->Fill(p_message->GetValue());
-		fHistoMan->fCsI_R_C[p_message->GetStChannel()]->Fill(p_message->GetValue()*parCsI_R_2[p_message->GetStChannel()]+parCsI_R_1[p_message->GetStChannel()]);
-	}
-	if(stName=="Right_telescope_tCsI_R"){
-		fHistoMan->ftCsI_R[p_message->GetStChannel()]->Fill(p_message->GetValue());
-	}
-	if(stName=="Left_telescope_SQ300"){
-		fHistoMan->fSQ20[p_message->GetStChannel()]->Fill(p_message->GetValue());
-	}
-	if(stName=="Left_telescope_tSQ300"){
-		fHistoMan->ftSQ20[p_message->GetStChannel()]->Fill(p_message->GetValue());
-	}
-	if(stName=="Left_telescope_SQY_L"){
-		fHistoMan->fSQY_L[p_message->GetStChannel()]->Fill(p_message->GetValue());
-	}
-	if(stName=="Left_telescope_tSQY_L"){
-		fHistoMan->ftSQY_L[p_message->GetStChannel()]->Fill(p_message->GetValue());
-	}
-	if(stName=="Right_telescope_SQY_R"){
-		fHistoMan->fSQY_R[p_message->GetStChannel()]->Fill(p_message->GetValue());
-	}
-	if(stName=="Right_telescope_tSQY_R"){
-		fHistoMan->ftSQY_R[p_message->GetStChannel()]->Fill(p_message->GetValue());
-	}
-	if(stName=="Left_telescope_SQX_L"){
-		fHistoMan->fSQX_L[p_message->GetStChannel()]->Fill(p_message->GetValue());
-	}
-	if(stName=="Left_telescope_tSQX_L"){
-		fHistoMan->ftSQX_L[p_message->GetStChannel()]->Fill(p_message->GetValue());
-	}
-	if(stName=="Right_telescope_SQX_R"){
-		fHistoMan->fSQX_R[p_message->GetStChannel()]->Fill(p_message->GetValue());
-	}
-	if(stName=="Right_telescope_tSQX_R"){
-		fHistoMan->ftSQX_R[p_message->GetStChannel()]->Fill(p_message->GetValue());
-	}
-	if(stName=="Beam_detector_F5"){
-		fHistoMan->fF5[p_message->GetStChannel()]->Fill(p_message->GetValue());
-	}
-	if(stName=="Beam_detector_tF5"){
-		fHistoMan->ftF5[p_message->GetStChannel()]->Fill(p_message->GetValue());
-	}
-	if(stName=="Beam_detector_F3"){
-		fHistoMan->fF3[p_message->GetStChannel()]->Fill(p_message->GetValue());
-	}
-	if(stName=="Beam_detector_tF3"){
-		fHistoMan->ftF3[p_message->GetStChannel()]->Fill(p_message->GetValue());
-	}
-	if(stName=="Beam_detector_tMWPC"){
-		fHistoMan->ftMWPC[p_message->GetStChannel()]->Fill(p_message->GetValue());
-	}
-	if(stName=="Beam_detector_MWPC1"){
-		fHistoMan->fNX1->Fill(p_message->GetStChannel());
-	}
-	if(stName=="Beam_detector_MWPC2"){
-		fHistoMan->fNY1->Fill(p_message->GetStChannel());
-	}
-	if(stName=="Beam_detector_MWPC3"){
-		fHistoMan->fNX2->Fill(p_message->GetStChannel());
-	}
-	if(stName=="Beam_detector_MWPC4"){
-		fHistoMan->fNY2->Fill(p_message->GetStChannel());
-	}
-}
-
-void UserProcAdvMonitoring::readParFile(TString parFile){
-	ifstream myfile;
-  TString line;
-  Int_t count=-2;
-  myfile.open("/media/user/work/data/analysisexp1804/presentPars/csi_r_ec.clb");
-  while (! myfile.eof() ) {
-    line.ReadLine(myfile);
-    if(count < 0){
-      count++;
-      continue;
-    }
-    if(line.IsNull()) break;
-    sscanf(line.Data(),"%lf %lf", parCsI_R_1+count,parCsI_R_2+count);
-    count++;
-  }  
-
-  // cerr << endl << " pars for CsR crystals" << endl;
-  // for(Int_t i=0;i<16;i++) cerr << parCsI_R_1[i] << " " << parCsI_R_2[i] << endl; 
-}
-
-void UserProcAdvMonitoring::fill2D(TGo4CompositeEvent* dEvent){
-	vector <Int_t> nx1;
-	vector <Int_t> nx2;
-
-	DetEventStation* st_MWPC1 = (DetEventStation*)(dEvent->getEventElement("Beam_detector_MWPC1",1));
-	if(!st_MWPC1) {
-		cout << " station Beam_detector_MWPC1 was not found " << endl;
-		return;
-	}
-	DetEventStation* st_MWPC2 = (DetEventStation*)(dEvent->getEventElement("Beam_detector_MWPC2",1));
-	if(!st_MWPC2) {
-		cout << " station Beam_detector_MWPC2 was not found " << endl;
-		return;
-	}
-
-	TClonesArray* v_MWPC1 = st_MWPC1->GetDetMessages();
-	TClonesArray* v_MWPC2 = st_MWPC2->GetDetMessages();
-
-	Int_t mx1 = v_MWPC1->GetEntriesFast();
-	Int_t mx2 = v_MWPC2->GetEntriesFast();
-	if(mx1<1 || mx2<1) {
-		return;
-	}
-	for(Int_t i = 0; i < mx1; i++){
-		DetMessage *mes_MWPC1 = (DetMessage*)v_MWPC1->At(i);
-		nx1.push_back(mes_MWPC1->GetStChannel());
-	}
-
-	for(Int_t i = 0; i < mx2; i++){
-		DetMessage *mes_MWPC2 = (DetMessage*)v_MWPC2->At(i);
-		nx2.push_back(mes_MWPC2->GetStChannel());
-	}
-
-	fHistoMan->fY1_X1->Fill(nx1.at(0),nx2.at(0));
-
-  const Float_t    MWPC1_X_displacement  = -1.0;
-  const Float_t    MWPC1_Y_displacement  = -2.1375;
-  const Float_t    MWPC1_X_zero_position = -15.5*1.25;
-  const Float_t    MWPC1_Y_zero_position = -15.5*1.25;
-
-  Float_t xMWPC1 = MWPC1_X_zero_position + MWPC1_X_displacement+nx1.at(0)*1.25;
-  Float_t yMWPC1 = MWPC1_Y_zero_position + MWPC1_Y_displacement + nx2.at(0)*1.25;
-
-	fHistoMan->fY1_X1_C->Fill(xMWPC1,yMWPC1);
 }
 
 ClassImp(UserProcAdvMonitoring)

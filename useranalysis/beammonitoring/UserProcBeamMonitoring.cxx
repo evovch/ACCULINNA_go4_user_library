@@ -96,8 +96,6 @@ UserProcBeamMonitoring::~UserProcBeamMonitoring()
 
 Bool_t UserProcBeamMonitoring::BuildEvent(TGo4EventElement* p_dest)
 {
-	// cerr << "\t ### UserProcBeamMonitoring::BuildEvent was called ### " <<  endl;
-
 	Bool_t v_isValid = kFALSE;
 
 	DetEventFull* v_input = (DetEventFull*)GetInputEvent("stepRepackedProvider2");
@@ -115,13 +113,9 @@ Bool_t UserProcBeamMonitoring::BuildEvent(TGo4EventElement* p_dest)
 	#endif
 
 	// --------------------------
-
-	// Short_t v_NsubElems = v_input->getNElements();
-	//cerr << v_NsubElems << " subelements in the input full event." << endl;
-	UInt_t trigger;
 	// Loop over sub-elements. There is one sub-element which is the 'DetEventCommon'
 	// and all other are 'DetEventDetector's
-
+	UInt_t trigger;
 	TGo4EventElement* v_comElement = v_input->getEventElement("DetEventCommon",1);
 	if(!v_comElement) {
 		cout << "Detector DetEventCommon was not found " << endl;
@@ -140,51 +134,8 @@ Bool_t UserProcBeamMonitoring::BuildEvent(TGo4EventElement* p_dest)
 		return kFALSE;
 	}
 
-	// Short_t curId = v_subElement->getId();
-	// cerr << curId << ") " << curName << " this is it!! " << endl;
 	TGo4CompositeEvent* dEvent = (TGo4CompositeEvent*)(v_subElement);
 	fill2D(dEvent);
-
-	// Short_t v_NsubSubElems = dEvent->getNElements();
-
-	// // Loop over the stations of the current detector
-	// for (Short_t j=0; j<v_NsubSubElems; j++) {
-
-	// 	Short_t stId = curId*100 + j; //FIXME this is quite dangerous
-
-	// 	DetEventStation* v_stSubsubEl = (DetEventStation*)(dEvent->getEventElement(stId));
-	// 	TString stName = v_stSubsubEl->GetName();
-
-	// 	TClonesArray* v_data = v_stSubsubEl->GetDetMessages();
-
-	// 	TIter v_detMiter(v_data);
-	// 	DetMessage* v_curDetM;
-
-	// 	// Loop over the messages of the current station 
-	// 	while ((v_curDetM = (DetMessage*)v_detMiter.Next())) {
-	// 		//v_curDetM->Print();
-
-	// 		unsigned int chFullId = stId*100 + v_curDetM->GetStChannel();
-
-	// 		// Fill automatically generated histograms
-	// 		if(stName.Contains("Beam_detector_MWPC")){
-	// 			fHistoMan->fAutoHistos_Beam.at(chFullId)->Fill(v_curDetM->GetStChannel());
-	// 		}
-	// 		else {
-	// 			fHistoMan->fAutoHistos_Beam.at(chFullId)->Fill(v_curDetM->GetValue());
-	// 		}
-
-	// 		//TODO implement here your actions which require processing
-	// 		// of several messages simultaneously
-
-	// 		//TODO Look inside
-	// 		// this->ProcessMessage(v_curDetM,stName);
-	// 	} // end of loop over messages
-	// } // end of loop over the stations
-
-	// --------------------------
-
-	fEventCounter++;
 
 	return v_isValid;
 }
@@ -217,8 +168,8 @@ void UserProcBeamMonitoring::ProcessMessage(DetMessage* p_message, TString stNam
 }
 
 void UserProcBeamMonitoring::fill2D(TGo4CompositeEvent* dEvent){
-	TVector3 hitFar(-1000.,-1000.,fMWPC1z);
-	TVector3 hitClose(1000.,1000.,fMWPC2z);
+	TVector3 hitFar(-1000.,-1000.,fMWPC1z); // KOSTYL!! if smth is wrong in clusterisation we gonna have
+	TVector3 hitClose(1000.,1000.,fMWPC2z); // beamVector (2000,2000,z) which will not pass through the line 270
 	TVector3 beamVector;
 
 	hitFar = profileMWPC(dEvent,fst_MWPC1,fst_MWPC2,fHistoMan->fY1_X1,fHistoMan->fY1_X1_C,fMWPC1_X_zero_position,fMWPC1_X_displacement,fMWPC1_Y_zero_position,fMWPC1_Y_displacement,hitFar);
@@ -272,7 +223,7 @@ TVector3 UserProcBeamMonitoring::profileMWPC(TGo4CompositeEvent* dEvent,TString 
 
 	Bool_t cluster=kTRUE;
 	if(mx1>1) {
-		// cluster = IsCluster(v_MWPC1); // check that all wires in array are neigbours
+		cluster = IsCluster(v_MWPC1); // check that all wires in array are neigbours
 		if(cluster){
 			nx = (nx1.at(0) + nx1.at(mx1-1))/2;	//if the number of fired wires is even taking the lower middle
 		}
@@ -284,7 +235,6 @@ TVector3 UserProcBeamMonitoring::profileMWPC(TGo4CompositeEvent* dEvent,TString 
 	else{
 		nx = nx1.at(0);
 	}
-	// cout << nx << endl;
 	if(mx2>1) {
 		cluster = IsCluster(v_MWPC2); // check that all wires in array are neigbours
 		if(cluster){
@@ -298,6 +248,7 @@ TVector3 UserProcBeamMonitoring::profileMWPC(TGo4CompositeEvent* dEvent,TString 
 	else{
 		ny = nx2.at(0);
 	}
+	
 	histo->Fill(nx,ny);
 
   Float_t xMWPC = X0 + dX + nx*1.25;
@@ -317,7 +268,7 @@ void UserProcBeamMonitoring::profileTarget(TVector3 beamVector,TVector3 xyMWPCcl
 	xt = xyMWPCclose.X() + (z-xyMWPCclose.Z())*TMath::Tan(beamVector.Theta())*TMath::Sin(beamVector.Phi());
   yt = xyMWPCclose.Y() + (z-xyMWPCclose.Z())*TMath::Tan(beamVector.Theta())*TMath::Cos(beamVector.Phi());
 
-  if(abs(xt)>100 || abs(yt)>100){
+  if(abs(xt)>100 || abs(yt)>100){ // checking if beam track is not crazy
   	// cout << " such beam track does not make sense " << endl;
   	return;
   }
@@ -330,7 +281,6 @@ Bool_t UserProcBeamMonitoring::IsCluster (TClonesArray* v_MWPC) {
   for(Int_t i = 0; i < v_MWPC->GetEntries() - 1; i++) {
   	DetMessage *mes_MWPC = (DetMessage*)v_MWPC->At(i);
   	DetMessage *mes_MWPC_next = (DetMessage*)v_MWPC->At(i+1);
-  	// cout << mes_MWPC->GetStChannel() << " " << mes_MWPC_next->GetStChannel() << endl;
     if(abs(mes_MWPC_next->GetStChannel() - mes_MWPC->GetStChannel()) != 1){
       isCluster = kFALSE;
       break;
@@ -403,7 +353,6 @@ void UserProcBeamMonitoring::IDdeToF(TGo4CompositeEvent* dEvent,TH2* histo){
 	}
 	av_tF5 = av_tF5/ntF5;
 
-	// cout << av_F3 << " " << av_F5 << " " << av_tF3 << " " << av_tF5 << endl;
 	histo->Fill(av_tF5-av_tF3, av_F3+av_F5);
 }
 

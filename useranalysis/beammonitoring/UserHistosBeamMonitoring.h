@@ -38,7 +38,7 @@ public:
 	/**
 	 * Automatically generated histograms
 	 */
-	std::map<unsigned int, TH1*> fAutoHistos_Beam; //!
+	// std::map<unsigned int, TH1*> fAutoHistos_Beam; //!
 
 	ClassDef(UserHistosBeamMonitoring, 1);
 };

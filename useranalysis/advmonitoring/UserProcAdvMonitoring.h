@@ -31,14 +31,8 @@ public: // methods
 	/** Method called when analysis is stopping */
 	virtual void UserPostLoop();
 
-	// reading input parameters
-	void readParFile(TString parFile);
-
 private: // methods
 	void ProcessMessage(DetMessage* p_message, TString stName);
-
-	// example of 2-D histogram filling
-	void fill2D(TGo4CompositeEvent* dEvent);
 
 private: // data members
 	/**
@@ -58,12 +52,14 @@ private: // data members
 	const SetupConfiguration* fSetupConfig;
 
 	/**
-	 * Summary stream
+	 * Summary stream	
 	 */
 	FILE* fFileSummary;
-
-	Double_t parCsI_R_1[16],parCsI_R_2[16];
 	
+	//parameters 
+	UInt_t fTrigger; // value of the trigger came from BeamDet 
+  TString fst_MWPC; // name of the MWPC station
+
 	ClassDef(UserProcAdvMonitoring, 1);
 };
 
