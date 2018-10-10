@@ -15,6 +15,8 @@ class TGo4CompositeEvent;
 class UserHistosBeamMonitoring;
 class SetupConfiguration;
 class DetMessage;
+class TVector3;
+class TClonesArray;
 
 class UserProcBeamMonitoring : public TGo4EventProcessor
 {
@@ -37,7 +39,13 @@ private: // methods
 	// example of 2-D histogram filling
 	void fill2D(TGo4CompositeEvent* dEvent);
 
-	void profileMWPC(TGo4CompositeEvent* dEvent,TString st_Name1,TString st_Name2,TH2* histo,TH2* histo_Cal,Float_t X0,Float_t dX,Float_t Y0,Float_t dY);
+	TVector3 profileMWPC(TGo4CompositeEvent* dEvent,TString st_Name1,TString st_Name2,TH2* histo,TH2* histo_Cal,Float_t X0,Float_t dX,Float_t Y0,Float_t dY,TVector3 xyMWPC);
+  void profileTarget(TVector3 beamVector,TVector3 xyMWPCclose,Float_t z,TH2* histo);
+
+  Bool_t IsCluster (TClonesArray* v_MWPC);
+
+  void IDdeToF(TGo4CompositeEvent* dEvent);
+
  // data members
 	/**
 	 * Counter or processed events
@@ -63,21 +71,23 @@ private: // methods
 	//parameters 
 	UInt_t fTrigger;
 
-  Float_t fMWPC1_X_displacement  = -1.0;
-  Float_t fMWPC1_Y_displacement  = -2.1375;
-  Float_t fMWPC2_X_displacement  = 0.2;
-  Float_t fMWPC2_Y_displacement  = -1.125;
-  Float_t fMWPC1_X_zero_position = -15.5*1.25;
-  Float_t fMWPC1_Y_zero_position = -15.5*1.25;
-  Float_t fMWPC2_X_zero_position = -15.5*1.25;
-  Float_t fMWPC2_Y_zero_position = -15.5*1.25;
-
+  Float_t fMWPC1_X_displacement;
+  Float_t fMWPC1_Y_displacement;
+  Float_t fMWPC2_X_displacement;
+  Float_t fMWPC2_Y_displacement;
+  Float_t fMWPC1_X_zero_position;
+  Float_t fMWPC1_Y_zero_position;
+  Float_t fMWPC2_X_zero_position;
+  Float_t fMWPC2_Y_zero_position;
+  Float_t fMWPC1z;
+  Float_t fMWPC2z;  
 
   TString fst_MWPC1;
   TString fst_MWPC2;
   TString fst_MWPC3;
   TString fst_MWPC4;
 
+  Float_t fBeamPlaneZ;
 
 	ClassDef(UserProcBeamMonitoring, 1);
 };

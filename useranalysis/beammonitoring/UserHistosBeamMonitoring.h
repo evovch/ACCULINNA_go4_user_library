@@ -31,6 +31,7 @@ public:
 	TH2* fY1_X1_C;
 	TH2* fY2_X2;
 	TH2* fY2_X2_C;
+	TH2* fTarget;
 
 	/**
 	 * Automatically generated histograms

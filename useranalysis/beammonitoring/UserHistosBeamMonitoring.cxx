@@ -18,6 +18,7 @@ UserHistosBeamMonitoring::UserHistosBeamMonitoring()
 	fY1_X1_C = a->MakeTH2('F', "WIRES/XY1_C", "beam profile at the MWPC1 plane", 32,-20.,20.,32,-20.,20.,"X1_C","Y1_C");
 	fY2_X2 = a->MakeTH2('I', "WIRES/XY2", "WIRES 1 Y2 vs X2", 32,0.,32.,32,0.,32.,"X2","Y2");
 	fY2_X2_C = a->MakeTH2('F', "WIRES/XY2_C", "beam profile at the MWPC2 plane", 32,-20.,20.,32,-20.,20.,"X2_C","Y2_C");
+	fTarget = a->MakeTH2('F', "WIRES/target", "beam profile at the target plane", 40,-20.,20.,40,-20.,20.,"X_T","Y_T");
 }
 
 UserHistosBeamMonitoring::~UserHistosBeamMonitoring()
