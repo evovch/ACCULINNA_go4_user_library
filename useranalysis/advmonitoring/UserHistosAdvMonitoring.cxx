@@ -13,8 +13,8 @@
 UserHistosAdvMonitoring::UserHistosAdvMonitoring()
 {
 	TGo4Analysis* a = TGo4Analysis::Instance();
-
-	fTrigger = a->MakeTH1('I', "Trigger",    "Values of trigger",   5, 0., 5.);
+	fst_MWPC = "Beam_detector_MWPC";
+	fTrigger = a->MakeTH1('I', "Trigger", "Values of trigger",   5, 0., 5.);
 }
 
 UserHistosAdvMonitoring::~UserHistosAdvMonitoring()
@@ -61,7 +61,7 @@ void UserHistosAdvMonitoring::GenerateAutoHistos(void)
 		TString stationNameFull;
 		stationNameFull = v_detector + "_" + v_station;
 		// if(stationNameFull.Contains("DAQ")) continue;
-		if(stationNameFull.Contains("Beam_detector_MWPC")) {
+		if(stationNameFull.Contains(fst_MWPC.Data())) {
 			// cout << stationNameFull << endl;
 			nBins = 32;
 			nLow = 0;

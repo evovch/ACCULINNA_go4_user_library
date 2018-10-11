@@ -8,6 +8,7 @@
 #define USERHISTOSADVMONITORING_H
 
 #include <TObject.h> // mother class
+#include <TString.h>
 
 // STD
 #include <map>
@@ -30,6 +31,9 @@ public:
 	 * Automatically generated histograms
 	 */
 	std::map<unsigned int, TH1*> fAutoHistos; //!
+
+private:
+	TString fst_MWPC; // name of the MWPC station
 
 	ClassDef(UserHistosAdvMonitoring, 1);
 };
