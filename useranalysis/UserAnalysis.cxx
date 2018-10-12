@@ -57,6 +57,9 @@ UserAnalysis::UserAnalysis(int argc, char** argv) :
 
 	this->Construct(argv[1], argv[2]);
 	cout << "UserAnalysis constructed 2." << endl;
+
+	//TODO check that 'setup.C' exists!
+	ExecuteScript("setup.C");
 }
 
 UserAnalysis::~UserAnalysis()
