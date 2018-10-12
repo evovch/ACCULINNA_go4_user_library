@@ -25,6 +25,9 @@ set(ROOTCLING_HEADERS UserAnalysis.h
                       advmonitoring/UserEventAdvMonitoring.h
                       advmonitoring/UserProcAdvMonitoring.h
                       advmonitoring/UserHistosAdvMonitoring.h
+                      beamdetmonitoring/UserEventBeamDetMonitoring.h
+                      beamdetmonitoring/UserProcBeamDetMonitoring.h
+                      beamdetmonitoring/UserHistosBeamDetMonitoring.h
                       learn/UserEventLearn.h
                       learn/UserProcLearn.h
                       digibuilding/UserEventDigiBuilding.h
@@ -53,6 +56,9 @@ set(SOURCE_LIB G__${COMPNAME}.cxx
                advmonitoring/UserEventAdvMonitoring.cxx
                advmonitoring/UserProcAdvMonitoring.cxx
                advmonitoring/UserHistosAdvMonitoring.cxx
+               beamdetmonitoring/UserEventBeamDetMonitoring.cxx
+               beamdetmonitoring/UserProcBeamDetMonitoring.cxx
+               beamdetmonitoring/UserHistosBeamDetMonitoring.cxx
                learn/UserEventLearn.cxx
                learn/UserProcLearn.cxx
                digibuilding/UserEventDigiBuilding.cxx
@@ -65,6 +71,7 @@ add_library(${COMPNAME} SHARED ${SOURCE_LIB})
 target_link_libraries(${COMPNAME} ${PROJECT_PREFIX}Data ${PROJECT_PREFIX}SetupConfigCppWrapper)
 
 # Dependent libraries from go4
+# Go4Http
 target_link_libraries(${COMPNAME} Go4Analysis)
 
 # ???

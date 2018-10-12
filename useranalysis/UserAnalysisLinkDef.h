@@ -30,6 +30,11 @@
 #pragma link C++ class UserProcAdvMonitoring+;
 #pragma link C++ class UserHistosAdvMonitoring+;
 
+// Beam detector monitoring step
+#pragma link C++ class UserEventBeamDetMonitoring+;
+#pragma link C++ class UserProcBeamDetMonitoring+;
+#pragma link C++ class UserHistosBeamDetMonitoring+;
+
 // Learn step
 #pragma link C++ class UserEventLearn+;
 #pragma link C++ class UserProcLearn+;

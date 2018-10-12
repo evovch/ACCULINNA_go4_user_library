@@ -12,6 +12,7 @@ void setup()
 	TGo4AnalysisStep* stepLearn = go4->GetAnalysisStep("stepLearn");
 	TGo4AnalysisStep* stepRawMonitoring = go4->GetAnalysisStep("stepRawMonitoring");
 	TGo4AnalysisStep* stepAdvMonitoring = go4->GetAnalysisStep("stepAdvMonitoring");
+	TGo4AnalysisStep* stepBeamDetMonitoring = go4->GetAnalysisStep("stepBeamDetMonitoring");
 
 	//TODO enable/disable certain steps
 	stepUnpacking->SetProcessEnabled(kTRUE);
@@ -19,7 +20,7 @@ void setup()
 	stepLearn->SetProcessEnabled(kFALSE);
 	stepRawMonitoring->SetProcessEnabled(kFALSE);
 	stepAdvMonitoring->SetProcessEnabled(kFALSE);
-
+	stepBeamDetMonitoring->SetProcessEnabled(kFALSE);
 
 	//TODO enable/disable autosave
 	//go4->SetAutoSaveFile("asf.root");

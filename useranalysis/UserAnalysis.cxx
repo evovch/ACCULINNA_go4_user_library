@@ -10,6 +10,7 @@ using std::endl;
 #include <TGo4Version.h> // for CheckVersion
 #include <TGo4StepFactory.h>
 #include <TGo4MbsEvent.h>
+////#include <../Go4Http/TGo4Sniffer.h>
 
 // Project
 #include "UserParameter.h"
@@ -60,6 +61,11 @@ UserAnalysis::UserAnalysis(int argc, char** argv) :
 
 	//TODO check that 'setup.C' exists!
 	ExecuteScript("setup.C");
+
+	//// Unfortunately this does not work in the constructor
+	////Bool_t isbatch = ((TGo4Analysis::Instance()->GetAnalysisClient() != 0) ? kFALSE : kTRUE);
+	////cout << "isbatch = " << isbatch << endl;
+
 }
 
 UserAnalysis::~UserAnalysis()
@@ -234,7 +240,36 @@ void UserAnalysis::Construct(TString p_outfilename, TString p_setupfilename)
 
 	AddAnalysisStep(stepAdvMonitoring);
 //*/
-	// STEP3.2 - digibuilding =====================================================================
+	// STEP3.2 - provider - beam detector monitoring ===============================================================
+//TODO remove two leading slashes in the following line to disable this step
+///*
+	TGo4StepFactory* factoryRepackedProvider2 = new TGo4StepFactory("factoryRepackedProvider2");
+	factoryRepackedProvider2->DefInputEvent("DetEventFull1", "DetEventFull"); // read full raw event without partial io
+	factoryRepackedProvider2->DefEventProcessor("DetEventFull1_2","MeshProviderProc"); // processorname must match name of input event + "_"
+	factoryRepackedProvider2->DefOutputEvent("Dummy", "MeshDummyEvent");
+	TGo4AnalysisStep* stepRepackedProvider2 = new TGo4AnalysisStep("stepRepackedProvider1", factoryRepackedProvider2);
+	stepRepackedProvider2->SetSourceEnabled(kFALSE);
+	stepRepackedProvider2->SetStoreEnabled(kFALSE);
+	stepRepackedProvider2->SetProcessEnabled(kTRUE);
+	AddAnalysisStep(stepRepackedProvider2);
+
+	// STEP3.2 - processor - beam detector monitoring =============================================================
+
+	TGo4StepFactory* factoryBeamDetMonitoring = new TGo4StepFactory("factoryBeamDetMonitoring");
+	//factoryBeamDetMonitoring->DefInputEvent("DetEventFull1", "DetEventFull"); // object name, class name
+	factoryBeamDetMonitoring->DefEventProcessor("UserProcBeamDetMonitoring1", "UserProcBeamDetMonitoring"); // object name, class name
+	factoryBeamDetMonitoring->DefOutputEvent("UserEventBeamDetMonitoring1", "UserEventBeamDetMonitoring"); // object name, class name
+
+	TGo4AnalysisStep* stepBeamDetMonitoring = new TGo4AnalysisStep("stepBeamDetMonitoring", factoryBeamDetMonitoring);
+
+	stepBeamDetMonitoring->SetSourceEnabled(kFALSE);
+	stepBeamDetMonitoring->SetProcessEnabled(kTRUE);
+	stepBeamDetMonitoring->SetErrorStopEnabled(kFALSE);
+	stepBeamDetMonitoring->SetStoreEnabled(kFALSE);
+
+	AddAnalysisStep(stepBeamDetMonitoring);
+//*/
+	// STEP3.3 - digibuilding =====================================================================
 /*
 	TGo4StepFactory* factoryDigiBuilding = new TGo4StepFactory("factoryDigiBuilding");
 	factoryDigiBuilding->DefInputEvent("DetEventFull1", "DetEventFull"); // object name, class name

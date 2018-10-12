@@ -1,4 +1,4 @@
-#include "UserProcAdvMonitoring.h"
+#include "UserProcBeamDetMonitoring.h"
 
 // STD
 #include <iostream>
@@ -17,7 +17,7 @@ using std::endl;
 #include "data/DetEventStation.h"
 #include "data/DetMessage.h"
 
-#include "UserHistosAdvMonitoring.h"
+#include "UserHistosBeamDetMonitoring.h"
 #include "UserParameter.h"
 #include "setupconfigcppwrapper/SetupConfiguration.h"
 
@@ -27,47 +27,34 @@ using std::endl;
   This option produces A LOT OF DATA - run your analysis with a
   small number of events (~10-100)
 */
-//#define DEBUGADVMON
+//#define DEBUGBEAMDETMON
 
-UserProcAdvMonitoring::UserProcAdvMonitoring(const char* name) :
+UserProcBeamDetMonitoring::UserProcBeamDetMonitoring(const char* name) :
 	TGo4EventProcessor(name),
 	fEventCounter(0)
 {
-	fHistoMan = new UserHistosAdvMonitoring();
-
-	support::CheckThatDirExists("textoutput");
-
-	fFileSummary = fopen("textoutput/summaryAdvMonitoring.txt", "w");
-	if (fFileSummary == NULL) {
-		//TODO warning or fatal?
-		//cerr << "[WARN  ] " << "Could not open output text summary file '" << "summaryAdvMonitoring.txt" << "'" << endl;
-		cerr << "[FATAL ] " << "Could not open output text summary file '" << "textoutput/summaryAdvMonitoring.txt" << "'" << endl;
-		exit(EXIT_FAILURE);
-	}
+	fHistoMan = new UserHistosBeamDetMonitoring();
 }
 
-UserProcAdvMonitoring::~UserProcAdvMonitoring()
+UserProcBeamDetMonitoring::~UserProcBeamDetMonitoring()
 {
 	if (fHistoMan) delete fHistoMan;
-	if (fFileSummary != NULL) {
-		fclose(fFileSummary);
-	}
 }
 
-Bool_t UserProcAdvMonitoring::BuildEvent(TGo4EventElement* p_dest)
+Bool_t UserProcBeamDetMonitoring::BuildEvent(TGo4EventElement* p_dest)
 {
 	Bool_t v_isValid = kFALSE;
 
 	DetEventFull* v_input = (DetEventFull*)GetInputEvent("stepRepackedProvider1");
 	if (v_input == NULL)
 	{
-		cerr << "[WARN  ] " << "UserProcAdvMonitoring::BuildEvent(): no input event!" << endl;
+		cerr << "[WARN  ] " << "UserProcBeamDetMonitoring::BuildEvent(): no input event!" << endl;
 		return v_isValid;
 	}
 	v_isValid = kTRUE;
 
-	#ifdef DEBUGADVMON
-	cerr << "[DEBUG ] " << "UserProcAdvMonitoring: Event " << fEventCounter
+	#ifdef DEBUGBEAMDETMON
+	cerr << "[DEBUG ] " << "UserProcBeamDetMonitoring: Event " << fEventCounter
 	     << " ======================================================================================================"
 	     << endl;
 	#endif
@@ -87,7 +74,7 @@ Bool_t UserProcAdvMonitoring::BuildEvent(TGo4EventElement* p_dest)
 		//cerr << curId << ") " << curName;
 
 		if (curName == "DetEventCommon") {
-			////DetEventCommon* v_commSubEl = (DetEventCommon*)(v_subElement);
+			//DetEventCommon* v_commSubEl = (DetEventCommon*)(v_subElement);
 			//cerr << endl;
 
 			// Here you can process information from the 'common' sub-element
@@ -115,11 +102,6 @@ Bool_t UserProcAdvMonitoring::BuildEvent(TGo4EventElement* p_dest)
 				while ((v_curDetM = (DetMessage*)v_detMiter.Next())) {
 					//v_curDetM->Print();
 
-					unsigned int chFullId = stId*100 + v_curDetM->GetStChannel();
-
-					// Fill automatically generated histograms
-					fHistoMan->fAutoHistos.at(chFullId)->Fill(v_curDetM->GetValue());
-
 					//TODO implement here your actions which require processing
 					// of several messages simultaneously
 
@@ -139,30 +121,28 @@ Bool_t UserProcAdvMonitoring::BuildEvent(TGo4EventElement* p_dest)
 	return v_isValid;
 }
 
-void UserProcAdvMonitoring::UserPreLoop()
+void UserProcBeamDetMonitoring::UserPreLoop()
 {
 	// Get the all-accessible parameter-set object
-	UserParameter* v_params = (UserParameter*)GetParameter("UserParameter");
-	fSetupConfig = v_params->GetSetupConfig();
+	////UserParameter* v_params = (UserParameter*)GetParameter("UserParameter");
+	////fSetupConfig = v_params->GetSetupConfig();
 
-	#ifdef DEBUGADVMON
-	cerr << "[DEBUG ] " << "UserProcAdvMonitoring::UserPreLoop ====================================" << endl;
+	#ifdef DEBUGBEAMDETMON
+	cerr << "[DEBUG ] " << "UserProcBeamDetMonitoring::UserPreLoop ====================================" << endl;
 	#endif
 
-	fHistoMan->GenerateAutoHistos();
-
-	#ifdef DEBUGADVMON
+	#ifdef DEBUGBEAMDETMON
 	cerr << "[DEBUG ] " << "=======================================================================" << endl;
 	#endif
 }
 
-void UserProcAdvMonitoring::UserPostLoop()
+void UserProcBeamDetMonitoring::UserPostLoop()
 {
 }
 
-void UserProcAdvMonitoring::ProcessMessage(DetMessage* p_message)
+void UserProcBeamDetMonitoring::ProcessMessage(DetMessage* p_message)
 {
 	//TODO implement your processing of independent messages here
 }
 
-ClassImp(UserProcAdvMonitoring)
+ClassImp(UserProcBeamDetMonitoring)
