@@ -169,6 +169,15 @@ void UserProcRepacking::ProcessMessageUniversal(const RawMessage* p_message)
 	unsigned short v_statID;
 	unsigned short v_detChannel = v_setupConfig->GetOutput(v_procid, v_addr, v_ch, &v_station, &v_detector, &v_elblock, &v_detID, &v_statID);
 
+	//TODO check
+	if (v_detChannel == 9999) {
+		#ifdef DEBUGREPACKING
+		cerr << "[DEBUG ] "
+		     << "Ckipping a message from a channel with no mapping." << endl;
+		#endif // DEBUGREPACKING
+		return;
+	}
+
 	// Ignore those message which are mapped to the 'Ignore' station
 	//TODO elaborate nice output
 	if (v_station.CompareTo("ignore", TString::kIgnoreCase) == 0) {

@@ -267,7 +267,7 @@ unsigned short SetupConfiguration::GetOutput(unsigned short p_crateProcid,
 	}
 	} else {
 		//ERROR
-		cerr << "[FATAL ] GetOutput() "
+		cerr << "[ERROR ] GetOutput() "
 		     << "No mapping found for the given channel. "
 		     << "procid=" << p_crateProcid << "\t"
 		     << "addr=" << p_addr << "\t"
@@ -275,7 +275,6 @@ unsigned short SetupConfiguration::GetOutput(unsigned short p_crateProcid,
 		     << endl;
 		//TODO think what to do in such situations
 		v_detCh = 9999;
-		exit(EXIT_FAILURE);
 	}
 
 	//cerr << *o_detector << endl;
