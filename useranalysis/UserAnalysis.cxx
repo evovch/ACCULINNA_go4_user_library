@@ -277,9 +277,6 @@ void UserAnalysis::Construct(TString p_outfilename, TString p_setupfilename)
 	stepBeamMonitoring->SetProcessEnabled(kTRUE);
 	stepBeamMonitoring->SetErrorStopEnabled(kFALSE);
 
-	//TGo4FileStoreParameter* storeAdvMonitoring = new TGo4FileStoreParameter("advmonitoring.root"); //TODO
-	//stepAdvMonitoring->SetEventStore(storeAdvMonitoring);
-	//stepAdvMonitoring->SetStoreEnabled(kTRUE);
 	stepBeamMonitoring->SetStoreEnabled(kFALSE);
 
 	AddAnalysisStep(stepBeamMonitoring);
@@ -310,9 +307,6 @@ void UserAnalysis::Construct(TString p_outfilename, TString p_setupfilename)
 	stepBeamMonitoring2->SetProcessEnabled(kTRUE);
 	stepBeamMonitoring2->SetErrorStopEnabled(kFALSE);
 
-	//TGo4FileStoreParameter* storeAdvMonitoring = new TGo4FileStoreParameter("advmonitoring.root"); //TODO
-	//stepAdvMonitoring->SetEventStore(storeAdvMonitoring);
-	//stepAdvMonitoring->SetStoreEnabled(kTRUE);
 	stepBeamMonitoring2->SetStoreEnabled(kFALSE);
 
 	AddAnalysisStep(stepBeamMonitoring2);

@@ -93,7 +93,7 @@ Bool_t UserProcAdvMonitoring::BuildEvent(TGo4EventElement* p_dest)
 	DetEventCommon* v_commSubEl = (DetEventCommon*)(v_comElement);
 	trigger = v_commSubEl->trigger;
 	if(trigger>5) {
-		cout << " Event wont befst_MWPC processed " << endl;
+		cout << " Event wont be processed " << endl;
 		return kFALSE;
 	}
 	fHistoMan->fTrigger->Fill(trigger);

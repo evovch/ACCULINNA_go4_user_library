@@ -94,6 +94,8 @@ private: // methods
 
   Float_t fBeamPlaneZ;
 
+  Bool_t is_Valid;
+
 	ClassDef(UserProcBeamMonitoring, 1);
 };
 

@@ -65,7 +65,7 @@ void UserHistosAdvMonitoring::GenerateAutoHistos(void)
 			// cout << stationNameFull << endl;
 			nBins = 32;
 			nLow = 0;
-			nUp = 31;
+			nUp = 32;
 			newHistoName.Form("AdvMon/WIRES/%s", v_station.Data());
 		}
 		else {
