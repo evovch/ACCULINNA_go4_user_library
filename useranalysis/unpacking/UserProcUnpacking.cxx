@@ -70,12 +70,20 @@ Bool_t UserProcUnpacking::BuildEvent(TGo4EventElement* p_dest)
 	UserEventUnpacking* v_outputEvent = (UserEventUnpacking*)p_dest;
 
 	TGo4MbsEvent* v_input = (TGo4MbsEvent*)GetInputEvent();
-	if (v_input == NULL)
-	{
+	if (v_input == NULL) {
 		cerr << "[WARN  ] " << "UserProcUnpacking::BuildEvent(): no input event!" << endl;
 		v_outputEvent->SetValid(v_isValid);
 		return v_isValid;
 	}
+	// Due to some unknown reason the first event in the file seems to be always corrupted.
+	// So we just skip it.
+	if (fEventCounter == 0) {
+		cerr << "[INFO  ] " << "UserProcUnpacking::BuildEvent(): skipping first input event." << endl;
+		fEventCounter++;
+		v_outputEvent->SetValid(v_isValid);
+		return v_isValid;
+	}
+	
 	v_isValid = kTRUE;
 
 	#ifdef DEBUGUNPACKING
