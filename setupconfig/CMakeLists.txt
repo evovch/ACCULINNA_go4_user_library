@@ -12,7 +12,10 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/pureC)
 include_directories(${CMAKE_SOURCE_DIR})
 
 set(ROOTCLING_HEADERS structs.h
+                      structs_electr.h
                       functions.h
+                      functions_electr.h
+                      commonxml.h
                       xmlparsing.h
                       )
 
@@ -23,6 +26,8 @@ ROOT_GENERATE_DICTIONARY(G__${COMPNAME} ${ROOTCLING_HEADERS} LINKDEF SetupConfig
 
 set(SOURCE_LIB G__${COMPNAME}.cxx
                functions.cpp
+               functions_electr.cpp
+               commonxml.cpp
                xmlparsing.cpp
                )
 

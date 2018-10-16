@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "commonxml.h"
 #include "xmlparsing.h"
 
 /* ============================================================================================= */

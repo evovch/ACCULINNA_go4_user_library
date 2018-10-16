@@ -1,0 +1,15 @@
+<electronics>
+
+<elblock name="mADC"	nchannels="32"	rangelow="0"	rangehigh="2048"	nbins="2048"	type="ADC"	vendor="MESYTEC"/>
+<elblock name="mQDC"	nchannels="32"	rangelow="0"	rangehigh="2048"	nbins="2048"	type="QDC"	vendor="MESYTEC"/>
+<elblock name="mTDC"	nchannels="32"	rangelow="0"	rangehigh="2048"	nbins="2048"	type="TDC"	vendor="MESYTEC"/>
+<elblock name="V775"	nchannels="32"	rangelow="0"	rangehigh="2048"	nbins="2048"	type="TDC"	vendor="CAEN"/>
+<elblock name="V775N"	nchannels="16"	rangelow="0"	rangehigh="2048"	nbins="2048"	type="TDC"	vendor="CAEN"/>
+<elblock name="V785"	nchannels="32"	rangelow="0"	rangehigh="2048"	nbins="2048"	type="ADC"	vendor="CAEN"/>
+<elblock name="V785N"	nchannels="16"	rangelow="0"	rangehigh="2048"	nbins="2048"	type="ADC"	vendor="CAEN"/>
+<elblock name="V792"	nchannels="32"	rangelow="0"	rangehigh="2048"	nbins="2048"	type="QDC"	vendor="CAEN"/>
+<elblock name="V792N"	nchannels="16"	rangelow="0"	rangehigh="2048"	nbins="2048"	type="QDC"	vendor="CAEN"/>
+<elblock name="V862"	nchannels="32"	rangelow="0"	rangehigh="2048"	nbins="2048"	type="QDC"	vendor="CAEN"/>
+<elblock name="V560"	nchannels="16"	rangelow="0"	rangehigh="2048"	nbins="2048"	type="scalers"	vendor="CAEN"/>
+
+</electronics>
