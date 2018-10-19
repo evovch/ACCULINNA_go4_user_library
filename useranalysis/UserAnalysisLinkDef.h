@@ -34,6 +34,7 @@
 #pragma link C++ class UserEventBeamDetMonitoring+;
 #pragma link C++ class UserProcBeamDetMonitoring+;
 #pragma link C++ class UserHistosBeamDetMonitoring+;
+#pragma link C++ class UserParamBeamDetMonitoring+;
 
 // Learn step
 #pragma link C++ class UserEventLearn+;

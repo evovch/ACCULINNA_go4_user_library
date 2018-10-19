@@ -237,6 +237,23 @@ TGo4EventElement* TGo4CompositeEvent::getEventElement(Int_t idx) const
 }
 
 
+TGo4EventElement* TGo4CompositeEvent::getEventElement(const char* name, Int_t final) const
+{
+   TIter next(fEventElements);
+   TGo4EventElement *ev(0);
+   while ((ev=( TGo4EventElement *)next())!=0) {
+      if(strcmp(name,ev->GetName())==0) return ev;
+      if (ev->isComposed()) {
+         TGo4EventElement* inter= ((TGo4CompositeEvent*) ev)->getEventElement(name,1);
+         if (inter !=0) return inter;
+      }
+   }
+   if(final==0)
+      TGo4Log::Debug("TGo4CompositeEvent => Element:%s not found in Composite:%s", name, GetName());
+   return NULL;
+}
+
+
 TGo4EventElement* TGo4CompositeEvent::getEventElement(Int_t idx)
 {
    // Returns a pointer to the partial event with array location idx.

@@ -12,7 +12,9 @@
 class TGo4EventElement;
 
 class UserHistosBeamDetMonitoring;
+class UserParamBeamDetMonitoring;
 ////class SetupConfiguration;
+class DetEventStation;
 class DetMessage;
 
 class UserProcBeamDetMonitoring : public TGo4EventProcessor
@@ -31,7 +33,15 @@ public: // methods
 	virtual void UserPostLoop();
 
 private: // methods
-	void ProcessMessage(DetMessage* p_message);
+	/**
+	 *
+	 */
+	void ProcessMWPCstation(const DetEventStation* p_station, UShort_t p_index);
+
+	/**
+	 *
+	 */
+	void ProcessMessage(const DetMessage* p_message);
 
 private: // data members
 	/**
@@ -50,6 +60,10 @@ private: // data members
 	 */
 	////const SetupConfiguration* fSetupConfig;
 
+	/**
+	 * Parameters object of the beam detector monitoring step
+	 */
+	UserParamBeamDetMonitoring* fPar;
 
 	ClassDef(UserProcBeamDetMonitoring, 1);
 };

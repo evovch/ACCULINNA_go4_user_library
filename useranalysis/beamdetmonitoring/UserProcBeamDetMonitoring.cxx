@@ -8,18 +8,19 @@ using std::endl;
 // ROOT
 #include <TClonesArray.h>
 #include <TH1D.h>
-#include <TH2D.h>
 
 // Project
 #include "base/Support.h"
 #include "data/DetEventFull.h" // input event
-#include "data/DetEventCommon.h"
 #include "data/DetEventStation.h"
 #include "data/DetMessage.h"
 
+////#include "go4pieces/TGo4CompositeEvent.h" // included by DetEventStation and DetEventFull for example...
+
 #include "UserHistosBeamDetMonitoring.h"
-#include "UserParameter.h"
-#include "setupconfigcppwrapper/SetupConfiguration.h"
+#include "UserParamBeamDetMonitoring.h"
+////#include "UserParameter.h"
+////#include "setupconfigcppwrapper/SetupConfiguration.h"
 
 /**
   Uncomment this if you want to see all the debug information.
@@ -34,6 +35,7 @@ UserProcBeamDetMonitoring::UserProcBeamDetMonitoring(const char* name) :
 	fEventCounter(0)
 {
 	fHistoMan = new UserHistosBeamDetMonitoring();
+	fPar = (UserParamBeamDetMonitoring*)MakeParameter("ParBeamDetMon", "UserParamBeamDetMonitoring");
 }
 
 UserProcBeamDetMonitoring::~UserProcBeamDetMonitoring()
@@ -60,6 +62,26 @@ Bool_t UserProcBeamDetMonitoring::BuildEvent(TGo4EventElement* p_dest)
 	#endif
 
 	// --------------------------
+
+	const TGo4CompositeEvent* v_beamDet = (TGo4CompositeEvent*)(v_input->getEventElement(fPar->GetBeamDetName()));
+	if (!v_beamDet) { cerr << "Detector '" << fPar->GetBeamDetName() << "' not found." << endl; } //TODO FATAL?
+
+	const DetEventStation* v_stX1 = (DetEventStation*)(v_beamDet->getEventElement(fPar->GetStationMWPCx1name()));
+	const DetEventStation* v_stY1 = (DetEventStation*)(v_beamDet->getEventElement(fPar->GetStationMWPCy1name()));
+	const DetEventStation* v_stX2 = (DetEventStation*)(v_beamDet->getEventElement(fPar->GetStationMWPCx2name()));
+	const DetEventStation* v_stY2 = (DetEventStation*)(v_beamDet->getEventElement(fPar->GetStationMWPCy2name()));
+
+	if (v_stX1) { this->ProcessMWPCstation(v_stX1, 0); } else { cerr << "Station " << fPar->GetStationMWPCx1name() << " not found." << endl; } //TODO FATAL?
+	if (v_stY1) { this->ProcessMWPCstation(v_stY1, 1); } else { cerr << "Station " << fPar->GetStationMWPCy1name() << " not found." << endl; } //TODO FATAL?
+	if (v_stX2) { this->ProcessMWPCstation(v_stX2, 2); } else { cerr << "Station " << fPar->GetStationMWPCx2name() << " not found." << endl; } //TODO FATAL?
+	if (v_stY2) { this->ProcessMWPCstation(v_stY2, 3); } else { cerr << "Station " << fPar->GetStationMWPCy2name() << " not found." << endl; } //TODO FATAL?
+
+	// --------------------------
+
+/*
+	// ---------------------------------------------------------------------------------------------
+	// This section can be uncommented and used in case you want to process each individual message
+	// ---------------------------------------------------------------------------------------------
 
 	Short_t v_NsubElems = v_input->getNElements();
 	//cerr << v_NsubElems << " subelements in the input full event." << endl;
@@ -114,7 +136,8 @@ Bool_t UserProcBeamDetMonitoring::BuildEvent(TGo4EventElement* p_dest)
 		} // end of if
 	} // end of loop over the sub-elements (detectors)
 
-	// --------------------------
+	// ---------------------------------------------------------------------------------------------
+*/
 
 	fEventCounter++;
 
@@ -140,7 +163,22 @@ void UserProcBeamDetMonitoring::UserPostLoop()
 {
 }
 
-void UserProcBeamDetMonitoring::ProcessMessage(DetMessage* p_message)
+void UserProcBeamDetMonitoring::ProcessMWPCstation(const DetEventStation* p_station, UShort_t p_index)
+{
+	Int_t v_multiplicity = p_station->GetDetMessages()->GetEntriesFast();
+	//FIXME NEED DETAILED COMMENTS
+	// Multiplicity
+	fHistoMan->fhMultW[p_index]->Fill(v_multiplicity);
+
+	//FIXME NEED DETAILED COMMENTS
+	//
+	if (v_multiplicity == 1) {
+		DetMessage* v_theOnlyMessage = (DetMessage*)(p_station->GetDetMessages()->At(0));
+		fHistoMan->fhMWPC[p_index]->Fill(v_theOnlyMessage->GetStChannel());
+	}
+}
+
+void UserProcBeamDetMonitoring::ProcessMessage(const DetMessage* p_message)
 {
 	//TODO implement your processing of independent messages here
 }

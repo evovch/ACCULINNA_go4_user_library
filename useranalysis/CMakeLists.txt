@@ -28,6 +28,7 @@ set(ROOTCLING_HEADERS UserAnalysis.h
                       beamdetmonitoring/UserEventBeamDetMonitoring.h
                       beamdetmonitoring/UserProcBeamDetMonitoring.h
                       beamdetmonitoring/UserHistosBeamDetMonitoring.h
+                      beamdetmonitoring/UserParamBeamDetMonitoring.h
                       learn/UserEventLearn.h
                       learn/UserProcLearn.h
                       digibuilding/UserEventDigiBuilding.h
@@ -59,6 +60,7 @@ set(SOURCE_LIB G__${COMPNAME}.cxx
                beamdetmonitoring/UserEventBeamDetMonitoring.cxx
                beamdetmonitoring/UserProcBeamDetMonitoring.cxx
                beamdetmonitoring/UserHistosBeamDetMonitoring.cxx
+               beamdetmonitoring/UserParamBeamDetMonitoring.cxx
                learn/UserEventLearn.cxx
                learn/UserProcLearn.cxx
                digibuilding/UserEventDigiBuilding.cxx
