@@ -36,6 +36,7 @@ set(ROOTCLING_HEADERS UserAnalysis.h
                       beammonitoring2/UserHistosBeamMonitoring2.h
                       learn/UserEventLearn.h
                       learn/UserProcLearn.h
+                      calibration/SiCalibPars.h
                       digibuilding/UserEventDigiBuilding.h
                       digibuilding/UserProcDigiBuilding.h
                       )
@@ -73,6 +74,7 @@ set(SOURCE_LIB G__${COMPNAME}.cxx
                beammonitoring2/UserHistosBeamMonitoring2.cxx
                learn/UserEventLearn.cxx
                learn/UserProcLearn.cxx
+               calibration/SiCalibPars.cxx            
                digibuilding/UserEventDigiBuilding.cxx
                digibuilding/UserProcDigiBuilding.cxx
                )

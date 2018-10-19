@@ -13,7 +13,7 @@
 UserHistosTestMonitoring::UserHistosTestMonitoring()
 {
 	TGo4Analysis* a = TGo4Analysis::Instance();
-	fTrigger_test = a->MakeTH1('I', "Trigger", "Values of trigger_test",   5, 0., 4.);
+	fTrigger = a->MakeTH1('I', "Trigger", "Values of trigger",   5, 0., 5.);
 }
 
 UserHistosTestMonitoring::~UserHistosTestMonitoring()
@@ -65,13 +65,13 @@ void UserHistosTestMonitoring::GenerateAutoHistos(void)
 			nBins = 32;
 			nLow = 0;
 			nUp = 31;
-			newHistoName.Form("%s/WIRES/%s", v_detector.Data(), v_station.Data());
+			newHistoName.Form("calibration/%s/WIRES/%s_test", v_detector.Data(), v_station.Data());
 		}
 		else {
 			nBins = 500;
 			nLow = 0;
 			nUp = 10000;
-			newHistoName.Form("%s/%s/%s_%d", v_detector.Data(), v_station.Data(), v_station.Data(), v_det_ch);
+			newHistoName.Form("calibration/%s/%s/%s_%d_test", v_detector.Data(), v_station.Data(), v_station.Data(), v_det_ch);
 		}
 		TH1* v_histo = a->MakeTH1('D', newHistoName, newHistoName, nBins, nLow, nUp); //TODO ranges
 		fAutoHistos_test.insert(std::pair<unsigned int, TH1*>(v_statid*100+v_det_ch, v_histo));

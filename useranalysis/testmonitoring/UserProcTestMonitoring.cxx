@@ -17,6 +17,7 @@ using std::endl;
 #include "data/DetEventCommon.h"
 #include "data/DetEventStation.h"
 #include "data/DetMessage.h"
+#include "useranalysis/calibration/SiCalibPars.h"
 
 #include "UserHistosTestMonitoring.h"
 #include "UserParameter.h"
@@ -36,10 +37,11 @@ using namespace std;
 UserProcTestMonitoring::UserProcTestMonitoring(const char* name) :
 	TGo4EventProcessor(name),
 	fEventCounter(0)
-{
+{	
+	// Creating and filling TGo4Parameter objects
+	this->InitPars();
+
 	fHistoMan_test = new UserHistosTestMonitoring();
-	readParFile("/media/user/work/data/analysisexp1804/presentPars/csi_r_ec.clb");
-	// cerr << " UserProcTestMonitoring CALLED !!! ## &Y$@!UHNEFJNASJDf " << endl;
 	fFileSummary = fopen("textoutput/summaryTestMonitoring.txt", "w");
 	if (fFileSummary == NULL) {
 		//TODO error
@@ -78,11 +80,10 @@ Bool_t UserProcTestMonitoring::BuildEvent(TGo4EventElement* p_dest)
 	// --------------------------
 
 	Short_t v_NsubElems = v_input->getNElements();
-	//cerr << v_NsubElems << " subelements in the input full event." << endl;
-	Int_t trigger;
-	Int_t x1,y1;
 	// Loop over sub-elements. There is one sub-element which is the 'DetEventCommon'
 	// and all other are 'DetEventDetector's
+
+	UInt_t trigger;
 
 	TGo4EventElement* v_comElement = v_input->getEventElement("DetEventCommon",1);
 	if(!v_comElement) {
@@ -95,8 +96,7 @@ Bool_t UserProcTestMonitoring::BuildEvent(TGo4EventElement* p_dest)
 		cout << " Event wont be processed " << endl;
 		return kFALSE;
 	}
-	fHistoMan_test->fTrigger_test->Fill(trigger);
-
+	fHistoMan->fTrigger->Fill(trigger);
 	for (Short_t i=0; i<v_NsubElems; i++) {
 		TGo4EventElement* v_subElement = v_input->getEventElement(i);
 
@@ -128,12 +128,12 @@ Bool_t UserProcTestMonitoring::BuildEvent(TGo4EventElement* p_dest)
 					unsigned int chFullId = stId*100 + v_curDetM->GetStChannel();
 
 					// Fill automatically generated histograms
-					if(stName.Contains("Beam_detector_MWPC")){
-						fHistoMan_test->fAutoHistos_test.at(chFullId)->Fill(v_curDetM->GetStChannel());
-					}
-					else {
-						fHistoMan_test->fAutoHistos_test.at(chFullId)->Fill(v_curDetM->GetValue());
-					}
+					// if(stName.Contains("Beam_detector_MWPC")){
+					// 	fHistoMan_test->fAutoHistos_test.at(chFullId)->Fill(v_curDetM->GetStChannel());
+					// }
+					// else {
+					// 	fHistoMan_test->fAutoHistos_test.at(chFullId)->Fill(v_curDetM->GetValue());
+					// }
 
 					//TODO implement here your actions which require processing
 					// of several messages simultaneously
@@ -180,27 +180,42 @@ void UserProcTestMonitoring::ProcessMessage(DetMessage* p_message, TString stNam
 }
 
 void UserProcTestMonitoring::readParFile(TString parFile){
-	ifstream myfile;
-  TString line;
-  Int_t count=-2;
-  myfile.open("/media/user/work/data/analysisexp1804/presentPars/csi_r_ec.clb");
-  while (! myfile.eof() ) {
-    line.ReadLine(myfile);
-    if(count < 0){
-      count++;
-      continue;
-    }
-    if(line.IsNull()) break;
-    sscanf(line.Data(),"%lf %lf", parCsI_R_1+count,parCsI_R_2+count);
-    count++;
-  }  
-
-  // cerr << endl << " pars for CsR crystals" << endl;
-  // for(Int_t i=0;i<16;i++) cerr << parCsI_R_1[i] << " " << parCsI_R_2[i] << endl; 
 }
 
 void UserProcTestMonitoring::fill2D(TGo4CompositeEvent* dEvent){
 
 }
 
+void UserProcTestMonitoring::InitPars() {
+	fParSi = new SiCalibPars* [fnPars]; // make this another way
+	// TODO : the loop over the whole map
+  // std::map <TString,Int_t> stMap = { { "SQX_L", 32 },
+		//                                  { "SQY_L", 16 },///map явно инициализирована
+		//                                  { "SQX_R", 32 },
+		//                                  { "SQY_R", 16 },
+		//                                	 { "SQ20", 16	} };
+	// TString stName; 
+	// Int_t nChannels; 		                               	 
+  // for(auto it = stMap.begin(); it != stMap.end(); ++it) {
+  // 	// cout << it->first << " " << it->second << endl;
+  // 	stName = (TString)it->first;
+  // 	nChannels = (Int_t)it->second;
+  // 	fParSi[i] = (SiCalibPars*) MakeParameter(stName.Data(), "SiCalibPars");
+  // 	  	// cout << " no crash yet " << endl;
+  // 	fParSi[i]->Init(nChannels,stName);
+  // 	i++;
+  // }	
+
+  std::pair <TString,Int_t>* stPair = new std::pair <TString,Int_t>[fnPars];
+	stPair[0] = make_pair((TString)"SQX_L",32);
+	stPair[1] = make_pair((TString)"SQY_L",16);
+	stPair[2] = make_pair((TString)"SQX_R",32);
+	stPair[3] = make_pair((TString)"SQY_R",16);	
+	stPair[4] = make_pair((TString)"SQ300",16);				                               
+	for(Int_t i=0; i<5; i++) {
+		fParSi[i] = (SiCalibPars*) MakeParameter(stPair[i].first, "SiCalibPars");
+		fParSi[i]->Init(stPair[i].second,stPair[i].first);
+	}
+
+}
 ClassImp(UserProcTestMonitoring)

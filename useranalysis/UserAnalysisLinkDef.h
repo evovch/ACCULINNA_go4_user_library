@@ -9,6 +9,8 @@
 #pragma link C++ class UserParameter+;
 #pragma link C++ class MeshDummyEvent+;
 #pragma link C++ class MeshProviderProc+;
+// Calibration paramters
+#pragma link C++ class SiCalibPars+;
 
 // Unpacking step
 #pragma link C++ class UserEventUnpacking+;

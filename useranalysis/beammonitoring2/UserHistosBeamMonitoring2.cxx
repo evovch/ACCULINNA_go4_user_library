@@ -13,7 +13,7 @@
 UserHistosBeamMonitoring2::UserHistosBeamMonitoring2()
 {
 	TGo4Analysis* a = TGo4Analysis::Instance();
-	fTrigger = a->MakeTH1('I', "newhistos/Trigger", "Values of trigger_test",   5, 0., 5.);
+	fTrigger = a->MakeTH1('I', "newhistos/Trigger_2", "Values of trigger_test",   5, 0., 5.);
 }
 
 UserHistosBeamMonitoring2::~UserHistosBeamMonitoring2()

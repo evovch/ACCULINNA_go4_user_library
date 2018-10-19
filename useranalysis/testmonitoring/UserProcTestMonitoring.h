@@ -15,6 +15,7 @@ class TGo4CompositeEvent;
 class UserHistosTestMonitoring;
 class SetupConfiguration;
 class DetMessage;
+class SiCalibPars;
 
 class UserProcTestMonitoring : public TGo4EventProcessor
 {
@@ -31,15 +32,14 @@ public: // methods
 	/** Method called when analysis is stopping */
 	virtual void UserPostLoop();
 
-	// reading input parameters
-	void readParFile(TString parFile);
-
 private: // methods
 	void ProcessMessage(DetMessage* p_message, TString stName);
 
 	// example of 2-D histogram filling
 	void fill2D(TGo4CompositeEvent* dEvent);
 
+	void InitPars();
+	
 private: // data members
 	/**
 	 * Counter or processed events
@@ -58,11 +58,14 @@ private: // data members
 	const SetupConfiguration* fSetupConfig;
 
 	/**
+	* Si-stations calibration parameters
+	*/
+	SiCalibPars** fParSi;
+	const Int_t fnPars = 5;
+	/**
 	 * Summary stream
 	 */
 	FILE* fFileSummary;
-
-	Double_t parCsI_R_1[16],parCsI_R_2[16];
 	
 	ClassDef(UserProcTestMonitoring, 1);
 };

@@ -78,7 +78,6 @@ void UserAnalysis::Construct(TString p_outfilename, TString p_setupfilename)
 	mParams->Init(); //TODO User function to perform XML import. Probably there should be a more nice way to do this.
 	AddParameter(mParams);
 
-
 	//mParams = (UserParameter*)MakeParameter("UserParameter1", "UserParameter", "autoload/set_par.C");
 
 	//TODO
@@ -233,23 +232,19 @@ void UserAnalysis::Construct(TString p_outfilename, TString p_setupfilename)
 
 // STEP3.2 - processor - test monitoring =============================================================
 
-	// TGo4StepFactory* factoryTestMonitoring = new TGo4StepFactory("factoryTestMonitoring");
-	// //factoryAdvMonitoring->DefInputEvent("DetEventFull1", "DetEventFull"); // object name, class name
-	// factoryTestMonitoring->DefEventProcessor("UserProcTestMonitoring1", "UserProcTestMonitoring"); // object name, class name
-	// factoryTestMonitoring->DefOutputEvent("UserEventTestMonitoring1", "UserEventTestMonitoring"); // object name, class name
+	TGo4StepFactory* factoryTestMonitoring = new TGo4StepFactory("factoryTestMonitoring");
+	factoryTestMonitoring->DefEventProcessor("UserProcTestMonitoring1", "UserProcTestMonitoring"); // object name, class name
+	factoryTestMonitoring->DefOutputEvent("UserEventTestMonitoring1", "UserEventTestMonitoring"); // object name, class name
 
-	// TGo4AnalysisStep* stepTestMonitoring = new TGo4AnalysisStep("stepTestMonitoring", factoryTestMonitoring);
+	TGo4AnalysisStep* stepTestMonitoring = new TGo4AnalysisStep("stepTestMonitoring", factoryTestMonitoring);
 
-	// stepTestMonitoring->SetSourceEnabled(kFALSE);
-	// stepTestMonitoring->SetProcessEnabled(kTRUE);
-	// stepTestMonitoring->SetErrorStopEnabled(kFALSE);
+	stepTestMonitoring->SetSourceEnabled(kFALSE);
+	stepTestMonitoring->SetProcessEnabled(kTRUE);
+	stepTestMonitoring->SetErrorStopEnabled(kFALSE);
 
-	// //TGo4FileStoreParameter* storeAdvMonitoring = new TGo4FileStoreParameter("advmonitoring.root"); //TODO
-	// //stepAdvMonitoring->SetEventStore(storeAdvMonitoring);
-	// //stepAdvMonitoring->SetStoreEnabled(kTRUE);
-	// stepTestMonitoring->SetStoreEnabled(kFALSE);
+	stepTestMonitoring->SetStoreEnabled(kFALSE);
 
-	// AddAnalysisStep(stepTestMonitoring);
+	AddAnalysisStep(stepTestMonitoring);
 
 	// STEP3.3 - provider - beam monitoring ===============================================================
 //TODO remove two leading slashes in the following line to disable this step
@@ -333,6 +328,11 @@ void UserAnalysis::Construct(TString p_outfilename, TString p_setupfilename)
 	AddAnalysisStep(stepDigiBuilding);
 */
 	// ============================================================================================
+
+
+
+
+
 }
 
 Int_t UserAnalysis::UserPreLoop(void)

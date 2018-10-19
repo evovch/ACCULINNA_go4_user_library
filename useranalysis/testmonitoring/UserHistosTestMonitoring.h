@@ -24,8 +24,7 @@ public:
 
 	void GenerateAutoHistos(void);
 
-	TH1* fTrigger_test;	
-
+	TH1* fTrigger;	
 
 	/**
 	 * Automatically generated histograms
