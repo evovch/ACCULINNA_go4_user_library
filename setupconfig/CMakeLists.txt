@@ -17,6 +17,7 @@ set(ROOTCLING_HEADERS structs.h
                       functions_electr.h
                       commonxml.h
                       xmlparsing.h
+                      xmlparsing_electr.h
                       )
 
 ROOT_GENERATE_DICTIONARY(G__${COMPNAME} ${ROOTCLING_HEADERS} LINKDEF SetupConfigLinkDef.h)
@@ -29,6 +30,7 @@ set(SOURCE_LIB G__${COMPNAME}.cxx
                functions_electr.cpp
                commonxml.cpp
                xmlparsing.cpp
+               xmlparsing_electr.cpp
                )
 
 add_library(${COMPNAME} SHARED ${SOURCE_LIB})

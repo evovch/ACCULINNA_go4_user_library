@@ -9,6 +9,8 @@
 
 // Project
 #include "setupconfigcppwrapper/SetupConfiguration.h"
+#include "setupconfigcppwrapper/ElectronicsChars.h"
+#include "UserParameter.h"
 
 UserHistosAdvMonitoring::UserHistosAdvMonitoring()
 {
@@ -29,8 +31,10 @@ UserHistosAdvMonitoring::~UserHistosAdvMonitoring()
 void UserHistosAdvMonitoring::GenerateAutoHistos(void)
 {
 	TGo4Analysis* a = TGo4Analysis::Instance();
+	UserParameter* v_params = (UserParameter*)(a->GetParameter("UserParameter"));
 
 	const SetupConfiguration& v_SetupConfig = SetupConfiguration::GetInstance();
+	const ElectronicsChars* v_ElectrChars = v_params->GetElectrChars();
 
 	std::map<unsigned int, stc_mapping*> v_mappings = v_SetupConfig.GetMappings();
 	std::map<unsigned int, stc_mapping*>::const_iterator v_mapIter = v_mappings.begin();
@@ -55,10 +59,21 @@ void UserHistosAdvMonitoring::GenerateAutoHistos(void)
 
 		//TODO check duplicates
 		TString newHistoName;
-		newHistoName.Form("AdvMon/AutoHistos/%d_%s_%s_%d", v_statid*100+v_det_ch, v_detector.Data(), v_station.Data(), v_det_ch);
-		TH1* v_histo = a->MakeTH1('D', newHistoName, newHistoName, 500, 0., 10000.); //TODO ranges
-		fAutoHistos.insert(std::pair<unsigned int, TH1*>(v_statid*100+v_det_ch, v_histo));
+		TString newHistoTitle;
 
+		// option1
+		//newHistoName.Form("AdvMon/AutoHistos/%s/%s/id_%d_ch_%d", v_detector.Data(), v_station.Data(), v_statid*100+v_det_ch, v_det_ch);
+		//newHistoTitle.Form("%s/%s/id_%d_ch_%d", v_detector.Data(), v_station.Data(), v_statid*100+v_det_ch, v_det_ch);
+		// option2
+		newHistoName.Form("AdvMon/AutoHistos/%s/%s/%s_ch_%d", v_detector.Data(), v_station.Data(), v_station.Data(), v_det_ch);
+		newHistoTitle.Form("%s/%s/%s_ch_%d", v_detector.Data(), v_station.Data(), v_station.Data(), v_det_ch);
+
+		Double_t v_rangeLow = (Double_t)(v_ElectrChars->GetRangeLow(v_elblock));
+		Double_t v_rangeHigh = (Double_t)(v_ElectrChars->GetRangeHigh(v_elblock));
+		Int_t v_nBins = (Int_t)(v_ElectrChars->GetNbins(v_elblock));
+
+		TH1* v_histo = a->MakeTH1('D', newHistoName, newHistoTitle, v_nBins, v_rangeLow, v_rangeHigh);
+		fAutoHistos.insert(std::pair<unsigned int, TH1*>(v_statid*100+v_det_ch, v_histo));
 	}
 }
 

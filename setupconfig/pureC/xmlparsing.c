@@ -61,7 +61,7 @@ void ProcessTag(stc_setup_config* ptr, char* o_buffer/*, enuTAG* o_CurTag*/)
 			}
 		}
 
-		/* Opening tag with no attributes */
+		/* Opening tag with attributes */
 		if ((tok[0] == '<') && (tok[1] != '/') && (tok[toklen-1] != '>')) {
 			/* fprintf(stderr, "opening tag: |%s|\n", &tok[1]); */
 

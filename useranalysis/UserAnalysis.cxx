@@ -83,6 +83,7 @@ void UserAnalysis::Construct(TString p_outfilename, TString p_setupfilename)
 	mParams = new UserParameter();
 	mParams->SetInputFilename(this->GetInputFileName());
 	mParams->SetSetupConfigFilename(p_setupfilename);
+	mParams->SetElectrCharsFilename("usr/electronics2.xml"); //FIXME hardcode
 	mParams->SetOutputFilename(p_outfilename);
 	mParams->Init(); //TODO User function to perform XML import. Probably there should be a more nice way to do this.
 	AddParameter(mParams);
