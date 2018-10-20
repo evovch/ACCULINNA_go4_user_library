@@ -19,17 +19,10 @@ class TH2;
 class UserHistosTestMonitoring : public TObject
 {
 public:
-	UserHistosTestMonitoring();
+	UserHistosTestMonitoring(std::pair <TString,Int_t>* pairs,Int_t npairs);
 	~UserHistosTestMonitoring();
 
-	void GenerateAutoHistos(void);
-
-	TH1* fTrigger;	
-
-	/**
-	 * Automatically generated histograms
-	 */
-	std::map<unsigned int, TH1*> fAutoHistos_test; //!
+	TH1** detSi;
 
 	ClassDef(UserHistosTestMonitoring, 1);
 };

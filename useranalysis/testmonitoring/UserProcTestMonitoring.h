@@ -33,13 +33,17 @@ public: // methods
 	virtual void UserPostLoop();
 
 private: // methods
-	void ProcessMessage(DetMessage* p_message, TString stName);
+	void ProcessMessage(TGo4CompositeEvent* p_message);
 
-	// example of 2-D histogram filling
-	void fill2D(TGo4CompositeEvent* dEvent);
-
+	// reading .cal files into TGo4Parameter objects
 	void InitPars();
-	
+
+	void calibSi(TGo4CompositeEvent* p_message,std::pair <TString,Int_t> pair);
+
+public:
+
+	std::pair <TString,Int_t>* getPairs();	
+
 private: // data members
 	/**
 	 * Counter or processed events
@@ -61,6 +65,7 @@ private: // data members
 	* Si-stations calibration parameters
 	*/
 	SiCalibPars** fParSi;
+	std::pair <TString,Int_t>* fstPair;
 	const Int_t fnPars = 5;
 	/**
 	 * Summary stream

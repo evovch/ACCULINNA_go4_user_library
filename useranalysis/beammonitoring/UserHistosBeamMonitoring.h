@@ -24,8 +24,6 @@ public:
 
 	void GenerateAutoHistos(void);
 
-	TH1* fHTrigger_Beam;
-
 	//TH2
 	TH2* fY1_X1;
 	TH2* fY1_X1_C;

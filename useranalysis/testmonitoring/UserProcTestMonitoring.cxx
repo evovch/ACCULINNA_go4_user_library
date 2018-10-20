@@ -41,7 +41,7 @@ UserProcTestMonitoring::UserProcTestMonitoring(const char* name) :
 	// Creating and filling TGo4Parameter objects
 	this->InitPars();
 
-	fHistoMan_test = new UserHistosTestMonitoring();
+	fHistoMan_test = new UserHistosTestMonitoring(fstPair,fnPars);
 	fFileSummary = fopen("textoutput/summaryTestMonitoring.txt", "w");
 	if (fFileSummary == NULL) {
 		//TODO error
@@ -78,73 +78,19 @@ Bool_t UserProcTestMonitoring::BuildEvent(TGo4EventElement* p_dest)
 	#endif
 
 	// --------------------------
-
-	Short_t v_NsubElems = v_input->getNElements();
-	// Loop over sub-elements. There is one sub-element which is the 'DetEventCommon'
-	// and all other are 'DetEventDetector's
-
-	UInt_t trigger;
-
-	TGo4EventElement* v_comElement = v_input->getEventElement("DetEventCommon",1);
-	if(!v_comElement) {
-		cout << "Detector DetEventCommon was not found " << endl;
+	TGo4EventElement* v_subElement = v_input->getEventElement("Left_telescope",1);
+	if(!v_subElement) {
+		cout << "Detector Left_telescope was not found " << endl;
 		return kFALSE;
 	}
-	DetEventCommon* v_commSubEl = (DetEventCommon*)(v_comElement);
-	trigger = v_commSubEl->trigger;
-	if(trigger>5) {
-		cout << " Event wont be processed " << endl;
-		return kFALSE;
-	}
-	fHistoMan->fTrigger->Fill(trigger);
-	for (Short_t i=0; i<v_NsubElems; i++) {
-		TGo4EventElement* v_subElement = v_input->getEventElement(i);
+	TGo4CompositeEvent* dEvent = (TGo4CompositeEvent*)(v_subElement);
+	ProcessMessage(dEvent);
 
-		TString curName = v_subElement->GetName();
-		Short_t curId = v_subElement->getId();
-		// cerr << curId << ") " << curName << " this is it!! " << endl;
-		if (curName != "DetEventCommon") {
-			TGo4CompositeEvent* v_detSubEl = (TGo4CompositeEvent*)(v_subElement);
-
-			Short_t v_NsubSubElems = v_detSubEl->getNElements();
-
-			// Loop over the stations of the current detector
-			for (Short_t j=0; j<v_NsubSubElems; j++) {
-
-				Short_t stId = curId*100 + j; //FIXME this is quite dangerous
-
-				DetEventStation* v_stSubsubEl = (DetEventStation*)(v_detSubEl->getEventElement(stId));
-				TString stName = v_stSubsubEl->GetName();
-
-				TClonesArray* v_data = v_stSubsubEl->GetDetMessages();
-
-				TIter v_detMiter(v_data);
-				DetMessage* v_curDetM;
-
-				// Loop over the messages of the current station 
-				while ((v_curDetM = (DetMessage*)v_detMiter.Next())) {
-					//v_curDetM->Print();
-
-					unsigned int chFullId = stId*100 + v_curDetM->GetStChannel();
-
-					// Fill automatically generated histograms
-					// if(stName.Contains("Beam_detector_MWPC")){
-					// 	fHistoMan_test->fAutoHistos_test.at(chFullId)->Fill(v_curDetM->GetStChannel());
-					// }
-					// else {
-					// 	fHistoMan_test->fAutoHistos_test.at(chFullId)->Fill(v_curDetM->GetValue());
-					// }
-
-					//TODO implement here your actions which require processing
-					// of several messages simultaneously
-
-					//TODO Look inside
-					// this->ProcessMessage(v_curDetM,stName);
-				} // end of loop over messages
-			} // end of loop over the stations
-		} // end of if
-	} // end of loop over the sub-elements (detectors)
-
+	// DetEventStation* v_subSubElement = (DetEventStation*)(dEvent->getEventElement("SQX_L",1));
+	// if (!v_subSubElement) {
+	// 	cout << " station " << st_Name1.Data() <<  " was not found " << endl;
+	// 	return kFALSE;
+	// }
 	// --------------------------
 
 	fEventCounter++;
@@ -162,8 +108,6 @@ void UserProcTestMonitoring::UserPreLoop()
 	cerr << "[DEBUG ] " << "UserProcTestMonitoring::UserPreLoop ====================================" << endl;
 	#endif
 
-	fHistoMan_test->GenerateAutoHistos();
-
 	#ifdef DEBUGTestMON
 	cerr << "[DEBUG ] " << "=======================================================================" << endl;
 	#endif
@@ -173,49 +117,52 @@ void UserProcTestMonitoring::UserPostLoop()
 {
 }
 
-void UserProcTestMonitoring::ProcessMessage(DetMessage* p_message, TString stName)
+void UserProcTestMonitoring::ProcessMessage(TGo4CompositeEvent* p_message)
 {
+
 	//TODO implement your processing of independent messages here
+	cout << " ### ProcessMessage was called ###" << endl;
+	cout << endl;
+	// TODO we should somehow also give the index (0) into the calibSi. I need it for histos
+	calibSi(p_message,fstPair[0]);
 
-}
-
-void UserProcTestMonitoring::readParFile(TString parFile){
-}
-
-void UserProcTestMonitoring::fill2D(TGo4CompositeEvent* dEvent){
 
 }
 
 void UserProcTestMonitoring::InitPars() {
 	fParSi = new SiCalibPars* [fnPars]; // make this another way
 	// TODO : the loop over the whole map
-  // std::map <TString,Int_t> stMap = { { "SQX_L", 32 },
-		//                                  { "SQY_L", 16 },///map явно инициализирована
-		//                                  { "SQX_R", 32 },
-		//                                  { "SQY_R", 16 },
-		//                                	 { "SQ20", 16	} };
-	// TString stName; 
-	// Int_t nChannels; 		                               	 
-  // for(auto it = stMap.begin(); it != stMap.end(); ++it) {
-  // 	// cout << it->first << " " << it->second << endl;
-  // 	stName = (TString)it->first;
-  // 	nChannels = (Int_t)it->second;
-  // 	fParSi[i] = (SiCalibPars*) MakeParameter(stName.Data(), "SiCalibPars");
-  // 	  	// cout << " no crash yet " << endl;
-  // 	fParSi[i]->Init(nChannels,stName);
-  // 	i++;
-  // }	
-
-  std::pair <TString,Int_t>* stPair = new std::pair <TString,Int_t>[fnPars];
-	stPair[0] = make_pair((TString)"SQX_L",32);
-	stPair[1] = make_pair((TString)"SQY_L",16);
-	stPair[2] = make_pair((TString)"SQX_R",32);
-	stPair[3] = make_pair((TString)"SQY_R",16);	
-	stPair[4] = make_pair((TString)"SQ300",16);				                               
+  fstPair = new std::pair <TString,Int_t>[fnPars];
+	fstPair[0] = make_pair((TString)"SQX_L",32);
+	fstPair[1] = make_pair((TString)"SQY_L",16);
+	fstPair[2] = make_pair((TString)"SQX_R",32);
+	fstPair[3] = make_pair((TString)"SQY_R",16);	
+	fstPair[4] = make_pair((TString)"SQ300",16);				                               
 	for(Int_t i=0; i<5; i++) {
-		fParSi[i] = (SiCalibPars*) MakeParameter(stPair[i].first, "SiCalibPars");
-		fParSi[i]->Init(stPair[i].second,stPair[i].first);
+		fParSi[i] = (SiCalibPars*) MakeParameter(fstPair[i].first, "SiCalibPars");
+		fParSi[i]->Init(fstPair[i].second,fstPair[i].first);
+	}
+}
+
+void UserProcTestMonitoring::calibSi(TGo4CompositeEvent* p_message,std::pair <TString,Int_t> pair)
+{
+	cout << " ### calibSi was called ###" << endl;
+	cout << " with such arguments: " << pair.first << endl;
+	TString st_Name = (TString)p_message->GetName() + "_" + pair.first;
+
+	DetEventStation* st_Si = (DetEventStation*)(p_message->getEventElement(st_Name.Data(),1));
+	if (!st_Si) {
+		cout << " station " << st_Name.Data() <<  " was not found " << endl;
+		return;
 	}
 
+	TClonesArray* v_Si = st_Si->GetDetMessages();
+
+	for(Int_t i=0; i<v_Si->GetEntriesFast(); i++) {
+		DetMessage *mes_Si = (DetMessage*)v_Si->At(i);
+		cout << mes_Si->GetStChannel() << " " << mes_Si->GetValue() << endl;
+		// bla bla blas
+	}
 }
+
 ClassImp(UserProcTestMonitoring)
