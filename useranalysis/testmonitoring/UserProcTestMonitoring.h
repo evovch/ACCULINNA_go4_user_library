@@ -14,6 +14,7 @@ class TGo4CompositeEvent;
 
 class UserHistosTestMonitoring;
 class SetupConfiguration;
+class DetEventStation;
 class DetMessage;
 class SiCalibPars;
 
@@ -33,7 +34,7 @@ public: // methods
 	virtual void UserPostLoop();
 
 private: // methods
-	void ProcessMessage(TGo4CompositeEvent* p_message);
+	void ProcessMessage(DetEventStation* p_message,Int_t parNum);
 
 	// reading .cal files into TGo4Parameter objects
 	void InitPars();
@@ -54,7 +55,7 @@ private: // data members
 	 * Put all your output histograms inside this object.
 	 * See UserHistosTestMonitoring class.
 	 */
-	UserHistosTestMonitoring* fHistoMan_test;
+	UserHistosTestMonitoring* fHistoMan;
 
 	/**
 	 * 'this' object of the UserProcRawMonitoring class does not own this pointer

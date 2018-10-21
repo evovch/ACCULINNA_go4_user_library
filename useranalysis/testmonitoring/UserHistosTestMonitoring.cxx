@@ -18,6 +18,7 @@ UserHistosTestMonitoring::UserHistosTestMonitoring(std::pair <TString,Int_t>* pa
 	detSi = new TH1*[npairs];
 	for(Int_t i=0; i<npairs; i++) {
 		TString hName = "calibration/" + pairs[i].first;
+		cout << " detSi[" << i << "] will have the name: " << hName.Data() << endl;
 		detSi[i] = a->MakeTH1('D', hName.Data(), "Calibrated spectra from Si station", 1000, 0., 150.);
 	}
 }
