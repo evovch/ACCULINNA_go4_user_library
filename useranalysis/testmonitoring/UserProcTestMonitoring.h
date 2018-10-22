@@ -67,7 +67,7 @@ private: // data members
 	*/
 	SiCalibPars** fParSi;
 	std::pair <TString,Int_t>* fstPair;
-	const Int_t fnPars = 5;
+	const Int_t fnPars = 6;
 	/**
 	 * Summary stream
 	 */

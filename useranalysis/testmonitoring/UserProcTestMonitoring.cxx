@@ -51,10 +51,12 @@ UserProcTestMonitoring::UserProcTestMonitoring(const char* name) :
 
 UserProcTestMonitoring::~UserProcTestMonitoring()
 {
+	cout << "UserProcTestMonitoring destructor called " << endl; 
+
+	if (fParSi) delete [] fParSi;
+	if (fstPair) delete [] fstPair;
 	if (fHistoMan) delete fHistoMan;
-	if (fFileSummary != NULL) {
-		fclose(fFileSummary);
-	}
+	if (fFileSummary != NULL) fclose(fFileSummary);
 }
 
 Bool_t UserProcTestMonitoring::BuildEvent(TGo4EventElement* p_dest)
@@ -153,8 +155,9 @@ void UserProcTestMonitoring::InitPars() {
 	fstPair[1] = make_pair((TString)"SQY_L",16);
 	fstPair[2] = make_pair((TString)"SQX_R",32);
 	fstPair[3] = make_pair((TString)"SQY_R",16);	
-	fstPair[4] = make_pair((TString)"SQ300",16);				                               
-	for(Int_t i=0; i<5; i++) {
+	fstPair[4] = make_pair((TString)"SQ300",16);
+	fstPair[5] = make_pair((TString)"CsI_R",16);			                               
+	for(Int_t i=0; i<fnPars; i++) {
 		fParSi[i] = (SiCalibPars*) MakeParameter(fstPair[i].first, "SiCalibPars");
 		fParSi[i]->Init(fstPair[i].second,fstPair[i].first);
 	}
