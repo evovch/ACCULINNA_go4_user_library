@@ -246,8 +246,17 @@ TVector3 UserProcBeamMonitoring::profileMWPC(TGo4CompositeEvent* dEvent,TString 
 	else {
 		ny = nx2.at(0);
 	}
-	
- 	if(is_Valid) histo->Fill(nx,ny);
+	ftestTrack = kFALSE;
+	if(st_Name1=="Beam_detector_MWPC1") {
+		if(is_Valid) {
+			// ftestTrack = fHistoMan->fPolyCond->Test(nx,ny);
+			// cout << ftestTrack << endl;
+			histo->Fill(nx,ny);
+		}
+	}
+	if(st_Name1=="Beam_detector_MWPC3") {
+		if(is_Valid) histo->Fill(nx,ny);
+	}
 
   Float_t xMWPC = X0 + dX + nx*1.25;
   Float_t yMWPC = Y0 + dY + ny*1.25;
@@ -350,15 +359,8 @@ void UserProcBeamMonitoring::IDdeToF(TGo4CompositeEvent* dEvent) {
 
 	// cout << fHistoMan->fBoxCond->Test(av_tF5-av_tF3,av_F3+av_F5) << " fHistoMan->fBoxCond " << endl;
 	Bool_t cut = fHistoMan->fBoxCond->Test(av_tF5-av_tF3,av_F3+av_F5);
+	if(fHistoMan->fPolyCond->Counts()%200==0) cout << "test " <<  cut1 << endl;
 
-	// fHistoMan->fPolyCond->Test();
-	// cout << "## new Event##  " << endl;
-	// cout <<fHistoMan->fBoxCond->GetXUp() << " " << ftestCond->GetXUp() << endl;
-	// cout <<fHistoMan->fBoxCond->GetXLow() << " " << ftestCond->GetXLow() << endl;
-	// cout <<fHistoMan->fBoxCond->GetYUp() << " " << ftestCond->GetYUp() << endl;
-	// cout <<fHistoMan->fBoxCond->GetYLow() << " " << ftestCond->GetYLow() << endl;
-
-	// if (is_Valid && cut) fHistoMan->fdEToF->Fill(av_tF5-av_tF3, av_F3+av_F5);
 	if (is_Valid) fHistoMan->fdEToF->Fill(av_tF5-av_tF3, av_F3+av_F5);
 
 }
