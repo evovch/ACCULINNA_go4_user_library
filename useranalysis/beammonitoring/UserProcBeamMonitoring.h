@@ -44,7 +44,7 @@ private: // methods
 
   Bool_t IsCluster (TClonesArray* v_MWPC);
 
-  void IDdeToF(TGo4CompositeEvent* dEvent,TH2* histo);
+  void IDdeToF(TGo4CompositeEvent* dEvent);
 
  // data members
 	/**

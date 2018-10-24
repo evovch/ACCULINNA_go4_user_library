@@ -8,6 +8,15 @@ using std::cerr;
 using std::cout;
 using std::endl;
 
+//Go4
+#include "TGo4WinCond.h"
+// #include "TGo4PolyCond.h"
+#include "TGo4ShapedCond.h"
+// #include "TGo4CondArray.h"
+// #include "TGo4Picture.h"
+// #include "TGo4EventProcessor.h"
+// #include "TGo4Condition.h"
+
 // ROOT
 #include <TClonesArray.h>
 #include <TH1D.h>
@@ -38,6 +47,7 @@ using namespace std;
 UserProcBeamMonitoring::UserProcBeamMonitoring(const char* name) :
 	TGo4EventProcessor(name)
 {
+	cout << " UserProcBeamMonitoring constructor was called " << endl;
 	fEventCounter = 0;
 	fTrigger = 1;
 	fMWPC1_X_displacement = -1.; 
@@ -135,8 +145,6 @@ void UserProcBeamMonitoring::UserPreLoop()
 	cerr << "[DEBUG ] " << "UserProcBeamMonitoring::UserPreLoop ====================================" << endl;
 	#endif
 
-	// fHistoMan->GenerateAutoHistos();
-
 	#ifdef DEBUGBeamMON
 	cerr << "[DEBUG ] " << "=======================================================================" << endl;
 	#endif
@@ -166,7 +174,7 @@ void UserProcBeamMonitoring::fill2D(TGo4CompositeEvent* dEvent){
   beamVector = hitClose - hitFar;	
   this->profileTarget(beamVector,hitClose,fBeamPlaneZ,fHistoMan->fTarget);
 
-	this->IDdeToF(dEvent,fHistoMan->fdEToF);
+	this->IDdeToF(dEvent);
 }
 
 TVector3 UserProcBeamMonitoring::profileMWPC(TGo4CompositeEvent* dEvent,TString st_Name1,TString st_Name2,TH2* histo,TH2* histo_Cal,Float_t X0,Float_t dX,Float_t Y0,Float_t dY,TVector3 xyMWPC){
@@ -201,6 +209,7 @@ TVector3 UserProcBeamMonitoring::profileMWPC(TGo4CompositeEvent* dEvent,TString 
 	}
 
 	if (mx1<1 || mx2<1) {
+		// cout << " no signal in MWPC " << endl;
 		is_Valid = kFALSE;
 		return xyMWPC; 
 	}
@@ -266,13 +275,14 @@ Bool_t UserProcBeamMonitoring::IsCluster (TClonesArray* v_MWPC) {
   	DetMessage *mes_MWPC_next = (DetMessage*)v_MWPC->At(i+1);
     if (abs(mes_MWPC_next->GetStChannel() - mes_MWPC->GetStChannel()) != 1) {
       is_Valid = kFALSE;
+      // cout << " more than 1 clusters were found " << endl;
       break;
     }
   }
   return is_Valid;
 }
 
-void UserProcBeamMonitoring::IDdeToF(TGo4CompositeEvent* dEvent,TH2* histo) {
+void UserProcBeamMonitoring::IDdeToF(TGo4CompositeEvent* dEvent) {
 	DetEventStation* st_F3 = (DetEventStation*)(dEvent->getEventElement(fst_F3.Data(),1));
 	if (!st_F3) {
 		cout << " station " << fst_F3.Data() <<  " was not found " << endl;
@@ -306,6 +316,7 @@ void UserProcBeamMonitoring::IDdeToF(TGo4CompositeEvent* dEvent,TH2* histo) {
 
 	if (nF3<1 || ntF3<1 || nF5<1 || ntF5<1) {
 		is_Valid = kFALSE;
+		// cout << " signals not in all planes of MWPC " << endl;
 		return;
 	}
 
@@ -337,7 +348,19 @@ void UserProcBeamMonitoring::IDdeToF(TGo4CompositeEvent* dEvent,TH2* histo) {
 	}
 	av_tF5 = av_tF5/ntF5;
 
-	if (is_Valid) histo->Fill(av_tF5-av_tF3, av_F3+av_F5);
+	// cout << fHistoMan->fBoxCond->Test(av_tF5-av_tF3,av_F3+av_F5) << " fHistoMan->fBoxCond " << endl;
+	Bool_t cut = fHistoMan->fBoxCond->Test(av_tF5-av_tF3,av_F3+av_F5);
+
+	// fHistoMan->fPolyCond->Test();
+	// cout << "## new Event##  " << endl;
+	// cout <<fHistoMan->fBoxCond->GetXUp() << " " << ftestCond->GetXUp() << endl;
+	// cout <<fHistoMan->fBoxCond->GetXLow() << " " << ftestCond->GetXLow() << endl;
+	// cout <<fHistoMan->fBoxCond->GetYUp() << " " << ftestCond->GetYUp() << endl;
+	// cout <<fHistoMan->fBoxCond->GetYLow() << " " << ftestCond->GetYLow() << endl;
+
+	// if (is_Valid && cut) fHistoMan->fdEToF->Fill(av_tF5-av_tF3, av_F3+av_F5);
+	if (is_Valid) fHistoMan->fdEToF->Fill(av_tF5-av_tF3, av_F3+av_F5);
+
 }
 
 ClassImp(UserProcBeamMonitoring)

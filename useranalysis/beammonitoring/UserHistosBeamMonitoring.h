@@ -15,6 +15,9 @@
 	
 class TH1;
 class TH2;
+class TGo4ShapedCond;
+class TGo4WinCond;
+class TGo4PolyCond;
 
 class UserHistosBeamMonitoring : public TObject
 {
@@ -33,6 +36,10 @@ public:
 
 	TH2* fdEToF;
 
+  // Conditions
+  TGo4ShapedCond* fBoxCond;
+  TGo4WinCond* fWinCond;
+  TGo4PolyCond* fPolyCond;
 	/**
 	 * Automatically generated histograms
 	 */
