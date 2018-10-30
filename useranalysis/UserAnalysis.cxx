@@ -248,7 +248,7 @@ void UserAnalysis::Construct(TString p_outfilename, TString p_setupfilename)
 	factoryRepackedProvider2->DefInputEvent("DetEventFull1", "DetEventFull"); // read full raw event without partial io
 	factoryRepackedProvider2->DefEventProcessor("DetEventFull1_2","MeshProviderProc"); // processorname must match name of input event + "_"
 	factoryRepackedProvider2->DefOutputEvent("Dummy", "MeshDummyEvent");
-	TGo4AnalysisStep* stepRepackedProvider2 = new TGo4AnalysisStep("stepRepackedProvider1", factoryRepackedProvider2);
+	TGo4AnalysisStep* stepRepackedProvider2 = new TGo4AnalysisStep("stepRepackedProvider2", factoryRepackedProvider2);
 	stepRepackedProvider2->SetSourceEnabled(kFALSE);
 	stepRepackedProvider2->SetStoreEnabled(kFALSE);
 	stepRepackedProvider2->SetProcessEnabled(kTRUE);
