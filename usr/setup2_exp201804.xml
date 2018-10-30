@@ -87,10 +87,10 @@
 </crate>
 
 <crate name="CAMAC" procid="101">
-	<mapping addr="0"	elblock=""	startelectrch="0"	nelectrch="32"	station="MWPC1"	startstatch="0"	detector="Beam_detector_MWPC"	digicomp="amp"/>
-	<mapping addr="1"	elblock=""	startelectrch="0"	nelectrch="32"	station="MWPC2"	startstatch="0"	detector="Beam_detector_MWPC"	digicomp="amp"/>
-	<mapping addr="2"	elblock=""	startelectrch="0"	nelectrch="32"	station="MWPC3"	startstatch="0"	detector="Beam_detector_MWPC"	digicomp="amp"/>
-	<mapping addr="3"	elblock=""	startelectrch="0"	nelectrch="32"	station="MWPC4"	startstatch="0"	detector="Beam_detector_MWPC"	digicomp="amp"/>
+	<mapping addr="0"	elblock="other"	startelectrch="0"	nelectrch="32"	station="MWPC1"	startstatch="0"	detector="Beam_detector_MWPC"	digicomp="amp"/>
+	<mapping addr="1"	elblock="other"	startelectrch="0"	nelectrch="32"	station="MWPC2"	startstatch="0"	detector="Beam_detector_MWPC"	digicomp="amp"/>
+	<mapping addr="2"	elblock="other"	startelectrch="0"	nelectrch="32"	station="MWPC3"	startstatch="0"	detector="Beam_detector_MWPC"	digicomp="amp"/>
+	<mapping addr="3"	elblock="other"	startelectrch="0"	nelectrch="32"	station="MWPC4"	startstatch="0"	detector="Beam_detector_MWPC"	digicomp="amp"/>
 </crate>
 
 </setup>
