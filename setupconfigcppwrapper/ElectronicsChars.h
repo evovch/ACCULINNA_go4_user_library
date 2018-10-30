@@ -2,6 +2,12 @@
 
 	@class ElectronicsChars
 
+	Wrapper class around the stc_electr_chars structure/class.
+	Contains information imported from the electronics characteristics XML file.
+	The idea of this class is similar to the idea of the SetupConfiguration class.
+	It basically provides a more user-friendly interface to the data contained
+	in its main data member stc_electr_chars fCharacteristics.
+
 */
 
 #ifndef ELECTRONICSCHARS_H

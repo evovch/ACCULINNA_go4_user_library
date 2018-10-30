@@ -210,6 +210,11 @@ Result:
 		Station "tSQY_R", stationID = 0, stUID = 400
 		Station "tCsI_R", stationID = 1, stUID = 401
 
+Electronics characteristics
+===========================
+
+A separate XML file should be provided for the advanced monitoring step. Along with user-defined histograms, this step produces a bunch of automatically generated histograms. These are distributions of the values coming from individual electronics channels. In order to have the control over the histograms parameters (nbins, xlow, xhigh) without hardcoding them, these numbers are stored in a separate XML file. This is also possible due to the fact the histograms' ranges should correspond to the hardware characteristics. For example, if an ADC/QDC/TDC works in a X-bit mode, a range of [0; 2^X] should be used. The type of the electronics block is chosen using the 'elblock' attribute of the setup configuration XML file. So, only the blocks specified in the electronics characteristics XML file can be used in the setup configuration XML file.
+
 Project structure
 =================
 
@@ -236,7 +241,7 @@ Build directory. If you use provided compile.sh script, this directory is genera
 data
 ----
 
-Mostly repacking(monitoring) step output data structures.
+Mostly repacking step output data structures.
 
 docs
 ----
@@ -275,9 +280,9 @@ useranalysis
 
 The first step of the analysis. Only reads raw data and extracts raw messages without mapping them to any detector. This step is able to produce a ROOT tree with unpacked raw messages (together with raw words) to be processed by any software.
 
-### Monitoring
+### Repacking
 
-More correctly should be called 'Repacking'. The second step of the analysis. Looks into the setup configuration and produces a ROOT tree ...
+The second step of the analysis. Looks into the setup configuration and produces a ROOT tree ...
 
 ### Learn
 
@@ -287,10 +292,20 @@ A subsystem which allows to perform analysis of a rather small portion of the in
 
 A small subsystem which is required by Go4 and used by UserAnalysis class to create a mesh-like structure of the analysis. This allows, in particular, to split the unpacked, but not mapped data into two or more streams to be processed by separate processors (i.e. monitoring and learn).
 
+### Raw monitoring
+
+
+
+### Advanced monitoring
+
+
+
+### Beam detector monitoring
+
 usr
 ---
 
-Directory for XML files, including setup configuration XML files.
+Directory for universal shared resources files, including setup configuration XML files and electronics characteristics XML files.
 
 Developer reminder
 ==================
