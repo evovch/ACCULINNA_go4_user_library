@@ -47,7 +47,7 @@ Bool_t UserProcBeamDetMonitoring::BuildEvent(TGo4EventElement* p_dest)
 {
 	Bool_t v_isValid = kFALSE;
 
-	DetEventFull* v_input = (DetEventFull*)GetInputEvent("stepRepackedProvider1");
+	DetEventFull* v_input = (DetEventFull*)GetInputEvent("stepRepackedProvider2");
 	if (v_input == NULL)
 	{
 		cerr << "[WARN  ] " << "UserProcBeamDetMonitoring::BuildEvent(): no input event!" << endl;
