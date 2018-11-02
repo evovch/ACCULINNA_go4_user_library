@@ -151,12 +151,16 @@ void UserProcTestMonitoring::InitPars() {
 	fParSi = new SiCalibPars* [fnPars]; // make this another way
 	// TODO : the loop over the whole map
   fstPair = new std::pair <TString,Int_t>[fnPars];
-	fstPair[0] = make_pair((TString)"SQX_L",32);
-	fstPair[1] = make_pair((TString)"SQY_L",16);
-	fstPair[2] = make_pair((TString)"SQX_R",32);
-	fstPair[3] = make_pair((TString)"SQY_R",16);	
-	fstPair[4] = make_pair((TString)"SQ300",16);
-	fstPair[5] = make_pair((TString)"CsI_R",16);			                               
+	fstPair[0] = make_pair((TString)"SSD20_L",16);
+	fstPair[1] = make_pair((TString)"DSDX_L",16);
+	fstPair[2] = make_pair((TString)"DSDY_L",16);
+	fstPair[3] = make_pair((TString)"SSD_L",16);
+
+	fstPair[4] = make_pair((TString)"SSD20_R",16);
+	fstPair[5] = make_pair((TString)"DSDX_R",16);	
+	fstPair[6] = make_pair((TString)"DSDY_R",16);	
+	fstPair[7] = make_pair((TString)"SSD_R",16);		
+
 	for(Int_t i=0; i<fnPars; i++) {
 		fParSi[i] = (SiCalibPars*) MakeParameter(fstPair[i].first, "SiCalibPars");
 		fParSi[i]->Init(fstPair[i].second,fstPair[i].first);

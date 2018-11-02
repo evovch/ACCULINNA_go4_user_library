@@ -21,10 +21,10 @@ void setup()
 	stepRepacking->SetProcessEnabled(kTRUE);
 	stepLearn->SetProcessEnabled(kFALSE);
 	stepRawMonitoring->SetProcessEnabled(kFALSE);
-	stepAdvMonitoring->SetProcessEnabled(kTRUE);
-	stepBeamDetMonitoring->SetProcessEnabled(kTRUE);
-	stepBeamDetMonitoring2->SetProcessEnabled(kTRUE);
-	stepTestMonitoring->SetProcessEnabled(kFALSE);
+	stepAdvMonitoring->SetProcessEnabled(kFALSE);
+	stepBeamDetMonitoring->SetProcessEnabled(kFALSE);
+	stepBeamDetMonitoring2->SetProcessEnabled(kFALSE);
+	stepTestMonitoring->SetProcessEnabled(kTRUE);
 	//TODO enable/disable autosave
 	//go4->SetAutoSaveFile("asf.root");
 	go4->SetAutoSave(kFALSE);

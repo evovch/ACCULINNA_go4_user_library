@@ -299,8 +299,22 @@ void UserAnalysis::Construct(TString p_outfilename, TString p_setupfilename)
 	stepBeamDetMonitoring2->SetStoreEnabled(kFALSE);
 
 	AddAnalysisStep(stepBeamDetMonitoring2);
-/*
-// STEP3.2 - processor - test monitoring =============================================================
+
+
+	// STEP3.4 - provider - test monitoring ===============================================================
+//TODO remove two leading slashes in the following line to disable this step
+///*
+	TGo4StepFactory* factoryRepackedProvider4 = new TGo4StepFactory("factoryRepackedProvider4");
+	factoryRepackedProvider4->DefInputEvent("DetEventFull1", "DetEventFull"); // read full raw event without partial io
+	factoryRepackedProvider4->DefEventProcessor("DetEventFull1_1","MeshProviderProc"); // processorname must match name of input event + "_"
+	factoryRepackedProvider4->DefOutputEvent("Dummy", "MeshDummyEvent");
+	TGo4AnalysisStep* stepRepackedProvider4 = new TGo4AnalysisStep("stepRepackedProvider4", factoryRepackedProvider4);
+	stepRepackedProvider4->SetSourceEnabled(kFALSE);
+	stepRepackedProvider4->SetStoreEnabled(kFALSE);
+	stepRepackedProvider4->SetProcessEnabled(kTRUE);
+	AddAnalysisStep(stepRepackedProvider4);
+
+// STEP3.4 - processor - test monitoring =============================================================
 
 	TGo4StepFactory* factoryTestMonitoring = new TGo4StepFactory("factoryTestMonitoring");
 	factoryTestMonitoring->DefEventProcessor("UserProcTestMonitoring1", "UserProcTestMonitoring"); // object name, class name
@@ -316,19 +330,6 @@ void UserAnalysis::Construct(TString p_outfilename, TString p_setupfilename)
 
 	AddAnalysisStep(stepTestMonitoring);
 
-	// STEP3.3 - provider - beam monitoring ===============================================================
-//TODO remove two leading slashes in the following line to disable this step
-///*
-	TGo4StepFactory* factoryRepackedProvider2 = new TGo4StepFactory("factoryRepackedProvider2");
-	factoryRepackedProvider2->DefInputEvent("DetEventFull1", "DetEventFull"); // read full raw event without partial io
-	factoryRepackedProvider2->DefEventProcessor("DetEventFull1_1","MeshProviderProc"); // processorname must match name of input event + "_"
-	factoryRepackedProvider2->DefOutputEvent("Dummy", "MeshDummyEvent");
-	TGo4AnalysisStep* stepRepackedProvider2 = new TGo4AnalysisStep("stepRepackedProvider2", factoryRepackedProvider2);
-	stepRepackedProvider2->SetSourceEnabled(kFALSE);
-	stepRepackedProvider2->SetStoreEnabled(kFALSE);
-	stepRepackedProvider2->SetProcessEnabled(kTRUE);
-	AddAnalysisStep(stepRepackedProvider2);
-*/
 //*/
 
 	// STEP3.3 - digibuilding =====================================================================

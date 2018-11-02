@@ -46,7 +46,7 @@
 #pragma link C++ class UserEventTestMonitoring+;
 #pragma link C++ class UserProcTestMonitoring+;
 #pragma link C++ class UserHistosTestMonitoring+;
-
+// #pragma link C++ class UserParameterTest+;
 // Calibration paramters
 #pragma link C++ class SiCalibPars+;
 
