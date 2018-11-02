@@ -1,19 +1,12 @@
 #ifndef XMLPARSING_H
 #define XMLPARSING_H
 
-#include <stdio.h> /* for FILE */
-
-#include "structs.h" /* for stc_setup_config, enuTAG */
+/*#include "enutag.h"*/ /* for enuTAG */
+#include "structs.h" /* for stc_setup_config */
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-unsigned short CheckIfNextIsComment(FILE* f);
-
-unsigned short ReadComment(FILE* f);
-
-unsigned short ReadTag(FILE* f, char* o_buffer, unsigned short* o_buffersize);
 
 void ProcessTag(stc_setup_config* ptr, char* o_buffer/*, enuTAG* o_CurTag*/);
 

@@ -61,8 +61,8 @@ Bool_t UserProcDigiBuilding::BuildEvent(TGo4EventElement* p_dest)
 
 	//TODO check
 	// Get the all-accessible parameter-set object
-	UserParameter* v_params = (UserParameter*)GetParameter("UserParameter");
-	const SetupConfiguration* v_setupConfig = v_params->GetSetupConfig();
+	////UserParameter* v_params = (UserParameter*)GetParameter("UserParameter");
+	////const SetupConfiguration* v_setupConfig = v_params->GetSetupConfig();
 
 	cerr << v_input->getNElements() << endl;
 

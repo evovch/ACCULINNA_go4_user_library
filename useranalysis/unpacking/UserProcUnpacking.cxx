@@ -14,6 +14,7 @@ using std::endl;
 #include <TGo4MbsSubEvent.h>
 
 // Project
+////#include "base/Support.h" // included in the header
 #include "UserEventUnpacking.h" // output event
 #include "UserHistosUnpacking.h"
 
@@ -43,10 +44,15 @@ UserProcUnpacking::UserProcUnpacking(const char* name) :
 	fNunknownWords(0)
 {
 	fHistoMan = new UserHistosUnpacking();
+
+	support::CheckThatDirExists("textoutput");
+
 	fFileSummary = fopen("textoutput/summaryUnpacking.txt", "w");
 	if (fFileSummary == NULL) {
-		//TODO error
-		cerr << "[WARN  ] " << "Could not open output text summary file '" << "summaryUnpacking.txt" << "'" << endl;
+		//TODO warning or fatal?
+		//cerr << "[WARN  ] " << "Could not open output text summary file '" << "summaryUnpacking.txt" << "'" << endl;
+		cerr << "[FATAL ] " << "Could not open output text summary file '" << "textoutput/summaryUnpacking.txt" << "'" << endl;
+		exit(EXIT_FAILURE);
 	}
 }
 
@@ -64,12 +70,20 @@ Bool_t UserProcUnpacking::BuildEvent(TGo4EventElement* p_dest)
 	UserEventUnpacking* v_outputEvent = (UserEventUnpacking*)p_dest;
 
 	TGo4MbsEvent* v_input = (TGo4MbsEvent*)GetInputEvent();
-	if (v_input == NULL)
-	{
+	if (v_input == NULL) {
 		cerr << "[WARN  ] " << "UserProcUnpacking::BuildEvent(): no input event!" << endl;
 		v_outputEvent->SetValid(v_isValid);
 		return v_isValid;
 	}
+	// Due to some unknown reason the first event in the file seems to be always corrupted.
+	// So we just skip it.
+	if (fEventCounter == 0) {
+		cerr << "[INFO  ] " << "UserProcUnpacking::BuildEvent(): skipping first input event." << endl;
+		fEventCounter++;
+		v_outputEvent->SetValid(v_isValid);
+		return v_isValid;
+	}
+	
 	v_isValid = kTRUE;
 
 	#ifdef DEBUGUNPACKING
@@ -518,8 +532,10 @@ void UserProcUnpacking::ProcessSubsubevent_MESYTEC(Int_t p_size, const Int_t* p_
 		Int_t v_type = (v_curWord >> 30) & 0x3; // 2 bits
 
 		Int_t v_module_id = -1;
+		#ifdef DEBUGUNPACKING
 		Int_t v_subsubeventSize = -1;
 		Int_t v_eventCounter = -1; // event counter or time stamp
+		#endif
 		Int_t v_channel = -1;
 		Int_t v_valueQA = -1; // QDC and ADC
 		Int_t v_valueT = -1; // TDC
@@ -528,9 +544,9 @@ void UserProcUnpacking::ProcessSubsubevent_MESYTEC(Int_t p_size, const Int_t* p_
 		case 1: // MESYTEC header
 			fInsidePackage = true;
 			v_module_id = (v_curWord >> 16) & 0xff; // 8 bits
-			v_subsubeventSize = v_curWord & 0x3ff; // 10 bits
 			fNknownWords++;
 			#ifdef DEBUGUNPACKING
+			v_subsubeventSize = v_curWord & 0x3ff; // 10 bits
 			cerr << "[DEBUG ] " << support::GetHexRepresentation(sizeof(Int_t), &v_curWord) << "  ";
 			cerr << support::GetBinaryRepresentation(sizeof(Int_t), &v_curWord) << "  ";
 			cerr << "[" << v_cursor << "]\t" << "MESYTEC header"
@@ -545,9 +561,9 @@ void UserProcUnpacking::ProcessSubsubevent_MESYTEC(Int_t p_size, const Int_t* p_
 			break;
 		case 3: // MESYTEC footer
 			fInsidePackage = false;
-			v_eventCounter = UserProcUnpacking::ExtractCounterFromMESYTECfooter(v_curWord);
 			fNknownWords++;
 			#ifdef DEBUGUNPACKING
+			v_eventCounter = UserProcUnpacking::ExtractCounterFromMESYTECfooter(v_curWord);
 			cerr << "[DEBUG ] " << support::GetHexRepresentation(sizeof(Int_t), &v_curWord) << "  ";
 			cerr << support::GetBinaryRepresentation(sizeof(Int_t), &v_curWord) << "  ";
 			cerr << "[" << v_cursor << "]\t" << "MESYTEC footer"
@@ -664,17 +680,19 @@ void UserProcUnpacking::ProcessSubsubevent_CAEN(Int_t p_size, const Int_t* p_sta
 		Int_t v_eventCounter = -1;
 		Int_t v_channel = -1;
 		Int_t v_value = -1;
+		#ifdef DEBUGUNPACKING
 		Int_t v_subsubeventSize = -1;
 		Int_t v_crate = -1;
+		#endif
 
 		switch (v_type) {
 		case 2: // CAEN header
-			v_subsubeventSize = (v_curWord >> 8) & 0x3f; // 6 bits
-			v_crate = (v_curWord >> 16) & 0xff; // 8 bits
 			v_geo = (v_curWord >> 27) & 0x1f; // 5 bits
 			fInsidePackage = true;
 			fNknownWords++;
 			#ifdef DEBUGUNPACKING
+			v_subsubeventSize = (v_curWord >> 8) & 0x3f; // 6 bits
+			v_crate = (v_curWord >> 16) & 0xff; // 8 bits
 			cerr << "[DEBUG ] " << support::GetHexRepresentation(sizeof(Int_t), &v_curWord) << "  ";
 			cerr << support::GetBinaryRepresentation(sizeof(Int_t), &v_curWord) << "  ";
 			cerr << "[" << v_cursor << "]\t" << "CAEN header"

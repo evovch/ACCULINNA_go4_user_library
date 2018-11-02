@@ -51,19 +51,18 @@
 	<mapping addr="8"	elblock="mADC"	startelectrch="0"	nelectrch="16"	station="CsI_L"	startstatch="0"	detector="Left_telescope"	digicomp="amp"/>
 	<mapping addr="8"	elblock="mADC"	startelectrch="16"	nelectrch="16"	station="CsI_R"	startstatch="0"	detector="Right_telescope"	digicomp="amp"/>
 
-	<mapping addr="9"	elblock="mADC"	startelectrch="0"	nelectrch="16"	station="SQ300"	startstatch="0"	detector="Left_telescope"	digicomp="amp"/>
-	<mapping addr="9"	elblock="mADC"	startelectrch="16"	nelectrch="16"	station="Ignore"	startstatch="0"	detector="Ignore"/> 
+	<mapping addr="9"	elblock="mADC"	startelectrch="0"	nelectrch="32"	station="Ignore"	startstatch="0"	detector="Ignore"/>
 
-	<mapping addr="10"	elblock="mQDC"	startelectrch="0"	nelectrch="4"	station="F3"	startstatch="0"	detector="Beam_detector"	digicomp="amp"/>
-	<mapping addr="10"	elblock="mQDC"	startelectrch="4"	nelectrch="4"	station="F5"	startstatch="0"	detector="Beam_detector"	digicomp="amp"/>
-	<mapping addr="10"	elblock="mQDC"	startelectrch="8"	nelectrch="4"	station="F6"	startstatch="0"	detector="Beam_detector"	digicomp="amp"/>
+	<mapping addr="10"	elblock="mQDC"	startelectrch="0"	nelectrch="4"	station="F3"	startstatch="0"	detector="Beam_detector_ToF"	digicomp="amp"/>
+	<mapping addr="10"	elblock="mQDC"	startelectrch="4"	nelectrch="4"	station="F5"	startstatch="0"	detector="Beam_detector_ToF"	digicomp="amp"/>
+	<mapping addr="10"	elblock="mQDC"	startelectrch="8"	nelectrch="4"	station="F6"	startstatch="0"	detector="Beam_detector_ToF"	digicomp="amp"/>
 
 	<mapping addr="10"	elblock="mQDC"	startelectrch="16"	nelectrch="16"	station="Ignore"	startstatch="0"	detector="Ignore"/>
 
-	<mapping addr="11"	elblock="mTDC"	startelectrch="0"	nelectrch="4"	station="tF3"	startstatch="0"	detector="Beam_detector"	digicomp="time"/>
-	<mapping addr="11"	elblock="mTDC"	startelectrch="4"	nelectrch="4"	station="tF5"	startstatch="0"	detector="Beam_detector"	digicomp="time"/>
-	<mapping addr="11"	elblock="mTDC"	startelectrch="8"	nelectrch="4"	station="tF6"	startstatch="0"	detector="Beam_detector"	digicomp="time"/>
-	<mapping addr="11"	elblock="mTDC"	startelectrch="12"	nelectrch="4"	station="tMWPC"	startstatch="0"	detector="Beam_detector"	digicomp="time"/>
+	<mapping addr="11"	elblock="mTDC"	startelectrch="0"	nelectrch="4"	station="tF3"	startstatch="0"	detector="Beam_detector_ToF"	digicomp="time"/>
+	<mapping addr="11"	elblock="mTDC"	startelectrch="4"	nelectrch="4"	station="tF5"	startstatch="0"	detector="Beam_detector_ToF"	digicomp="time"/>
+	<mapping addr="11"	elblock="mTDC"	startelectrch="8"	nelectrch="4"	station="tF6"	startstatch="0"	detector="Beam_detector_ToF"	digicomp="time"/>
+	<mapping addr="11"	elblock="mTDC"	startelectrch="12"	nelectrch="4"	station="tMWPC"	startstatch="0"	detector="Beam_detector_MWPC"	digicomp="time"/>
 
 	<mapping addr="12"	elblock="mTDC"	startelectrch="0"	nelectrch="16"	station="tSQ300"	startstatch="0"	detector="Left_telescope"	digicomp="time"/>
 
@@ -89,10 +88,10 @@
 </crate>
 
 <crate name="CAMAC" procid="101">
-	<mapping addr="0"	elblock=""	startelectrch="0"	nelectrch="32"	station="MWPC1"	startstatch="0"	detector="Beam_detector"	digicomp="amp"/>
-	<mapping addr="1"	elblock=""	startelectrch="0"	nelectrch="32"	station="MWPC2"	startstatch="0"	detector="Beam_detector"	digicomp="amp"/>
-	<mapping addr="2"	elblock=""	startelectrch="0"	nelectrch="32"	station="MWPC3"	startstatch="0"	detector="Beam_detector"	digicomp="amp"/>
-	<mapping addr="3"	elblock=""	startelectrch="0"	nelectrch="32"	station="MWPC4"	startstatch="0"	detector="Beam_detector"	digicomp="amp"/>
+	<mapping addr="0"	elblock="other"	startelectrch="0"	nelectrch="32"	station="MWPC1"	startstatch="0"	detector="Beam_detector_MWPC"	digicomp="amp"/>
+	<mapping addr="1"	elblock="other"	startelectrch="0"	nelectrch="32"	station="MWPC2"	startstatch="0"	detector="Beam_detector_MWPC"	digicomp="amp"/>
+	<mapping addr="2"	elblock="other"	startelectrch="0"	nelectrch="32"	station="MWPC3"	startstatch="0"	detector="Beam_detector_MWPC"	digicomp="amp"/>
+	<mapping addr="3"	elblock="other"	startelectrch="0"	nelectrch="32"	station="MWPC4"	startstatch="0"	detector="Beam_detector_MWPC"	digicomp="amp"/>
 </crate>
 
 </setup>

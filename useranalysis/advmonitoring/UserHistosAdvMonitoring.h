@@ -8,12 +8,10 @@
 #define USERHISTOSADVMONITORING_H
 
 #include <TObject.h> // mother class
-#include <TString.h>
 
 // STD
 #include <map>
-#include <fstream>
-	
+
 class TH1;
 class TH2;
 
@@ -25,15 +23,16 @@ public:
 
 	void GenerateAutoHistos(void);
 
-	TH1* fTrigger;	
+//	TH1* fTrigger;	
+public:
+
+	TH1* mhHisto1;
+	TH2* mhHisto2;
 
 	/**
 	 * Automatically generated histograms
 	 */
 	std::map<unsigned int, TH1*> fAutoHistos; //!
-
-private:
-	TString fst_MWPC; // name of the MWPC station
 
 	ClassDef(UserHistosAdvMonitoring, 1);
 };

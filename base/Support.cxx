@@ -1,6 +1,9 @@
 #include "Support.h"
 
+// STD
 #include <cstdio> // for sprintf
+#include <sys/stat.h> // for stat, mkdir
+#include <iostream>
 
 std::string support::GetBinaryRepresentation(size_t const size, void const * const ptr)
 {
@@ -61,4 +64,20 @@ std::string support::VendorAsString(enu_VENDOR p_val)
 support::enu_VENDOR support::VendorFromChar(char p_val)
 {
 	return (enu_VENDOR)p_val;
+}
+
+void support::CheckThatDirExists(const char* dir_name)
+{
+	struct stat info;
+	if( stat( dir_name, &info ) != 0 ) {
+		mkdir(dir_name, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+		std::cerr << "[INFO  ] " << "Created directory '" << dir_name << "'." << std::endl;
+	} else if( info.st_mode & S_IFDIR ) {
+		std::cerr << "[INFO  ] " << "Directory '" << dir_name << "' already exists. All previous text files there will be overwritten." << std::endl;
+	} else {
+		std::cerr << "[FATAL ] " <<  "'" << dir_name << "' already exists in the current directory and it is not a directory. "
+		     << "We stop here such that the existing file named '" << dir_name << "' is not overwritten. "
+		     << "Please, back it up if you need and remove it from the current directory." << std::endl;
+		exit(EXIT_FAILURE);
+	}
 }

@@ -9,12 +9,15 @@
 
 // Project
 #include "setupconfigcppwrapper/SetupConfiguration.h"
+#include "setupconfigcppwrapper/ElectronicsChars.h"
+#include "UserParameter.h"
 
 UserHistosAdvMonitoring::UserHistosAdvMonitoring()
 {
 	TGo4Analysis* a = TGo4Analysis::Instance();
-	fst_MWPC = "Beam_detector_MWPC";
-	fTrigger = a->MakeTH1('I', "Trigger", "Values of trigger",   5, 0., 5.);
+
+	mhHisto1 = a->MakeTH1('D', "AdvMon/UserHistos/mhHisto1", "mhHisto1", 100, 0., 100.);
+	mhHisto2 = a->MakeTH2('D', "AdvMon/UserHistos/mhHisto2", "mhHisto2", 100, 0., 100., 100, 0., 100.);
 }
 
 UserHistosAdvMonitoring::~UserHistosAdvMonitoring()
@@ -28,8 +31,10 @@ UserHistosAdvMonitoring::~UserHistosAdvMonitoring()
 void UserHistosAdvMonitoring::GenerateAutoHistos(void)
 {
 	TGo4Analysis* a = TGo4Analysis::Instance();
+	UserParameter* v_params = (UserParameter*)(a->GetParameter("UserParameter"));
 
 	const SetupConfiguration& v_SetupConfig = SetupConfiguration::GetInstance();
+	const ElectronicsChars* v_ElectrChars = v_params->GetElectrChars();
 
 	std::map<unsigned int, stc_mapping*> v_mappings = v_SetupConfig.GetMappings();
 	std::map<unsigned int, stc_mapping*>::const_iterator v_mapIter = v_mappings.begin();
@@ -54,27 +59,20 @@ void UserHistosAdvMonitoring::GenerateAutoHistos(void)
 
 		//TODO check duplicates
 		TString newHistoName;
-		// newHistoName.Form("TestMon/AutoHistos/%d_%s_%s_%d_test", v_statid*100+v_det_ch, v_detector.Data(), v_station.Data(), v_det_ch);
+		TString newHistoTitle;
 
+		// option1
+		//newHistoName.Form("AdvMon/AutoHistos/%s/%s/id_%d_ch_%d", v_detector.Data(), v_station.Data(), v_statid*100+v_det_ch, v_det_ch);
+		//newHistoTitle.Form("%s/%s/id_%d_ch_%d", v_detector.Data(), v_station.Data(), v_statid*100+v_det_ch, v_det_ch);
+		// option2
+		newHistoName.Form("AdvMon/AutoHistos/%s/%s/%s_ch_%d", v_detector.Data(), v_station.Data(), v_station.Data(), v_det_ch);
+		newHistoTitle.Form("%s/%s/%s_ch_%d", v_detector.Data(), v_station.Data(), v_station.Data(), v_det_ch);
 
-		Int_t nBins,nLow,nUp;
-		TString stationNameFull;
-		stationNameFull = v_detector + "_" + v_station;
-		// if(stationNameFull.Contains("DAQ")) continue;
-		if(stationNameFull.Contains(fst_MWPC.Data())) {
-			// cout << stationNameFull << endl;
-			nBins = 32;
-			nLow = 0;
-			nUp = 32;
-			newHistoName.Form("AdvMon/WIRES/%s", v_station.Data());
-		}
-		else {
-			nBins = 500;
-			nLow = 0;
-			nUp = 10000;
-			newHistoName.Form("AdvMon/%s/%s/%s_%d", v_detector.Data(), v_station.Data(), v_station.Data(), v_det_ch);
-		}
-		TH1* v_histo = a->MakeTH1('D', newHistoName, newHistoName, nBins, nLow, nUp); //TODO ranges
+		Double_t v_rangeLow = (Double_t)(v_ElectrChars->GetRangeLow(v_elblock));
+		Double_t v_rangeHigh = (Double_t)(v_ElectrChars->GetRangeHigh(v_elblock));
+		Int_t v_nBins = (Int_t)(v_ElectrChars->GetNbins(v_elblock));
+
+		TH1* v_histo = a->MakeTH1('D', newHistoName, newHistoTitle, v_nBins, v_rangeLow, v_rangeHigh);
 		fAutoHistos.insert(std::pair<unsigned int, TH1*>(v_statid*100+v_det_ch, v_histo));
 	}
 }

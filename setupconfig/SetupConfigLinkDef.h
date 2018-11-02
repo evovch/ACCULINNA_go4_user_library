@@ -7,5 +7,7 @@
 // SetupConfig
 #pragma link C++ class stc_mapping+;
 #pragma link C++ class stc_setup_config+;
+#pragma link C++ class stc_elblock+;
+#pragma link C++ class stc_electr_chars+;
 
 #endif // __CINT__

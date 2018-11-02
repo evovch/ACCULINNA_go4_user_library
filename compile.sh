@@ -20,7 +20,7 @@ else
 fi
 
 # TODO activate/deactivate
-./doclean.sh
+#./doclean.sh
 
 if [ ! -d "build" ]; then
 	mkdir build

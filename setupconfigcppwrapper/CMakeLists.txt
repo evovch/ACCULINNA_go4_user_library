@@ -12,6 +12,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${CMAKE_SOURCE_DIR})
 
 set(ROOTCLING_HEADERS SetupConfiguration.h
+                      ElectronicsChars.h
                       )
 
 ROOT_GENERATE_DICTIONARY(G__${COMPNAME} ${ROOTCLING_HEADERS} LINKDEF SetupConfigCppWrapperLinkDef.h)
@@ -20,6 +21,7 @@ ROOT_GENERATE_DICTIONARY(G__${COMPNAME} ${ROOTCLING_HEADERS} LINKDEF SetupConfig
 
 set(SOURCE_LIB G__${COMPNAME}.cxx
                SetupConfiguration.cxx
+               ElectronicsChars.cxx
                )
 
 add_library(${COMPNAME} SHARED ${SOURCE_LIB})

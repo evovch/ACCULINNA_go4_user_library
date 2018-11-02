@@ -39,7 +39,7 @@ SetupConfiguration::SetupConfiguration(const char* p_filename) :
 
 	if (!(this->CheckConsistency())) {
 		cerr << "[FATAL ] Imported XML setup configuration is inconsistent. Please check it. Aborting." << endl;
-		exit(1); //TODO
+		exit(EXIT_FAILURE); //TODO
 	}
 
 	this->Link();
@@ -249,22 +249,23 @@ unsigned short SetupConfiguration::GetOutput(unsigned short p_crateProcid,
 	//cerr << "[DEBUG] SetupConfiguration::GetOutput("
 	//     << p_crateProcid << ", " << p_addr << ", " << p_elch << ") = (" << v_chUID << ") = ";
 
-	//std::map<unsigned int, stc_mapping*>::const_iterator iter = mMappings.find(v_chUID);
-	//if (iter != mMappings.end()) {
+	std::map<unsigned int, stc_mapping*>::const_iterator iter = mMappings.find(v_chUID);
+	if (iter != mMappings.end()) {
 
-	const stc_mapping* theMapping = mMappings.at(v_chUID);
+	//const stc_mapping* theMapping = mMappings.at(v_chUID);
 	{
-		if (o_station != NULL) { *o_station = theMapping->fStation; }
-		if (o_detector != NULL) { *o_detector = theMapping->fDetector; }
-		if (o_elblock != NULL) {*o_elblock = theMapping->fElblock; }
+		if (o_station != NULL) { *o_station = iter->second->fStation; }
+		if (o_detector != NULL) { *o_detector = iter->second->fDetector; }
+		if (o_elblock != NULL) {*o_elblock = iter->second->fElblock; }
 
 		//TODO computation of the output detector channel is here
-		v_detCh = SetupConfiguration::ElChToDetCh(theMapping, p_elch);
+		v_detCh = SetupConfiguration::ElChToDetCh(iter->second, p_elch);
 
 		//TODO
-		if (o_detid != NULL) { *o_detid = this->GetDetectorID2(theMapping->fDetector); }
-		if (o_statid != NULL) { *o_statid = this->GetStationID2(theMapping->fDetector, theMapping->fStation); }
-	}/* else {
+		if (o_detid != NULL) { *o_detid = this->GetDetectorID2(iter->second->fDetector); }
+		if (o_statid != NULL) { *o_statid = this->GetStationID2(iter->second->fDetector, iter->second->fStation); }
+	}
+	} else {
 		//ERROR
 		cerr << "[ERROR ] GetOutput() "
 		     << "No mapping found for the given channel. "
@@ -274,7 +275,7 @@ unsigned short SetupConfiguration::GetOutput(unsigned short p_crateProcid,
 		     << endl;
 		//TODO think what to do in such situations
 		v_detCh = 9999;
-	}*/
+	}
 
 	//cerr << *o_detector << endl;
 

@@ -11,11 +11,11 @@ using std::endl;
 //#include <TH2D.h>
 
 // Project
+#include "base/Support.h"
 #include "UserParameter.h"
 #include "unpacking/UserEventUnpacking.h" // input event
 #include "data/DetEventFull.h" // output event
 #include "UserHistosRepacking.h"
-#include "base/Support.h"
 #include "data/DetEventCommon.h"
 #include "data/DetEventStation.h"
 #include "data/RawMessage.h"
@@ -40,10 +40,15 @@ UserProcRepacking::UserProcRepacking(const char* name) :
 	fEventCounter(0)
 {
 	fHistoMan = new UserHistosRepacking();
+
+	support::CheckThatDirExists("textoutput");
+
 	fFileSummary = fopen("textoutput/summaryRepacking.txt", "w");
 	if (fFileSummary == NULL) {
-		//TODO error
-		cerr << "[WARN  ] " << "Could not open output text summary file '" << "summaryRepacking.txt" << "'" << endl;
+		//TODO warning or fatal?
+		//cerr << "[WARN  ] " << "Could not open output text summary file '" << "summaryRepacking.txt" << "'" << endl;
+		cerr << "[FATAL ] " << "Could not open output text summary file '" << "textoutput/summaryRepacking.txt" << "'" << endl;
+		exit(EXIT_FAILURE);
 	}
 }
 
@@ -163,6 +168,15 @@ void UserProcRepacking::ProcessMessageUniversal(const RawMessage* p_message)
 	unsigned short v_detID;
 	unsigned short v_statID;
 	unsigned short v_detChannel = v_setupConfig->GetOutput(v_procid, v_addr, v_ch, &v_station, &v_detector, &v_elblock, &v_detID, &v_statID);
+
+	//TODO check
+	if (v_detChannel == 9999) {
+		#ifdef DEBUGREPACKING
+		cerr << "[DEBUG ] "
+		     << "Ckipping a message from a channel with no mapping." << endl;
+		#endif // DEBUGREPACKING
+		return;
+	}
 
 	// Ignore those message which are mapped to the 'Ignore' station
 	//TODO elaborate nice output

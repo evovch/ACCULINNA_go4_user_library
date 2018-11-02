@@ -23,6 +23,8 @@ namespace support
 
 	enu_VENDOR VendorFromChar(char p_val);
 
+	void CheckThatDirExists(const char* dir_name);
+
 }
 
 #endif // SUPPORT_H

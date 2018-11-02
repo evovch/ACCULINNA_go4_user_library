@@ -25,18 +25,20 @@ set(ROOTCLING_HEADERS UserAnalysis.h
                       advmonitoring/UserEventAdvMonitoring.h
                       advmonitoring/UserProcAdvMonitoring.h
                       advmonitoring/UserHistosAdvMonitoring.h
-                      testmonitoring/UserEventTestMonitoring.h
-                      testmonitoring/UserProcTestMonitoring.h
-                      testmonitoring/UserHistosTestMonitoring.h
-                      beammonitoring/UserEventBeamMonitoring.h
-                      beammonitoring/UserProcBeamMonitoring.h
-                      beammonitoring/UserHistosBeamMonitoring.h
+                      beamdetmonitoring/UserEventBeamDetMonitoring.h
+                      beamdetmonitoring/UserProcBeamDetMonitoring.h
+                      beamdetmonitoring/UserHistosBeamDetMonitoring.h
+                      beamdetmonitoring/UserParamBeamDetMonitoring.h
+                      beammonitoring2/UserParameterBeamDetector.h
                       beammonitoring2/UserEventBeamMonitoring2.h
                       beammonitoring2/UserProcBeamMonitoring2.h
                       beammonitoring2/UserHistosBeamMonitoring2.h
+                      testmonitoring/UserEventTestMonitoring.h
+                      testmonitoring/UserProcTestMonitoring.h
+                      testmonitoring/UserHistosTestMonitoring.h  
+                      calibration/SiCalibPars.h                                          
                       learn/UserEventLearn.h
                       learn/UserProcLearn.h
-                      calibration/SiCalibPars.h
                       digibuilding/UserEventDigiBuilding.h
                       digibuilding/UserProcDigiBuilding.h
                       )
@@ -63,18 +65,20 @@ set(SOURCE_LIB G__${COMPNAME}.cxx
                advmonitoring/UserEventAdvMonitoring.cxx
                advmonitoring/UserProcAdvMonitoring.cxx
                advmonitoring/UserHistosAdvMonitoring.cxx
-               testmonitoring/UserEventTestMonitoring.cxx
-               testmonitoring/UserProcTestMonitoring.cxx
-               testmonitoring/UserHistosTestMonitoring.cxx
-               beammonitoring/UserEventBeamMonitoring.cxx
-               beammonitoring/UserProcBeamMonitoring.cxx
-               beammonitoring/UserHistosBeamMonitoring.cxx
+               beamdetmonitoring/UserEventBeamDetMonitoring.cxx
+               beamdetmonitoring/UserProcBeamDetMonitoring.cxx
+               beamdetmonitoring/UserHistosBeamDetMonitoring.cxx
+               beamdetmonitoring/UserParamBeamDetMonitoring.cxx
+               beammonitoring2/UserParameterBeamDetector.cxx
                beammonitoring2/UserEventBeamMonitoring2.cxx
                beammonitoring2/UserProcBeamMonitoring2.cxx
                beammonitoring2/UserHistosBeamMonitoring2.cxx
+               testmonitoring/UserEventTestMonitoring.cxx
+               testmonitoring/UserProcTestMonitoring.cxx
+               testmonitoring/UserHistosTestMonitoring.cxx
+               calibration/SiCalibPars.cxx                                
                learn/UserEventLearn.cxx
                learn/UserProcLearn.cxx
-               calibration/SiCalibPars.cxx            
                digibuilding/UserEventDigiBuilding.cxx
                digibuilding/UserProcDigiBuilding.cxx
                )
@@ -85,6 +89,7 @@ add_library(${COMPNAME} SHARED ${SOURCE_LIB})
 target_link_libraries(${COMPNAME} ${PROJECT_PREFIX}Data ${PROJECT_PREFIX}SetupConfigCppWrapper)
 
 # Dependent libraries from go4
+# Go4Http
 target_link_libraries(${COMPNAME} Go4Analysis)
 
 # ???

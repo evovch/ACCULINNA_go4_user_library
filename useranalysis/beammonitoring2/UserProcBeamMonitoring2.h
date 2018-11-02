@@ -15,6 +15,10 @@ class TGo4CompositeEvent;
 class UserHistosBeamMonitoring2;
 class SetupConfiguration;
 class DetMessage;
+class DetEventFull;
+class DetEventStation;
+class UserParameterBeamDetector;
+class TClonesArray;
 
 class UserProcBeamMonitoring2 : public TGo4EventProcessor
 {
@@ -33,6 +37,18 @@ public: // methods
 
 private: // methods
 	void ProcessMessage(DetMessage* p_message, TString stName);
+
+	void TOF(DetEventStation* F3a, DetEventStation* F5a, DetEventStation* F3t, DetEventStation* F5t, Int_t curTrigger);
+
+	void FillHistograms(Int_t curTrigger);
+	void MWPCprojection(DetEventStation* mwpcPlaneX1, DetEventStation* mwpcPlaneY1,
+			DetEventStation* mwpcPlaneX2, DetEventStation* mwpcPlaneY2,
+			Int_t curTrigger);
+
+	Int_t GetWireMult(TClonesArray *data);
+	Int_t GetClusterMult(TClonesArray *data);
+	Float_t GetClusterWire(TClonesArray *data);
+	Float_t GetPosition(Float_t wire, Float_t wireStep, Float_t planeOffset);
 
  // data members
 	/**
@@ -55,6 +71,10 @@ private: // methods
 	 * Summary stream
 	 */
 	FILE* fFileSummary;
+
+	DetEventFull* v_input;
+
+	UserParameterBeamDetector* fParBD;
 
 	ClassDef(UserProcBeamMonitoring2, 1);
 };

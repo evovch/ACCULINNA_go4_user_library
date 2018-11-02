@@ -56,6 +56,7 @@ endif()
 #add_definitions(-DDEBUGRAWMON)
 #add_definitions(-DDEBUGREPACKING)
 #add_definitions(-DDEBUGADVMON)
+#add_definitions(-DDEBUGBEAMDETMON)
 #add_definitions(-DDEBUGLEARN)
 #add_definitions(-DDEBUGDIGIBUILDING)
 

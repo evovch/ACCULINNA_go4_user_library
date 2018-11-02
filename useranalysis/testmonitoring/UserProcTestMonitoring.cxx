@@ -65,7 +65,7 @@ Bool_t UserProcTestMonitoring::BuildEvent(TGo4EventElement* p_dest)
 
 	Bool_t v_isValid = kFALSE;
 
-	DetEventFull* v_input = (DetEventFull*)GetInputEvent("stepRepackedProvider1");
+	DetEventFull* v_input = (DetEventFull*)GetInputEvent("stepRepackedProvider4");
 	if (v_input == NULL)
 	{
 		cerr << "[WARN  ] " << "UserProcTestMonitoring::BuildEvent(): no input event!" << endl;

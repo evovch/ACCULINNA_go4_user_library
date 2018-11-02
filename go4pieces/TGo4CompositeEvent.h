@@ -51,7 +51,8 @@ class TGo4CompositeEvent : public TGo4EventElement {
      virtual TTree* CreateSampleTree(TGo4EventElement** sample = 0);
 
      TGo4EventElement *getEventElement(Int_t idx) const;
-     
+     TGo4EventElement *getEventElement(const char* name,Int_t final=0) const;
+
      TGo4EventElement *getEventElement(Int_t idx);
      TGo4EventElement *getEventElement(const char* name,Int_t final=0);
      void Clear(Option_t *opt="");
