@@ -76,7 +76,8 @@ set(SOURCE_LIB G__${COMPNAME}.cxx
                beammonitoring2/UserHistosBeamMonitoring2.cxx
                testmonitoring/UserEventTestMonitoring.cxx
                testmonitoring/UserProcTestMonitoring.cxx
-               testmonitoring/UserHistosTestMonitoring.cxx               
+               testmonitoring/UserHistosTestMonitoring.cxx 
+               testmonitoring/UserParameterTest.cxx                              
                calibration/SiCalibPars.cxx                                
                learn/UserEventLearn.cxx
                learn/UserProcLearn.cxx

@@ -17,6 +17,7 @@ using std::endl;
 #include "data/DetEventCommon.h"
 #include "data/DetEventStation.h"
 #include "data/DetMessage.h"
+#include "UserParameterTest.h"
 #include "useranalysis/calibration/SiCalibPars.h"
 
 #include "UserHistosTestMonitoring.h"
@@ -38,7 +39,7 @@ UserProcTestMonitoring::UserProcTestMonitoring(const char* name) :
 	TGo4EventProcessor(name),
 	fEventCounter(0)
 {	
-	// Creating and filling TGo4Parameter objects
+	// Creating and filling SiPars objects
 	this->InitPars();
 
 	fHistoMan = new UserHistosTestMonitoring(fstPair,fnPars);
@@ -53,6 +54,7 @@ UserProcTestMonitoring::~UserProcTestMonitoring()
 {
 	cout << "UserProcTestMonitoring destructor called " << endl; 
 
+	if (fParTest) delete fParTest;
 	if (fParSi) delete [] fParSi;
 	if (fstPair) delete [] fstPair;
 	if (fHistoMan) delete fHistoMan;
@@ -148,6 +150,7 @@ void UserProcTestMonitoring::ProcessMessage(DetEventStation* p_message,Int_t par
 }
 
 void UserProcTestMonitoring::InitPars() {
+
 	fParSi = new SiCalibPars* [fnPars]; // make this another way
 	// TODO : the loop over the whole map
   fstPair = new std::pair <TString,Int_t>[fnPars];

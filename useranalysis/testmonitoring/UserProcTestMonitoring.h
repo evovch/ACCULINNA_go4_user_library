@@ -17,6 +17,7 @@ class SetupConfiguration;
 class DetEventStation;
 class DetMessage;
 class SiCalibPars;
+class UserParameterTest;
 
 class UserProcTestMonitoring : public TGo4EventProcessor
 {
@@ -63,6 +64,10 @@ private: // data members
 	const SetupConfiguration* fSetupConfig;
 
 	/**
+	* local User parameter
+	*/
+	UserParameterTest* fParTest;
+	/**
 	* Si-stations calibration parameters
 	*/
 	SiCalibPars** fParSi;
@@ -73,6 +78,7 @@ private: // data members
 	 */
 	FILE* fFileSummary;
 	
+
 	ClassDef(UserProcTestMonitoring, 1);
 };
 

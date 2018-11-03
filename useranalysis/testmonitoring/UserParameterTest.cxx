@@ -16,7 +16,7 @@
 UserParameterTest::UserParameterTest(const char* name) :
 	TGo4Parameter(name)
 {
-	
+
 
 }
-
+//-----------------------------------------------------------------------
