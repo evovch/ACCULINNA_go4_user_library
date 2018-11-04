@@ -16,7 +16,11 @@
 UserParameterTest::UserParameterTest(const char* name) :
 	TGo4Parameter(name)
 {
+   f20_L_Name = "SSD20_L";
+   f1_L_Name = "DSDX_L";
 
+   f20_R_Name = "SSD20_R";  
+   f1_R_Name = "DSDX_R";
 
 }
 //-----------------------------------------------------------------------

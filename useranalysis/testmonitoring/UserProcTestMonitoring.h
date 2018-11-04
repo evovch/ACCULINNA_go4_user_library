@@ -18,6 +18,7 @@ class DetEventStation;
 class DetMessage;
 class SiCalibPars;
 class UserParameterTest;
+class TClonesArray;
 
 class UserProcTestMonitoring : public TGo4EventProcessor
 {
@@ -41,6 +42,13 @@ private: // methods
 	void InitPars();
 
 	void calibSi(TGo4CompositeEvent* p_message,std::pair <TString,Int_t> pair);
+
+	void filldE_E_Right(TGo4CompositeEvent* d_Event);
+	void filldE_E_Left(TGo4CompositeEvent* d_Event);
+
+	SiCalibPars* getSiPar(TString st_Name);
+
+	Int_t getMultiplicity(TClonesArray *v_array,TString st_Name);
 
 public:
 
@@ -72,7 +80,7 @@ private: // data members
 	*/
 	SiCalibPars** fParSi;
 	std::pair <TString,Int_t>* fstPair;
-	const Int_t fnPars = 8;
+	const Int_t fnPars = 10;
 	/**
 	 * Summary stream
 	 */

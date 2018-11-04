@@ -23,6 +23,11 @@ public:
 	UserParameterTest(const char* name = "TestPar");
 	virtual ~UserParameterTest() {}
 
+  TString f20_L_Name;
+  TString f1_L_Name;
+
+  TString f20_R_Name;  
+  TString f1_R_Name;
 
 	ClassDef(UserParameterTest,1)
 };

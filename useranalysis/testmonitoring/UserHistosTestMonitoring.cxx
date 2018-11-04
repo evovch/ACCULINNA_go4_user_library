@@ -20,6 +20,10 @@ UserHistosTestMonitoring::UserHistosTestMonitoring(std::pair <TString,Int_t>* pa
 		TString hName = "calibration/" + pairs[i].first;
 		detSi[i] = a->MakeTH1('D', hName.Data(), "Calibrated spectra from Si station", 1000, 0., 150.);
 	}
+
+	dE_E_Right = a->MakeTH2('D',"calibration/dE-E_right","dE-E plot for right tel",300,0.,100,300,0,30,"Etotal","dE");
+	dE_E_Left = a->MakeTH2('D',"calibration/dE-E_left","dE-E plot for left tel",300,0.,100,300,0,30,"Etotal","dE");	
+
 }
 
 UserHistosTestMonitoring::~UserHistosTestMonitoring()

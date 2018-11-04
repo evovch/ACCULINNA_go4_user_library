@@ -23,6 +23,8 @@ public:
 	~UserHistosTestMonitoring();
 
 	TH1** detSi;
+  TH2* dE_E_Right;
+  TH2* dE_E_Left;
 
 	ClassDef(UserHistosTestMonitoring, 1);
 };
