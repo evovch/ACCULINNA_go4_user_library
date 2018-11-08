@@ -1,36 +1,36 @@
 <electronics>
 
 <!-- mADC can operate in 3 modes 11/12/13 bits => 2048/4096/8192 -->
-<elblock name="mADC"	nchannels="32"	rangelow="0"	rangehigh="8192"	nbins="2048"	type="ADC"	vendor="MESYTEC"/>
+<elblock name="mADC"  nchannels="32"  rangelow="0"  rangehigh="8192"  nbins="2048"  type="ADC"  vendor="MESYTEC"/>
 
 <!-- Default: 12 bits => 4096. Maybe other modes are available. -->
-<elblock name="mQDC"	nchannels="32"	rangelow="0"	rangehigh="4096"	nbins="1024"	type="QDC"	vendor="MESYTEC"/>
+<elblock name="mQDC"  nchannels="32"  rangelow="0"  rangehigh="4096"  nbins="1024"  type="QDC"  vendor="MESYTEC"/>
 
 <!-- ??? -->
-<elblock name="mTDC"	nchannels="32"	rangelow="0"	rangehigh="16384"	nbins="2048"	type="TDC"	vendor="MESYTEC"/>
+<elblock name="mTDC"  nchannels="32"  rangelow="0"  rangehigh="8192"  nbins="2048"  type="TDC"  vendor="MESYTEC"/>
 
 <!-- Default: 12 bits => 4096. Maybe other modes are available. -->
-<elblock name="V775"	nchannels="32"	rangelow="0"	rangehigh="8192"	nbins="2048"	type="TDC"	vendor="CAEN"/>
-<elblock name="V775N"	nchannels="16"	rangelow="0"	rangehigh="8192"	nbins="2048"	type="TDC"	vendor="CAEN"/>
+<elblock name="V775"  nchannels="32"  rangelow="0"  rangehigh="4096"  nbins="1024"  type="TDC"  vendor="CAEN"/>
+<elblock name="V775N" nchannels="16"  rangelow="0"  rangehigh="4096"  nbins="1024"  type="TDC"  vendor="CAEN"/>
 
 <!-- Default: 12 bits => 4096. Maybe other modes are available. -->
-<elblock name="V785"	nchannels="32"	rangelow="0"	rangehigh="4096"	nbins="1024"	type="ADC"	vendor="CAEN"/>
-<elblock name="V785N"	nchannels="16"	rangelow="0"	rangehigh="4096"	nbins="1024"	type="ADC"	vendor="CAEN"/>
+<elblock name="V785"  nchannels="32"  rangelow="0"  rangehigh="4096"  nbins="1024"  type="ADC"  vendor="CAEN"/>
+<elblock name="V785N" nchannels="16"  rangelow="0"  rangehigh="4096"  nbins="1024"  type="ADC"  vendor="CAEN"/>
 
 <!-- Default: 12 bits => 4096. Maybe other modes are available. -->
-<elblock name="V792"	nchannels="32"	rangelow="0"	rangehigh="4096"	nbins="1024"	type="QDC"	vendor="CAEN"/>
-<elblock name="V792N"	nchannels="16"	rangelow="0"	rangehigh="4096"	nbins="1024"	type="QDC"	vendor="CAEN"/>
+<elblock name="V792"  nchannels="32"  rangelow="0"  rangehigh="4096"  nbins="1024"  type="QDC"  vendor="CAEN"/>
+<elblock name="V792N" nchannels="16"  rangelow="0"  rangehigh="4096"  nbins="1024"  type="QDC"  vendor="CAEN"/>
 
 <!-- Default: 12 bits => 4096. Maybe other modes are available. -->
-<elblock name="V862"	nchannels="32"	rangelow="0"	rangehigh="4096"	nbins="1024"	type="QDC"	vendor="CAEN"/>
+<elblock name="V862"  nchannels="32"  rangelow="0"  rangehigh="4096"  nbins="1024"  type="QDC"  vendor="CAEN"/>
 
 <!-- ??? -->
-<elblock name="V560"	nchannels="16"	rangelow="0"	rangehigh="4096"	nbins="1024"	type="scalers"	vendor="CAEN"/>
+<elblock name="V560N" nchannels="16"  rangelow="0"  rangehigh="4096"  nbins="1024"  type="scalers"  vendor="CAEN"/>
 
 <!-- Dummy -->
-<elblock name="RIO3"	nchannels="1"	rangelow="0"	rangehigh="1"	nbins="1"	type="daqstatus"	vendor="RIO"/>
+<elblock name="RIO3"  nchannels="32"  rangelow="0"  rangehigh="1" nbins="1" type="daqstatus"  vendor="RIO"/>
 
 <!-- Dummy -->
-<elblock name="other"	nchannels="1"	rangelow="0"	rangehigh="1"	nbins="1"	type="other"	vendor="NOVENDOR"/>
+<elblock name="other" nchannels="1" rangelow="0"  rangehigh="1" nbins="1" type="other"  vendor="NOVENDOR"/>
 
 </electronics>

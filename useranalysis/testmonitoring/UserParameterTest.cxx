@@ -13,6 +13,8 @@
 
 #include "UserParameterTest.h"
 
+using namespace std;
+
 UserParameterTest::UserParameterTest(const char* name) :
 	TGo4Parameter(name)
 {
@@ -20,7 +22,10 @@ UserParameterTest::UserParameterTest(const char* name) :
    f1_L_Name = "DSDX_L";
 
    f20_R_Name = "SSD20_R";  
-   f1_R_Name = "DSDX_R";
+   f1_R_Name = "SSDY_R";
 
 }
 //-----------------------------------------------------------------------
+UserParameterTest::~UserParameterTest() {
+  cout << "Destructor UserParameterTest called " << endl;
+}

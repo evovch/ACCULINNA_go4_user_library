@@ -56,7 +56,6 @@ UserProcTestMonitoring::~UserProcTestMonitoring()
 {
 	cout << "UserProcTestMonitoring destructor called " << endl; 
 
-	// if (fParTest != NULL) delete fParTest;
 	if (fParSi != NULL) delete [] fParSi;
 	if (fstPair != NULL) delete [] fstPair;
 	if (fHistoMan != NULL) delete fHistoMan;
@@ -176,13 +175,12 @@ void UserProcTestMonitoring::InitPars() {
 	fstPair[2] = make_pair((TString)"DSDY_L",16);
 	fstPair[3] = make_pair((TString)"SSD_L",16);
 
-	fstPair[4] = make_pair((TString)"SSD20_R",16);
-	fstPair[5] = make_pair((TString)"DSDX_R",16);	
-	fstPair[6] = make_pair((TString)"DSDY_R",16);	
-	fstPair[7] = make_pair((TString)"SSD_R",16);
+	fstPair[4] = make_pair((TString)"SSD20_R",16);	
+	fstPair[5] = make_pair((TString)"SSDY_R",16);	
+	fstPair[6] = make_pair((TString)"SSD_R",16);
 
-	fstPair[8] = make_pair((TString)"DSDX_C",16);
-	fstPair[9] = make_pair((TString)"DSDY_C",16);
+	fstPair[7] = make_pair((TString)"DSDX_C",32);
+	fstPair[8] = make_pair((TString)"DSDY_C",32);
 			
 	for(Int_t i=0; i<fnPars; i++) {
 		fParSi[i] = (SiCalibPars*) MakeParameter(fstPair[i].first, "SiCalibPars");
@@ -218,23 +216,23 @@ void UserProcTestMonitoring::filldE_E_Right(TGo4CompositeEvent* d_Event) {
 		return;
 	}
 
-	DetEventStation* st_DSDX_R = (DetEventStation*)(d_Event->getEventElement("Right_telescope_"+fParTest->f1_R_Name));
-	if(!st_DSDX_R) {
+	DetEventStation* st_DSD_R = (DetEventStation*)(d_Event->getEventElement("Right_telescope_"+fParTest->f1_R_Name));
+	if(!st_DSD_R) {
 		cout << "station DSDX_R was not found in event " << endl;
 	}	
-	TClonesArray *v_DSDX_R = st_DSDX_R->GetDetMessages();
-	Int_t mult_DSDX_R = 0;
+	TClonesArray *v_DSD_R = st_DSD_R->GetDetMessages();
+	Int_t mult_DSD_R = 0;
 	Int_t nCh100;
-	DetMessage* m_DSDX_R;
-	for(Int_t i = 0; i<v_DSDX_R->GetEntriesFast(); i++) {
-		DetMessage* message = (DetMessage*)v_DSDX_R->At(i);
+	DetMessage* m_DSD_R;
+	for(Int_t i = 0; i<v_DSD_R->GetEntriesFast(); i++) {
+		DetMessage* message = (DetMessage*)v_DSD_R->At(i);
 		if(message->GetValue()>120) { // threshold for this 1 mm detector
 			nCh100 = message->GetStChannel();
-			m_DSDX_R = (DetMessage*)v_DSDX_R->At(i);
-			mult_DSDX_R++;
+			m_DSD_R = (DetMessage*)v_DSD_R->At(i);
+			mult_DSD_R++;
 		}
 	}
-	if(mult_DSDX_R!=1) {
+	if(mult_DSD_R!=1) {
 		// cerr << "Multiplicity in DSDX_R!=1 " <<mult_DSDX_R<< endl;
 		return;
 	}
@@ -250,7 +248,7 @@ void UserProcTestMonitoring::filldE_E_Right(TGo4CompositeEvent* d_Event) {
 	// cout << "par for 100_" << m_DSDX_R->GetStChannel() << " " << par100_1 << "," << par100_2 << endl;
 
 	Double_t dE = m_SSD20_R->GetValue()*par20_2 + par20_1;
-	Double_t Etotal = m_DSDX_R->GetValue()*par100_2 + par100_1 + dE;
+	Double_t Etotal = m_DSD_R->GetValue()*par100_2 + par100_1 + dE;
 
 	fHistoMan->dE_E_Right->Fill(Etotal,dE);	
 }
@@ -301,12 +299,12 @@ void UserProcTestMonitoring::filldE_E_Left(TGo4CompositeEvent* d_Event) {
 	this->getSiPar(fParTest->f20_L_Name);
 	Double_t par20_1 = getSiPar(fParTest->f20_L_Name)->getPar1(nCh20);
 	Double_t par20_2 = getSiPar(fParTest->f20_L_Name)->getPar2(nCh20);
-	cout << "Lpar for 20_" << nCh20 << " " <<  m_SSD20->GetStChannel() << " " << par20_1 << "," << par20_2 << endl;
+	// cout << "Lpar for 20_" << nCh20 << " " <<  m_SSD20->GetStChannel() << " " << par20_1 << "," << par20_2 << endl;
 
 	this->getSiPar(fParTest->f1_L_Name);
 	Double_t par100_1 = getSiPar(fParTest->f1_L_Name)->getPar1(nCh100);
 	Double_t par100_2 = getSiPar(fParTest->f1_L_Name)->getPar2(nCh100);
-	cout << "Lpar for 100_" << m_DSDX->GetStChannel() << " " << par100_1 << "," << par100_2 << endl;
+	// cout << "Lpar for 100_" << m_DSDX->GetStChannel() << " " << par100_1 << "," << par100_2 << endl;
 
 	Double_t dE = m_SSD20->GetValue()*par20_2 + par20_1;
 	Double_t Etotal = m_DSDX->GetValue()*par100_2 + par100_1 + dE;

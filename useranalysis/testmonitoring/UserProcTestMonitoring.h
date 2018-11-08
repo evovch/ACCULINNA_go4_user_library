@@ -80,7 +80,7 @@ private: // data members
 	*/
 	SiCalibPars** fParSi;
 	std::pair <TString,Int_t>* fstPair;
-	const Int_t fnPars = 10;
+	const Int_t fnPars = 9;
 	/**
 	 * Summary stream
 	 */

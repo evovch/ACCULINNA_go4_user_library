@@ -3,6 +3,7 @@
 // STD
 #include <iostream>
 using std::cerr;
+using std::cout;
 using std::endl;
 
 UserEventTestMonitoring::UserEventTestMonitoring(const char* name) :
@@ -16,6 +17,7 @@ UserEventTestMonitoring::UserEventTestMonitoring(const char* name) :
 
 UserEventTestMonitoring::~UserEventTestMonitoring()
 {
+  cout << "destructor UserEventTestMonitoring::~UserEventTestMonitoring called " << endl; 
 }
 
 /*void UserEventTestMonitoring::Clear(Option_t* t)

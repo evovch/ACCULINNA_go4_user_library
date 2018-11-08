@@ -15,7 +15,7 @@ TGo4Parameter(name)
 
 SiCalibPars::~SiCalibPars()
 {
-
+  cout << "Destructor SiCalibPars called " << endl;
 } //-----------------------------------------------------------------
 
 void SiCalibPars::Init(Int_t nChannels,TString stName)

@@ -21,7 +21,7 @@
 class UserParameterTest : public TGo4Parameter {
 public:
 	UserParameterTest(const char* name = "TestPar");
-	virtual ~UserParameterTest() {}
+	virtual ~UserParameterTest();
 
   TString f20_L_Name;
   TString f1_L_Name;
