@@ -19,6 +19,7 @@ class DetMessage;
 class SiCalibPars;
 class UserParameterTest;
 class TClonesArray;
+class DetEventFull;
 
 class UserProcTestMonitoring : public TGo4EventProcessor
 {
@@ -38,6 +39,7 @@ public: // methods
 private: // methods
 	void ProcessMessage(DetEventStation* p_message,Int_t parNum);
 
+	void FillAutoHistosCal(DetEventFull *v_input);
 	// reading .cal files into TGo4Parameter objects
 	void InitPars();
 

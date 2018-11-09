@@ -8,4 +8,13 @@
 		return;
 	}
 	gInterpreter->AddIncludePath(myGO4SYS + "/include/");
+
+  gSystem->Load("/media/user/work/software/fork/install/lib/libAccDaqGo4pieces.so");
+  gSystem->Load("/media/user/work/software/fork/install/lib/libAccDaqBase.so");
+  gSystem->Load("/media/user/work/software/fork/install/lib/libAccDaqData.so");
+  gSystem->Load("/media/user/work/software/fork/install/lib/libAccDaqReader.so");
+  gSystem->Load("/media/user/work/software/fork/install/lib/libAccDaqSetupConfigCppWrapper.so");
+  gSystem->Load("/media/user/work/software/fork/install/lib/libAccDaqSetupConfig.so");
+  gSystem->Load("/media/user/work/software/fork/install/lib/libAccDaqUserAnalysis.so");
+
 }

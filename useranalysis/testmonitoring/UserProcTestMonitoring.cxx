@@ -98,6 +98,8 @@ Bool_t UserProcTestMonitoring::BuildEvent(TGo4EventElement* p_dest)
 	} 
 	filldE_E_Left(v_LeftDet);
 
+	FillAutoHistosCal(v_input);
+/*
 	Short_t v_NsubElems = v_input->getNElements();
 	for(Int_t pNum=0; pNum<fnPars; pNum++) {
 		for (Short_t i=0; i<v_NsubElems; i++) {
@@ -134,7 +136,7 @@ Bool_t UserProcTestMonitoring::BuildEvent(TGo4EventElement* p_dest)
 			} // end of if
 		} // end of loop over the sub-elements (detectors)
 	} // loop over the calibration index (0-4)
-	// --------------------------
+	// --------------------------*/
 
 	fEventCounter++;
 
@@ -327,4 +329,47 @@ Int_t UserProcTestMonitoring::getMultiplicity(TClonesArray *v_array,TString st_N
 	cout << "UserProcTestMonitoring::getMultiplicity was called " << endl;
 }
 //-----------------------------------------------------------------------
+void UserProcTestMonitoring::FillAutoHistosCal(DetEventFull *v_input) {
+	// cout << "FillAutoHistosCal called " << endl;
+
+	Short_t v_NsubElems = v_input->getNElements();
+	for(Int_t pNum=0; pNum<fnPars; pNum++) {
+		for (Short_t i=0; i<v_NsubElems; i++) {
+			TGo4EventElement* v_subElement = v_input->getEventElement(i);
+			TString calibName = v_subElement->GetName() + TString("_") + fstPair[pNum].first;
+			Short_t curId = v_subElement->getId();
+
+			if (!calibName.Contains("DetEventCommon")) {
+				TGo4CompositeEvent* v_detSubEl = (TGo4CompositeEvent*)(v_subElement);
+
+				Short_t v_NsubSubElems = v_detSubEl->getNElements();
+
+				// Loop over the stations of the current detector
+				for (Short_t j=0; j<v_NsubSubElems; j++) {
+
+					Short_t stId = curId*100 + j; //FIXME this is quite dangerous
+
+					DetEventStation* v_stSubsubEl = (DetEventStation*)(v_detSubEl->getEventElement(stId));
+					TString stName = v_stSubsubEl->GetName();
+
+					if (stName==calibName) {
+						TClonesArray* v_data = v_stSubsubEl->GetDetMessages();
+						TIter v_detMiter(v_data);
+						DetMessage* v_curDetM;
+
+						// Loop over the messages of the current station 
+						while ((v_curDetM = (DetMessage*)v_detMiter.Next())) {
+							Double_t par1 = fParSi[pNum]->getPar1(v_curDetM->GetStChannel());
+							Double_t par2 = fParSi[pNum]->getPar2(v_curDetM->GetStChannel());
+							fHistoMan->detSi[pNum]->Fill(v_curDetM->GetValue()*par2 + par1);
+						}
+					}
+				} // end of loop over the stations
+			} // end of if
+		} // end of loop over the sub-elements (detectors)
+	} // loop over the calibration index (0-4)
+	// --------------------------	
+}
+
+
 ClassImp(UserProcTestMonitoring)

@@ -7,50 +7,148 @@
 	nEvents = 0 - process all events.
 
 */
+  // methods 
+void readPars(Float_t *par1,Float_t *par2,TString st_Name);
+Float_t getStValue_Left(TGo4CompositeEvent* v_Detector,TString st_Name,Float_t *value);
+void printDetFullEvent(DetEventFull* theEvent);
 
 TTree* GetTheTree(TFile* theFile, TString* treeName);
 
-void analyse4(TString inFilename="/home/evovch/experimental_data/exp201804_calib/result/si_1000_LR_02_0001.lmd.root",
-              TString inSetupConfigFilename="../usr/setup2_exp201803.xml",
+
+// athributes
+Float_t *par20L_1 = new Float_t[16]; 
+Float_t *par20L_2 = new Float_t[16];;
+Float_t *parSDSXL_1 = new Float_t[16];
+Float_t *parSDSXL_2 = new Float_t[16];
+Float_t *parSDSYL_1 = new Float_t[16];
+Float_t *parSDSYL_2 = new Float_t[16];
+Float_t *parSSDL_1 = new Float_t[16];
+Float_t *parSSDL_2 = new Float_t[16];
+
+Float_t *par20R_1 = new Float_t[16];
+Float_t *par20R_2 = new Float_t[16];
+Float_t *parSDSYR_1 = new Float_t[16];
+Float_t *parSDSYR_2 = new Float_t[16];
+Float_t *parSSDR_1 = new Float_t[16];
+Float_t *parSSDR_2 = new Float_t[16];
+
+// Output data
+
+Int_t trigger;
+
+Float_t SSD20_L,tSSD20_L;
+Int_t nSSD20_L;
+
+Float_t DSDX_L,tDSDX_L;
+Int_t nDSDX_L;
+
+Float_t DSDY_L,tDSDY_L;
+Int_t nDSDY_L;
+
+Float_t SSD_L,tSSD_L;
+Int_t nSSD_L;
+
+
+Float_t SQ20_R,tSQ20_R;
+Int_t nSQ20_R;
+
+Float_t DSD_R,tDSD_R;
+Int_t nDSD_R;
+
+Float_t SSD_R,tSSD_R;
+Int_t nSSD_R;
+
+//-----------------------------------------------------------
+void analyse4(TString inSetupConfigFilename="../usr/setup2_exp201811.xml",
               UInt_t nEvents = 0)
 {
 	// Construct SetupConfiguration, which includes the input of the XML file
 	SetupConfiguration* fSetupConfiguration = new SetupConfiguration(inSetupConfigFilename);
+	
+	readPars(par20L_1,par20L_2,(TString)"SSD20_L");
+	readPars(parSDSXL_1,parSDSXL_2,(TString)"DSDX_L");
+	readPars(parSDSYL_1,parSDSYL_2,(TString)"DSDY_L");
+	readPars(parSSDL_1,parSSDL_2,(TString)"SSD_L");	
 
-	TFile* inFile = new TFile(inFilename, "READ");
+	readPars(par20R_1,par20R_2,(TString)"SSD20_R");
+	readPars(parSDSYR_1,parSDSYR_2,(TString)"DSDY_R");
+	readPars(parSSDR_1,parSSDR_2,(TString)"SSD_R");
 
-	if (inFile->IsZombie()) {
-		cerr << "Error opening file " << inFilename.Data() << ". Aborting." << endl;
-		return;
-	}
-
-	// Leave this string empty to search for the tree automatically
-	TString inTreeName("");
-	TTree* inTree = GetTheTree(inFile, &inTreeName);
-	if (inTree == NULL) {
-		cerr << "Tree '" << inTreeName << "' not found. Aborting." << endl;
-		return;
-	}
+	TChain *chInput = new TChain("stepRepackingxTree");
+	chInput->Add("/media/user/work/data/exp201810/data/root/he8_07_0001.root");
 
 	DetEventFull* theEvent = new DetEventFull("DetEventFull1");
 	TGo4EventElement* theEventCopy = theEvent;
-	theEvent->synchronizeWithTree(inTree, &theEventCopy);
+	theEvent->synchronizeWithTree(chInput, &theEventCopy);
 
-	UInt_t nEventsTotal = inTree->GetEntries();
+	TFile *fOut = new TFile("/media/user/work/data/exp201810/workdir/analysed/out.root","RECREATE");
+	TTree *tOut = new TTree("tree", "filtred data");
+	tOut->Branch("trigger",&trigger,"trigger/I");
+
+	tOut->Branch("SSD20_L",&SSD20_L,"SSD20_L/F");
+	tOut->Branch("tSSD20_L",&tSSD20_L,"tSSD20_L/F");
+	tOut->Branch("nSSD20_L",&nSSD20_L,"nSSD20_L/I");
+	tOut->Branch("DSDX_L",&DSDX_L,"DSDX_L/F");
+	tOut->Branch("tDSDX_L",&tDSDX_L,"tDSDX_L/F");
+	tOut->Branch("nDSDX_L",&nDSDX_L,"nDSDX_L/I");
+	tOut->Branch("DSDY_L",&DSDY_L,"DSDY_L/F");
+	tOut->Branch("tDSDY_L",&tDSDY_L,"tDSDY_L/F");
+	tOut->Branch("nDSDY_L",&nDSDY_L,"nDSDY_L/I");
+	tOut->Branch("SSD_L",&SSD_L,"SSD_L/F");
+	tOut->Branch("tSSD_L",&tSSD_L,"tSSD_L/F");
+	tOut->Branch("nSSD_L",&nSSD_L,"nSSD_L/I");
+
+	tOut->Branch("SQ20_R",&SQ20_R,"SQ20_R/F");
+	tOut->Branch("tSQ20_R",&tSQ20_R,"tSQ20_R/F");
+	tOut->Branch("nSQ20_R",&nSQ20_R,"nSQ20_R/I");
+	tOut->Branch("DSD_R",&DSD_R,"DSD_R/F");
+	tOut->Branch("tDSD_R",&tDSD_R,"tDSD_R/F");
+	tOut->Branch("nDSD_R",&nDSD_R,"nDSD_R/I");
+	tOut->Branch("SSD_R",&SSD_R,"SSD_R/F");
+	tOut->Branch("tSSD_R",&tSSD_R,"tSSD_R/F");
+	tOut->Branch("nSSD_R",&nSSD_R,"nSSD_R/I");
+
+	UInt_t nEventsTotal = chInput->GetEntries();
 	if (nEvents == 0) { nEvents = nEventsTotal; }
 
 	// Loop over the events
-	for (UInt_t iEvent=0; iEvent<nEvents; iEvent++)
-	{
-		cerr << "Event "<< iEvent
-		     << " =================================================================="
-		     << endl;
+	for (UInt_t iEvent=1; iEvent<2; iEvent++) {
+		// cerr << "Event "<< iEvent
+		//      << " =================================================================="
+		//      << endl;
 
-		inTree->GetEntry(iEvent);
-
+		chInput->GetEntry(iEvent);
+	
 		//TODO implement you actions here
-		theEvent->Print();
+		printDetFullEvent(theEvent);		
+		// theEvent->Print();
+		
+		TGo4EventElement* v_comElement = theEvent->getEventElement("DetEventCommon",1);
+		if(!v_comElement) {
+			cout << "Detector DetEventCommon was not found " << endl;
+			return kFALSE;
+		}
+		DetEventCommon* v_commSubEl = (DetEventCommon*)(v_comElement);
+		trigger = v_commSubEl->trigger;
+
+
+		TGo4CompositeEvent* v_RightDet = (TGo4CompositeEvent*)(theEvent->getEventElement("Right_telescope"));
+		if (!v_RightDet) { 
+			cerr << "Detector Right_telescope was not found." << endl; 
+			return kFALSE;
+		} 
+		
+		TGo4CompositeEvent* v_LeftDet = (TGo4CompositeEvent*)(theEvent->getEventElement("Left_telescope"));
+		if (!v_LeftDet) { 
+			cerr << "Detector Left_telescope was not found." << endl;
+			return kFALSE; 
+		} 
+		// getStValue_Left(v_LeftDet,"SSD20_L",&SSD20_L);
+
+		tOut->Fill();
 	}
+	tOut->Write();
+	fOut->Close();
 
 }
 
@@ -85,4 +183,69 @@ TTree* GetTheTree(TFile* theFile, TString* treeName)
 		cerr << "Could not find the tree '" << *treeName << "'. Aborting." << endl;
 		return NULL;
 	}
+}
+
+void readPars(Float_t *par1,Float_t *par2,TString st_Name){
+
+	TString fName = ("/media/user/work/software/fork/useranalysis/calibration/parameters/") + st_Name;
+  // for 1 mm Si detector
+  TString line;
+  ifstream myfile;
+  Int_t count=-2;
+  myfile.open(fName.Data());
+  while (! myfile.eof() ){
+    line.ReadLine(myfile);
+    if(count < 0){
+      count++;
+      continue;
+    }
+    if(line.IsNull()) break;
+    sscanf(line.Data(),"%g %g", par1+count,par2+count);
+    count++;
+  }
+  cout << endl << " pars for " << st_Name <<  " strips" << endl;
+  for(Int_t i=0;i<16;i++) cout << par1[i] << " " << par2[i] << endl; 
+}
+
+Float_t getStValue_Left(TGo4CompositeEvent* v_Detector,TString st_Name,Float_t *value) {
+	cout << "getStValue was caled " << endl;
+	DetEventStation* station = (DetEventStation*)(v_Detector->getEventElement("Left_telescope_"+st_Name));
+	if(!station) {
+		cout << " station " << st_Name << " was not found in event " << endl;
+	}
+}
+
+void printDetFullEvent(DetEventFull* theEvent) {
+	
+	Short_t v_NsubElems = theEvent->getNElements();
+	//cerr << v_NsubElems << " subelements in the input full event." << endl;
+
+	// Loop over sub-elements. There is one sub-element which is the 'DetEventCommon'
+	// and all other are 'DetEventDetector's
+	for (Short_t i=0; i<v_NsubElems; i++) {
+		TGo4EventElement* v_subElement = theEvent->getEventElement(i);
+
+		TString curName = v_subElement->GetName();
+		Short_t curId = v_subElement->getId();
+		cerr << curId << ") " << curName;
+
+		if (curName!= "DetEventCommon"){
+			TGo4CompositeEvent* v_detSubEl = (TGo4CompositeEvent*)(v_subElement);
+
+			Short_t v_NsubSubElems = v_detSubEl->getNElements();
+			//cerr << " - " << v_NsubSubElems << " subsubelements." << endl;
+
+			// Loop over the stations of the current detector
+			for (Short_t j=0; j<v_NsubSubElems; j++) {
+
+				Short_t stId = curId*100 + j; //FIXME this is quite dangerous
+
+				DetEventStation* v_stSubsubEl = (DetEventStation*)(v_detSubEl->getEventElement(stId));
+				cerr << "\t" << stId << ") " << v_stSubsubEl->GetName() << endl;
+
+
+			} // end of loop over the stations
+		} // end of if
+	} // end of loop over the sub-elements (detectors)
+
 }
