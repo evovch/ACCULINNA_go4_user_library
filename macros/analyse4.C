@@ -9,7 +9,10 @@
 */
   // methods 
 void readPars(Float_t *par1,Float_t *par2,TString st_Name);
-Float_t getStValue_Left(TGo4CompositeEvent* v_Detector,TString st_Name,Float_t *value);
+
+Bool_t getStAmp(TGo4CompositeEvent* v_Det,TString st_Name,Float_t *value,Int_t *nCh);
+Bool_t getStTime(TGo4CompositeEvent* v_Det,TString st_Name,Float_t *value,Int_t nCh);
+
 void printDetFullEvent(DetEventFull* theEvent);
 
 TTree* GetTheTree(TFile* theFile, TString* treeName);
@@ -31,6 +34,8 @@ Float_t *parSDSYR_1 = new Float_t[16];
 Float_t *parSDSYR_2 = new Float_t[16];
 Float_t *parSSDR_1 = new Float_t[16];
 Float_t *parSSDR_2 = new Float_t[16];
+
+Bool_t is_valid;
 
 // Output data
 
@@ -58,10 +63,14 @@ Int_t nDSD_R;
 Float_t SSD_R,tSSD_R;
 Int_t nSSD_R;
 
+
 //-----------------------------------------------------------
-void analyse4(TString inSetupConfigFilename="../usr/setup2_exp201811.xml",
-              UInt_t nEvents = 0)
+void analyse4(TString fInput="/media/user/work/data/exp201810/data/root/he8_07_0001.root",
+							TString fOutput="/media/user/work/data/exp201810/workdir/analysed/out.root",
+							TString inSetupConfigFilename="../usr/setup2_exp201811.xml",
+           		UInt_t nEvents = 0)
 {
+	is_valid = kFALSE;
 	// Construct SetupConfiguration, which includes the input of the XML file
 	SetupConfiguration* fSetupConfiguration = new SetupConfiguration(inSetupConfigFilename);
 	
@@ -75,13 +84,13 @@ void analyse4(TString inSetupConfigFilename="../usr/setup2_exp201811.xml",
 	readPars(parSSDR_1,parSSDR_2,(TString)"SSD_R");
 
 	TChain *chInput = new TChain("stepRepackingxTree");
-	chInput->Add("/media/user/work/data/exp201810/data/root/he8_07_0001.root");
+	chInput->Add(fInput.Data());	
 
 	DetEventFull* theEvent = new DetEventFull("DetEventFull1");
-	TGo4EventElement* theEventCopy = theEvent;
+	TGo4EventElement* theEventCopy = theEvent;	
 	theEvent->synchronizeWithTree(chInput, &theEventCopy);
 
-	TFile *fOut = new TFile("/media/user/work/data/exp201810/workdir/analysed/out.root","RECREATE");
+	TFile *fOut = new TFile(fOutput.Data(),"RECREATE");
 	TTree *tOut = new TTree("tree", "filtred data");
 	tOut->Branch("trigger",&trigger,"trigger/I");
 
@@ -112,7 +121,7 @@ void analyse4(TString inSetupConfigFilename="../usr/setup2_exp201811.xml",
 	if (nEvents == 0) { nEvents = nEventsTotal; }
 
 	// Loop over the events
-	for (UInt_t iEvent=1; iEvent<2; iEvent++) {
+	for (UInt_t iEvent=1; iEvent<1000; iEvent++) {
 		// cerr << "Event "<< iEvent
 		//      << " =================================================================="
 		//      << endl;
@@ -120,41 +129,37 @@ void analyse4(TString inSetupConfigFilename="../usr/setup2_exp201811.xml",
 		chInput->GetEntry(iEvent);
 	
 		//TODO implement you actions here
-		printDetFullEvent(theEvent);		
+		if(iEvent == 1) printDetFullEvent(theEvent);		
 		// theEvent->Print();
-		
-		TGo4EventElement* v_comElement = theEvent->getEventElement("DetEventCommon",1);
-		if(!v_comElement) {
-			cout << "Detector DetEventCommon was not found " << endl;
-			return kFALSE;
-		}
-		DetEventCommon* v_commSubEl = (DetEventCommon*)(v_comElement);
-		trigger = v_commSubEl->trigger;
-
 
 		TGo4CompositeEvent* v_RightDet = (TGo4CompositeEvent*)(theEvent->getEventElement("Right_telescope"));
 		if (!v_RightDet) { 
 			cerr << "Detector Right_telescope was not found." << endl; 
-			return kFALSE;
 		} 
 		
 		TGo4CompositeEvent* v_LeftDet = (TGo4CompositeEvent*)(theEvent->getEventElement("Left_telescope"));
 		if (!v_LeftDet) { 
 			cerr << "Detector Left_telescope was not found." << endl;
-			return kFALSE; 
 		} 
-		// getStValue_Left(v_LeftDet,"SSD20_L",&SSD20_L);
 
-		tOut->Fill();
+		is_valid = getStAmp(v_LeftDet,"SSD20_L",&SSD20_L,&nSSD20_L);
+		is_valid = getStTime(v_LeftDet,"tSSD20_L",&tSSD20_L,nSSD20_L);
+		if (is_valid) cout << nSSD20_L << " " << tSSD20_L << " " << SSD20_L << endl;
+
+		TGo4EventElement* v_comElement = theEvent->getEventElement("DetEventCommon",1);
+		if(!v_comElement) {
+			cout << "Detector DetEventCommon was not found " << endl;
+		}
+		DetEventCommon* v_commSubEl = (DetEventCommon*)(v_comElement);
+		trigger = v_commSubEl->trigger;
+
+		if (is_valid) tOut->Fill();
 	}
 	tOut->Write();
 	fOut->Close();
 
 }
-
-// ============================================================================
-// The code below should not worry you.
-// This is just a function for automatic tree finding.
+//-----------------------------------------------------------------------
 
 TTree* GetTheTree(TFile* theFile, TString* treeName)
 {
@@ -184,7 +189,97 @@ TTree* GetTheTree(TFile* theFile, TString* treeName)
 		return NULL;
 	}
 }
+//-----------------------------------------------------------------------
+Bool_t getStAmp(TGo4CompositeEvent* v_Det,TString st_Name,Float_t *value,Int_t *nCh) {
+	TString st_Fullname = v_Det->GetName() + TString("_")+st_Name;
 
+	DetEventStation* station = (DetEventStation*)(v_Det->getEventElement(st_Fullname.Data()));
+	if(!station) {
+		cout << "Station " << st_Fullname.Data() << " was not found in event " << endl;
+		return kFALSE;
+	}	
+	TClonesArray *array = station->GetDetMessages();
+	if (array->GetEntriesFast()==0) return kFALSE;
+
+	// include clusterisation
+	if (array->GetEntriesFast()!=1) return kFALSE;
+	// 
+
+	Float_t *amp;
+	amp = value; 
+	Int_t *nChannel;
+	nChannel = nCh;
+
+	Int_t mult = 0;
+	DetMessage* message;
+	for(Int_t i = 0; i<array->GetEntriesFast(); i++) {
+		message = (DetMessage*)array->At(i);
+		*amp = message->GetValue();
+		*nChannel = message->GetStChannel();
+	}	
+	return kTRUE;
+}
+//-----------------------------------------------------------------------
+Bool_t getStTime(TGo4CompositeEvent* v_Det,TString st_Name,Float_t *value,Int_t nCh) {
+	TString st_Fullname = v_Det->GetName() + TString("_")+st_Name;
+
+	DetEventStation* station = (DetEventStation*)(v_Det->getEventElement(st_Fullname.Data()));
+	if(!station) {
+		cout << "Station " << st_Fullname.Data() << " was not found in event " << endl;
+		return kFALSE;
+	}	
+	TClonesArray *array = station->GetDetMessages();
+	if (array->GetEntriesFast()==0) return kFALSE;
+
+	Float_t * Time;
+	Time = value; 
+
+	DetMessage* message;
+	for(Int_t i = 0; i<array->GetEntriesFast(); i++) {
+		message = (DetMessage*)array->At(i);
+		if (message->GetStChannel() == nCh) {
+			*Time = message->GetValue();
+			return kTRUE;
+		}
+	}	
+	return kFALSE;
+}
+//-----------------------------------------------------------------------
+void printDetFullEvent(DetEventFull* theEvent) {
+	cout << "###XML LIST###" << endl; 
+	Short_t v_NsubElems = theEvent->getNElements();
+	//cerr << v_NsubElems << " subelements in the input full event." << endl;
+
+	// Loop over sub-elements. There is one sub-element which is the 'DetEventCommon'
+	// and all other are 'DetEventDetector's
+	for (Short_t i=0; i<v_NsubElems; i++) {
+		TGo4EventElement* v_subElement = theEvent->getEventElement(i);
+
+		TString curName = v_subElement->GetName();
+		Short_t curId = v_subElement->getId();
+		cerr << curId << ") " << curName << endl;;
+
+		if (curName!= "DetEventCommon"){
+			TGo4CompositeEvent* v_detSubEl = (TGo4CompositeEvent*)(v_subElement);
+
+			Short_t v_NsubSubElems = v_detSubEl->getNElements();
+			//cerr << " - " << v_NsubSubElems << " subsubelements." << endl;
+
+			// Loop over the stations of the current detector
+			for (Short_t j=0; j<v_NsubSubElems; j++) {
+
+				Short_t stId = curId*100 + j; //FIXME this is quite dangerous
+
+				DetEventStation* v_stSubsubEl = (DetEventStation*)(v_detSubEl->getEventElement(stId));
+				cerr << "\t" << stId << ") " << v_stSubsubEl->GetName() << endl;
+
+
+			} // end of loop over the stations
+		} // end of if
+	} // end of loop over the sub-elements (detectors)
+	cout << "###END of XML LIST###" << endl << endl; 
+}
+//-----------------------------------------------------------------------
 void readPars(Float_t *par1,Float_t *par2,TString st_Name){
 
 	TString fName = ("/media/user/work/software/fork/useranalysis/calibration/parameters/") + st_Name;
@@ -205,47 +300,4 @@ void readPars(Float_t *par1,Float_t *par2,TString st_Name){
   }
   cout << endl << " pars for " << st_Name <<  " strips" << endl;
   for(Int_t i=0;i<16;i++) cout << par1[i] << " " << par2[i] << endl; 
-}
-
-Float_t getStValue_Left(TGo4CompositeEvent* v_Detector,TString st_Name,Float_t *value) {
-	cout << "getStValue was caled " << endl;
-	DetEventStation* station = (DetEventStation*)(v_Detector->getEventElement("Left_telescope_"+st_Name));
-	if(!station) {
-		cout << " station " << st_Name << " was not found in event " << endl;
-	}
-}
-
-void printDetFullEvent(DetEventFull* theEvent) {
-	
-	Short_t v_NsubElems = theEvent->getNElements();
-	//cerr << v_NsubElems << " subelements in the input full event." << endl;
-
-	// Loop over sub-elements. There is one sub-element which is the 'DetEventCommon'
-	// and all other are 'DetEventDetector's
-	for (Short_t i=0; i<v_NsubElems; i++) {
-		TGo4EventElement* v_subElement = theEvent->getEventElement(i);
-
-		TString curName = v_subElement->GetName();
-		Short_t curId = v_subElement->getId();
-		cerr << curId << ") " << curName;
-
-		if (curName!= "DetEventCommon"){
-			TGo4CompositeEvent* v_detSubEl = (TGo4CompositeEvent*)(v_subElement);
-
-			Short_t v_NsubSubElems = v_detSubEl->getNElements();
-			//cerr << " - " << v_NsubSubElems << " subsubelements." << endl;
-
-			// Loop over the stations of the current detector
-			for (Short_t j=0; j<v_NsubSubElems; j++) {
-
-				Short_t stId = curId*100 + j; //FIXME this is quite dangerous
-
-				DetEventStation* v_stSubsubEl = (DetEventStation*)(v_detSubEl->getEventElement(stId));
-				cerr << "\t" << stId << ") " << v_stSubsubEl->GetName() << endl;
-
-
-			} // end of loop over the stations
-		} // end of if
-	} // end of loop over the sub-elements (detectors)
-
 }

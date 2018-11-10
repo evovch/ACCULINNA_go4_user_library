@@ -255,7 +255,6 @@ void UserProcTestMonitoring::filldE_E_Right(TGo4CompositeEvent* d_Event) {
 	fHistoMan->dE_E_Right->Fill(Etotal,dE);	
 }
 //-----------------------------------------------------------------------
-//-----------------------------------------------------------------------
 void UserProcTestMonitoring::filldE_E_Left(TGo4CompositeEvent* d_Event) {
 
 	DetEventStation* st_SSD20 = (DetEventStation*)(d_Event->getEventElement("Left_telescope_"+fParTest->f20_L_Name));
