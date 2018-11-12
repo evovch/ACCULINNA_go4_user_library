@@ -35,7 +35,7 @@ Float_t *parSDSYR_2 = new Float_t[16];
 Float_t *parSSDR_1 = new Float_t[16];
 Float_t *parSSDR_2 = new Float_t[16];
 
-Bool_t is_valid;
+Bool_t is_validLeft,is_validRight;
 
 // Output data
 
@@ -54,23 +54,30 @@ Float_t SSD_L,tSSD_L;
 Int_t nSSD_L;
 
 
-Float_t SQ20_R,tSQ20_R;
-Int_t nSQ20_R;
+Float_t SSD20_R,tSSD20_R;
+Int_t nSSD20_R;
 
-Float_t DSD_R,tDSD_R;
-Int_t nDSD_R;
+Float_t SSDY_R,tSSDY_R;
+Int_t nSSDY_R;
 
 Float_t SSD_R,tSSD_R;
 Int_t nSSD_R;
 
 
 //-----------------------------------------------------------
-void analyse4(TString fInput="/media/user/work/data/exp201810/data/root/he8_07_0001.root",
-							TString fOutput="/media/user/work/data/exp201810/workdir/analysed/out.root",
-							TString inSetupConfigFilename="../usr/setup2_exp201811.xml",
-           		UInt_t nEvents = 0)
+void convert(Int_t numer)
 {
-	is_valid = kFALSE;
+	cout << "macro " << numer << endl;
+	UInt_t nEvents = 0;
+	TString inSetupConfigFilename="../usr/setup2_exp201811.xml";
+	TString fInput;
+	fInput.Form("/media/user/work/data/exp201810/data/root/he8_07_000%d.root",numer);
+
+	TString fOutput;
+	fOutput.Form("/media/user/work/data/exp201810/workdir/analysed/out%d.root",numer);
+
+	is_validLeft = kFALSE;
+	is_validRight = kFALSE;	
 	// Construct SetupConfiguration, which includes the input of the XML file
 	SetupConfiguration* fSetupConfiguration = new SetupConfiguration(inSetupConfigFilename);
 	
@@ -80,7 +87,7 @@ void analyse4(TString fInput="/media/user/work/data/exp201810/data/root/he8_07_0
 	readPars(parSSDL_1,parSSDL_2,(TString)"SSD_L");	
 
 	readPars(par20R_1,par20R_2,(TString)"SSD20_R");
-	readPars(parSDSYR_1,parSDSYR_2,(TString)"DSDY_R");
+	readPars(parSDSYR_1,parSDSYR_2,(TString)"SSDY_R");
 	readPars(parSSDR_1,parSSDR_2,(TString)"SSD_R");
 
 	TChain *chInput = new TChain("stepRepackingxTree");
@@ -103,25 +110,25 @@ void analyse4(TString fInput="/media/user/work/data/exp201810/data/root/he8_07_0
 	tOut->Branch("DSDY_L",&DSDY_L,"DSDY_L/F");
 	tOut->Branch("tDSDY_L",&tDSDY_L,"tDSDY_L/F");
 	tOut->Branch("nDSDY_L",&nDSDY_L,"nDSDY_L/I");
-	tOut->Branch("SSD_L",&SSD_L,"SSD_L/F");
-	tOut->Branch("tSSD_L",&tSSD_L,"tSSD_L/F");
-	tOut->Branch("nSSD_L",&nSSD_L,"nSSD_L/I");
+	// tOut->Branch("SSD_L",&SSD_L,"SSD_L/F");
+	// tOut->Branch("tSSD_L",&tSSD_L,"tSSD_L/F");
+	// tOut->Branch("nSSD_L",&nSSD_L,"nSSD_L/I");
 
-	tOut->Branch("SQ20_R",&SQ20_R,"SQ20_R/F");
-	tOut->Branch("tSQ20_R",&tSQ20_R,"tSQ20_R/F");
-	tOut->Branch("nSQ20_R",&nSQ20_R,"nSQ20_R/I");
-	tOut->Branch("DSD_R",&DSD_R,"DSD_R/F");
-	tOut->Branch("tDSD_R",&tDSD_R,"tDSD_R/F");
-	tOut->Branch("nDSD_R",&nDSD_R,"nDSD_R/I");
-	tOut->Branch("SSD_R",&SSD_R,"SSD_R/F");
-	tOut->Branch("tSSD_R",&tSSD_R,"tSSD_R/F");
-	tOut->Branch("nSSD_R",&nSSD_R,"nSSD_R/I");
+	tOut->Branch("SSD20_R",&SSD20_R,"SSD20_R/F");
+	tOut->Branch("tSSD20_R",&tSSD20_R,"tSSD20_R/F");
+	tOut->Branch("nSSD20_R",&nSSD20_R,"nSSD20_R/I");
+	tOut->Branch("SSDY_R",&SSDY_R,"SSDY_R/F");
+	tOut->Branch("tSSDY_R",&tSSDY_R,"tSSDY_R/F");
+	tOut->Branch("nSSDY_R",&nSSDY_R,"nSSDY_R/I");
+	// tOut->Branch("SSD_R",&SSD_R,"SSD_R/F");
+	// tOut->Branch("tSSD_R",&tSSD_R,"tSSD_R/F");
+	// tOut->Branch("nSSD_R",&nSSD_R,"nSSD_R/I");
 
 	UInt_t nEventsTotal = chInput->GetEntries();
 	if (nEvents == 0) { nEvents = nEventsTotal; }
 
 	// Loop over the events
-	for (UInt_t iEvent=1; iEvent<1000; iEvent++) {
+	for (UInt_t iEvent=1; iEvent<nEvents; iEvent++) {
 		// cerr << "Event "<< iEvent
 		//      << " =================================================================="
 		//      << endl;
@@ -137,15 +144,39 @@ void analyse4(TString fInput="/media/user/work/data/exp201810/data/root/he8_07_0
 		if (!v_RightDet) { 
 			cerr << "Detector Right_telescope was not found." << endl; 
 		} 
-		
+
+		is_validRight = getStAmp(v_RightDet,"SSD20_R",&SSD20_R,&nSSD20_R);
+		is_validRight = getStTime(v_RightDet,"tSSD20_R",&tSSD20_R,nSSD20_R);
+		SSD20_R = SSD20_R*par20R_2[nSSD20_R] + par20R_1[nSSD20_R];
+		tSSD20_R = tSSD20_R*0.3;
+
+		is_validRight = getStAmp(v_RightDet,"SSDY_R",&SSDY_R,&nSSDY_R);
+		is_validRight = getStTime(v_RightDet,"tSSDY_R",&tSSDY_R,nSSDY_R);
+		SSDY_R = SSDY_R*parSDSYR_2[nSSDY_R] + parSDSYR_1[nSSDY_R];
+		tSSDY_R = tSSDY_R*0.3;
+
 		TGo4CompositeEvent* v_LeftDet = (TGo4CompositeEvent*)(theEvent->getEventElement("Left_telescope"));
 		if (!v_LeftDet) { 
 			cerr << "Detector Left_telescope was not found." << endl;
 		} 
 
-		is_valid = getStAmp(v_LeftDet,"SSD20_L",&SSD20_L,&nSSD20_L);
-		is_valid = getStTime(v_LeftDet,"tSSD20_L",&tSSD20_L,nSSD20_L);
-		// if (is_valid) cout << nSSD20_L << " " << tSSD20_L << " " << SSD20_L << endl;
+		is_validLeft = getStAmp(v_LeftDet,"SSD20_L",&SSD20_L,&nSSD20_L);
+		is_validLeft = getStTime(v_LeftDet,"tSSD20_L",&tSSD20_L,nSSD20_L);
+		if (is_validLeft==kFALSE && is_validRight==kFALSE) continue;
+		SSD20_L = SSD20_L*par20L_2[nSSD20_L] + par20L_1[nSSD20_L];
+		tSSD20_L = tSSD20_L*0.3;
+
+		is_validLeft = getStAmp(v_LeftDet,"DSDX_L",&DSDX_L,&nDSDX_L);
+		is_validLeft = getStTime(v_LeftDet,"tDSDX_L",&tDSDX_L,nDSDX_L);
+		if (is_validLeft==kFALSE && is_validRight==kFALSE) continue;
+		DSDX_L = DSDX_L*parSDSXL_2[nDSDX_L] + parSDSXL_1[nDSDX_L];
+		tDSDX_L = tDSDX_L*0.3;
+
+		is_validLeft = getStAmp(v_LeftDet,"DSDY_L",&DSDY_L,&nDSDY_L);
+		is_validLeft = getStTime(v_LeftDet,"tDSDY_L",&tDSDY_L,nDSDY_L);
+		if (is_validLeft==kFALSE && is_validRight==kFALSE) continue;
+		DSDY_L = DSDY_L*parSDSYL_2[nDSDY_L] + parSDSYL_1[nDSDY_L];
+		tDSDY_L = tDSDY_L*0.3;
 
 		TGo4EventElement* v_comElement = theEvent->getEventElement("DetEventCommon",1);
 		if(!v_comElement) {
@@ -154,7 +185,7 @@ void analyse4(TString fInput="/media/user/work/data/exp201810/data/root/he8_07_0
 		DetEventCommon* v_commSubEl = (DetEventCommon*)(v_comElement);
 		trigger = v_commSubEl->trigger;
 
-		if (is_valid) tOut->Fill();
+		if (is_validLeft==kTRUE || is_validRight==kTRUE) tOut->Fill();
 	}
 	tOut->Write();
 	fOut->Close();
@@ -215,7 +246,7 @@ Bool_t getStAmp(TGo4CompositeEvent* v_Det,TString st_Name,Float_t *value,Int_t *
 	DetMessage* message;
 	for(Int_t i = 0; i<array->GetEntriesFast(); i++) {
 		message = (DetMessage*)array->At(i);
-		*amp = message->GetValue();
+		*amp = Float_t(message->GetValue());
 		*nChannel = message->GetStChannel();
 	}	
 	return kTRUE;
@@ -239,7 +270,7 @@ Bool_t getStTime(TGo4CompositeEvent* v_Det,TString st_Name,Float_t *value,Int_t 
 	for(Int_t i = 0; i<array->GetEntriesFast(); i++) {
 		message = (DetMessage*)array->At(i);
 		if (message->GetStChannel() == nCh) {
-			*Time = message->GetValue();
+			*Time = Float_t(message->GetValue());
 			return kTRUE;
 		}
 	}	
@@ -283,7 +314,8 @@ void printDetFullEvent(DetEventFull* theEvent) {
 //-----------------------------------------------------------------------
 void readPars(Float_t *par1,Float_t *par2,TString st_Name){
 
-	TString fName = ("/media/user/work/software/fork/useranalysis/calibration/parameters/") + st_Name;
+	TString fName = ("/media/user/work/software/fork/useranalysis/calibration/parameters/") + st_Name + ".cal";
+	cout << fName << endl;
   // for 1 mm Si detector
   TString line;
   ifstream myfile;
@@ -296,7 +328,7 @@ void readPars(Float_t *par1,Float_t *par2,TString st_Name){
       continue;
     }
     if(line.IsNull()) break;
-    sscanf(line.Data(),"%g %g", par1+count,par2+count);
+    sscanf(line.Data(),"%f %f", par1+count,par2+count);
     count++;
   }
   cout << endl << " pars for " << st_Name <<  " strips" << endl;
