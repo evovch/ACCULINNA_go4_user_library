@@ -18,11 +18,27 @@ using namespace std;
 UserParameterTest::UserParameterTest(const char* name) :
 	TGo4Parameter(name)
 {
-   f20_L_Name = "SSD20_L";
-   f1_L_Name = "DSDX_L";
+  f20_L_Name = "SSD20_L";
+  f1_L_Name = "DSDX_L";
 
-   f20_R_Name = "SSD20_R";  
-   f1_R_Name = "SSDY_R";
+  f20_R_Name = "SSD20_R";  
+  f1_R_Name = "SSDY_R";
+
+  fX_C_Name = "DSDX_C";
+  fY_C_Name = "DSDY_C";
+  fCsI_Name = "CsI";  
+
+  //offline thresholds [Channels]
+  fThreshSSD20_L = 100;
+  fThreshDSDX_L = 120;
+  fThreshDSDY_L = 120;
+  fThreshSSD_L = 120;  
+  
+  fThreshSSD20_R = 100;
+  fThreshSSDY_R = 120; 
+  fThreshSSD_R = 120;
+
+  fThreshSSD_C = 120;
 
 }
 //-----------------------------------------------------------------------

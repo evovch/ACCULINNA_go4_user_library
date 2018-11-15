@@ -98,6 +98,13 @@ Bool_t UserProcTestMonitoring::BuildEvent(TGo4EventElement* p_dest)
 	} 
 	filldE_E_Left(v_LeftDet);
 
+	TGo4CompositeEvent* v_CentralDet = (TGo4CompositeEvent*)(v_input->getEventElement("Central_telescope"));
+	if (!v_CentralDet) { 
+		cerr << "Detector Central_telescope was not found." << endl;
+		return kFALSE; 
+	} 
+	filldE_E_Central(v_CentralDet);
+
 	FillAutoHistosCal(v_input);
 /*
 	Short_t v_NsubElems = v_input->getNElements();
@@ -196,21 +203,27 @@ void UserProcTestMonitoring::calibSi(TGo4CompositeEvent* p_message,std::pair <TS
 }
 //-----------------------------------------------------------------------
 void UserProcTestMonitoring::filldE_E_Right(TGo4CompositeEvent* d_Event) {
+	TString detName = d_Event->GetName() + TString("_");
 
-	DetEventStation* st_SSD20_R = (DetEventStation*)(d_Event->getEventElement("Right_telescope_"+fParTest->f20_R_Name));
+	DetEventStation* st_SSD20_R = (DetEventStation*)(d_Event->getEventElement(detName+fParTest->f20_R_Name));
 	if(!st_SSD20_R) {
-		cout << " station SSD20_R was not found in event " << endl;
+		cout << " station " << detName+fParTest->f20_R_Name << " was not found in event " << endl;
 	}	
 	TClonesArray *v_SSD20_R = st_SSD20_R->GetDetMessages();
 	Int_t mult_SSD20_R = 0;
 	Int_t nCh20;
 	DetMessage* m_SSD20_R;
-	for(Int_t i = 0; i<v_SSD20_R->GetEntriesFast(); i++) {
-		DetMessage* message = (DetMessage*)v_SSD20_R->At(i);
-		if(message->GetValue()>100) { // threshold for this 20um detector
-			nCh20 = message->GetStChannel();
-			m_SSD20_R = (DetMessage*)v_SSD20_R->At(i);			
-			mult_SSD20_R++;
+	if (fParTest->fThreshSSD20_R == 0) {
+		mult_SSD20_R = v_SSD20_R->GetEntriesFast();
+	}
+	else {
+		for(Int_t i = 0; i<v_SSD20_R->GetEntriesFast(); i++) {
+			DetMessage* message = (DetMessage*)v_SSD20_R->At(i);
+			if(message->GetValue()>fParTest->fThreshSSD20_R) { // threshold for this 20um detector
+				nCh20 = message->GetStChannel();
+				m_SSD20_R = (DetMessage*)v_SSD20_R->At(i);			
+				mult_SSD20_R++;
+			}
 		}
 	}
 	if(mult_SSD20_R!=1) {
@@ -218,20 +231,25 @@ void UserProcTestMonitoring::filldE_E_Right(TGo4CompositeEvent* d_Event) {
 		return;
 	}
 
-	DetEventStation* st_DSD_R = (DetEventStation*)(d_Event->getEventElement("Right_telescope_"+fParTest->f1_R_Name));
+	DetEventStation* st_DSD_R = (DetEventStation*)(d_Event->getEventElement(detName+fParTest->f1_R_Name));
 	if(!st_DSD_R) {
-		cout << "station DSDX_R was not found in event " << endl;
+		cout << "station " << detName+fParTest->f1_R_Name << " was not found in event " << endl;
 	}	
 	TClonesArray *v_DSD_R = st_DSD_R->GetDetMessages();
 	Int_t mult_DSD_R = 0;
 	Int_t nCh100;
 	DetMessage* m_DSD_R;
-	for(Int_t i = 0; i<v_DSD_R->GetEntriesFast(); i++) {
-		DetMessage* message = (DetMessage*)v_DSD_R->At(i);
-		if(message->GetValue()>120) { // threshold for this 1 mm detector
-			nCh100 = message->GetStChannel();
-			m_DSD_R = (DetMessage*)v_DSD_R->At(i);
-			mult_DSD_R++;
+	if (fParTest->fThreshSSDY_R == 0) {
+		mult_DSD_R = v_DSD_R->GetEntriesFast();
+	}
+	else {
+		for(Int_t i = 0; i<v_DSD_R->GetEntriesFast(); i++) {
+			DetMessage* message = (DetMessage*)v_DSD_R->At(i);
+			if(message->GetValue()>fParTest->fThreshSSDY_R) { // threshold for this 1 mm detector
+				nCh100 = message->GetStChannel();
+				m_DSD_R = (DetMessage*)v_DSD_R->At(i);
+				mult_DSD_R++;
+			}
 		}
 	}
 	if(mult_DSD_R!=1) {
@@ -256,41 +274,53 @@ void UserProcTestMonitoring::filldE_E_Right(TGo4CompositeEvent* d_Event) {
 }
 //-----------------------------------------------------------------------
 void UserProcTestMonitoring::filldE_E_Left(TGo4CompositeEvent* d_Event) {
+	TString detName = d_Event->GetName() + TString("_");
 
-	DetEventStation* st_SSD20 = (DetEventStation*)(d_Event->getEventElement("Left_telescope_"+fParTest->f20_L_Name));
+	DetEventStation* st_SSD20 = (DetEventStation*)(d_Event->getEventElement(detName+fParTest->f20_L_Name));
 	if(!st_SSD20) {
-		cout << " station SSD20_L was not found in event " << endl;
+		cout << " station " << detName+fParTest->f20_L_Name << " was not found in event " << endl;
 	}	
 	TClonesArray *v_SSD20 = st_SSD20->GetDetMessages();
 	Int_t mult_SSD20 = 0;
 	Int_t nCh20;
 	DetMessage* m_SSD20;
-	for(Int_t i = 0; i<v_SSD20->GetEntriesFast(); i++) {
-		DetMessage* message = (DetMessage*)v_SSD20->At(i);
-		if(message->GetValue()>100) { // threshold for this 20um detector
-			nCh20 = message->GetStChannel();
-			m_SSD20 = (DetMessage*)v_SSD20->At(i);			
-			mult_SSD20++;
+	if (fParTest->fThreshSSD20_L == 0) {
+		mult_SSD20 = v_SSD20->GetEntriesFast();
+	}
+	else {
+		for(Int_t i = 0; i<v_SSD20->GetEntriesFast(); i++) {
+			DetMessage* message = (DetMessage*)v_SSD20->At(i);
+			if(message->GetValue()>fParTest->fThreshSSD20_L) { // threshold for this 20um detector
+				nCh20 = message->GetStChannel();
+				m_SSD20 = (DetMessage*)v_SSD20->At(i);			
+				mult_SSD20++;
+			}
 		}
 	}
 	if(mult_SSD20!=1) {
 		return;
 	}
 
-	DetEventStation* st_DSDX = (DetEventStation*)(d_Event->getEventElement("Left_telescope_"+fParTest->f1_L_Name));
+	DetEventStation* st_DSDX = (DetEventStation*)(d_Event->getEventElement(detName+fParTest->f1_L_Name));
 	if(!st_DSDX) {
-		cout << "station DSDX_L was not found in event " << endl;
+		cout << "station " << detName+fParTest->f1_L_Name << " was not found in event " << endl;
 	}	
 	TClonesArray *v_DSDX = st_DSDX->GetDetMessages();
 	Int_t mult_DSDX = 0;
 	Int_t nCh100;
 	DetMessage* m_DSDX;
-	for(Int_t i = 0; i<v_DSDX->GetEntriesFast(); i++) {
-		DetMessage* message = (DetMessage*)v_DSDX->At(i);
-		if(message->GetValue()>120) { // threshold for this 1 mm detector
-			nCh100 = message->GetStChannel();
-			m_DSDX = (DetMessage*)v_DSDX->At(i);
-			mult_DSDX++;
+
+	if (fParTest->fThreshDSDX_L == 0) {
+		mult_DSDX = v_DSDX->GetEntriesFast();
+	}
+	else {
+		for(Int_t i = 0; i<v_DSDX->GetEntriesFast(); i++) {
+			DetMessage* message = (DetMessage*)v_DSDX->At(i);
+			if(message->GetValue()>fParTest->fThreshDSDX_L) { // threshold for this 1 mm detector
+				nCh100 = message->GetStChannel();
+				m_DSDX = (DetMessage*)v_DSDX->At(i);
+				mult_DSDX++;
+			}
 		}
 	}
 	if(mult_DSDX!=1) {
@@ -313,7 +343,69 @@ void UserProcTestMonitoring::filldE_E_Left(TGo4CompositeEvent* d_Event) {
 	fHistoMan->dE_E_Left->Fill(Etotal,dE);	
 }
 //-----------------------------------------------------------------------
+void UserProcTestMonitoring::filldE_E_Central(TGo4CompositeEvent* d_Event) {
+	TString detName = d_Event->GetName() + TString("_");
 
+	DetEventStation* st_DSSD_C = (DetEventStation*)(d_Event->getEventElement(detName+fParTest->fX_C_Name));
+	if(!st_DSSD_C) {
+		cout << " station " << fParTest->fX_C_Name << " was not found in event " << endl;
+	}	
+	TClonesArray *v_DSSD_C = st_DSSD_C->GetDetMessages();
+	Int_t mult_DSSD_C = 0;
+	Int_t nCh100;
+	DetMessage* m_DSSD_C;
+	if (fParTest->fThreshSSD_C == 0) {
+		mult_DSSD_C = v_DSSD_C->GetEntriesFast();
+	}
+	else {
+		for(Int_t i = 0; i<v_DSSD_C->GetEntriesFast(); i++) {
+			DetMessage* message = (DetMessage*)v_DSSD_C->At(i);
+			if(message->GetValue()>fParTest->fThreshSSD_C) { // threshold for this 20um detector
+				nCh100 = message->GetStChannel();
+				m_DSSD_C = (DetMessage*)v_DSSD_C->At(i);			
+				mult_DSSD_C++;
+			}
+		}
+	}
+	fHistoMan->mult_Central->Fill(mult_DSSD_C);
+	// TODO clusterisation
+	if(mult_DSSD_C!=1) {
+		return;
+	}
+
+	DetEventStation* st_CsI = (DetEventStation*)(d_Event->getEventElement(detName+fParTest->fCsI_Name));
+	if(!st_CsI) {
+		cout << " station " << fParTest->fCsI_Name << " was not found in event " << endl;
+	}	
+	TClonesArray *v_CsI = st_CsI->GetDetMessages();
+	Int_t nChCsI;
+	DetMessage* m_CsI;
+	Double_t maxAmp = 0;
+	// find maximum 
+	for(Int_t i = 0; i < v_CsI->GetEntriesFast(); i++) {
+		m_CsI = ((DetMessage*)v_CsI->At(i));
+		if(m_CsI->GetValue() > maxAmp) {
+			maxAmp = m_CsI->GetValue();
+			nChCsI = m_CsI->GetStChannel();	
+		} 
+	}
+	// check if there is only 1 maximum
+	Int_t nMax = 0;
+	for(Int_t i=0; i<v_CsI->GetEntriesFast(); i++) {
+		if (((DetMessage*)v_CsI->At(i))->GetValue() == maxAmp) nMax++;
+	}
+	if (nMax!=1) return;
+
+	// find Maximum
+
+	this->getSiPar(fParTest->fX_C_Name);
+	Double_t par100_1 = getSiPar(fParTest->fX_C_Name)->getPar1(nCh100);
+	Double_t par100_2 = getSiPar(fParTest->fX_C_Name)->getPar2(nCh100);
+
+	fHistoMan->dE_E_Central[nChCsI]->Fill(maxAmp,m_DSSD_C->GetValue()*par100_2 + par100_1);		
+
+}
+//-----------------------------------------------------------------------
 SiCalibPars* UserProcTestMonitoring::getSiPar(TString st_Name) {
 	// cout << "UserProcTestMonitoring::getSiPar was called! " << endl;
 	Int_t i = 0;
@@ -322,10 +414,6 @@ SiCalibPars* UserProcTestMonitoring::getSiPar(TString st_Name) {
 		i++;
 	}
 	return fParSi[i];
-}
-//-----------------------------------------------------------------------
-Int_t UserProcTestMonitoring::getMultiplicity(TClonesArray *v_array,TString st_Name) {
-	cout << "UserProcTestMonitoring::getMultiplicity was called " << endl;
 }
 //-----------------------------------------------------------------------
 void UserProcTestMonitoring::FillAutoHistosCal(DetEventFull *v_input) {
@@ -369,6 +457,6 @@ void UserProcTestMonitoring::FillAutoHistosCal(DetEventFull *v_input) {
 	} // loop over the calibration index (0-4)
 	// --------------------------	
 }
-
+//-----------------------------------------------------------------------
 
 ClassImp(UserProcTestMonitoring)

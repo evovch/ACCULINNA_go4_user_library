@@ -47,10 +47,9 @@ private: // methods
 
 	void filldE_E_Right(TGo4CompositeEvent* d_Event);
 	void filldE_E_Left(TGo4CompositeEvent* d_Event);
+	void filldE_E_Central(TGo4CompositeEvent* d_Event);
 
 	SiCalibPars* getSiPar(TString st_Name);
-
-	Int_t getMultiplicity(TClonesArray *v_array,TString st_Name);
 
 public:
 

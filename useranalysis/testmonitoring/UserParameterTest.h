@@ -29,6 +29,22 @@ public:
   TString f20_R_Name;  
   TString f1_R_Name;
 
+  TString fX_C_Name;
+  TString fY_C_Name;
+  TString fCsI_Name;
+
+  // offline Thresholds [Channels]
+  Double_t fThreshSSD20_L;
+  Double_t fThreshDSDX_L;
+  Double_t fThreshDSDY_L;
+  Double_t fThreshSSD_L;  
+
+  Double_t fThreshSSD20_R;
+  Double_t fThreshSSDY_R; 
+  Double_t fThreshSSD_R;
+   
+  Double_t fThreshSSD_C; 
+
 	ClassDef(UserParameterTest,1)
 };
 
