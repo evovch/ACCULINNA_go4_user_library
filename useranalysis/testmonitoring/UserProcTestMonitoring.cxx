@@ -11,6 +11,8 @@ using std::endl;
 #include <TClonesArray.h>
 #include <TH1D.h>
 #include <TH2D.h>
+#include <TH2F.h>
+#include <TFile.h>
 
 // Project
 #include "data/DetEventFull.h" // input event
@@ -43,6 +45,8 @@ UserProcTestMonitoring::UserProcTestMonitoring(const char* name) :
 	fParTest = (UserParameterTest*) MakeParameter("UserTestPar", "UserParameterTest");
 	// Creating and filling SiPars objects
 	this->InitPars();
+	// reading thickness distr for thin detectors
+	this->readThickness();
 
 	fHistoMan = new UserHistosTestMonitoring(fstPair,fnPars);
 	fFileSummary = fopen("textoutput/summaryTestMonitoring.txt", "w");
@@ -257,17 +261,19 @@ void UserProcTestMonitoring::filldE_E_Right(TGo4CompositeEvent* d_Event) {
 		return;
 	}
 
-	this->getSiPar(fParTest->f20_R_Name);
 	Double_t par20_1 = getSiPar(fParTest->f20_R_Name)->getPar1(nCh20);
 	Double_t par20_2 = getSiPar(fParTest->f20_R_Name)->getPar2(nCh20);
 	// cout << "par for 20_" << nCh20 << " " <<  m_SSD20_R->GetStChannel() << " " << par20_1 << "," << par20_2 << endl;
 
-	this->getSiPar(fParTest->f1_R_Name);
 	Double_t par100_1 = getSiPar(fParTest->f1_R_Name)->getPar1(nCh100);
 	Double_t par100_2 = getSiPar(fParTest->f1_R_Name)->getPar2(nCh100);
 	// cout << "par for 100_" << m_DSDX_R->GetStChannel() << " " << par100_1 << "," << par100_2 << endl;
 
+	// check if thickness if reasonable
+	if(fThicknessRight[nCh20][nCh100]<10 || fThicknessRight[nCh20][nCh100] > 30) return;
+
 	Double_t dE = m_SSD20_R->GetValue()*par20_2 + par20_1;
+	dE = dE*20./fThicknessRight[nCh20][nCh100];
 	Double_t Etotal = m_DSD_R->GetValue()*par100_2 + par100_1 + dE;
 
 	fHistoMan->dE_E_Right->Fill(Etotal,dE);	
@@ -327,17 +333,19 @@ void UserProcTestMonitoring::filldE_E_Left(TGo4CompositeEvent* d_Event) {
 		return;
 	}
 
-	this->getSiPar(fParTest->f20_L_Name);
 	Double_t par20_1 = getSiPar(fParTest->f20_L_Name)->getPar1(nCh20);
 	Double_t par20_2 = getSiPar(fParTest->f20_L_Name)->getPar2(nCh20);
 	// cout << "Lpar for 20_" << nCh20 << " " <<  m_SSD20->GetStChannel() << " " << par20_1 << "," << par20_2 << endl;
 
-	this->getSiPar(fParTest->f1_L_Name);
 	Double_t par100_1 = getSiPar(fParTest->f1_L_Name)->getPar1(nCh100);
 	Double_t par100_2 = getSiPar(fParTest->f1_L_Name)->getPar2(nCh100);
 	// cout << "Lpar for 100_" << m_DSDX->GetStChannel() << " " << par100_1 << "," << par100_2 << endl;
 
+	// check if thickness if reasonable
+	if(fThicknessLeft[nCh20][nCh100]<10 || fThicknessLeft[nCh20][nCh100] > 30) return;
+
 	Double_t dE = m_SSD20->GetValue()*par20_2 + par20_1;
+	dE = dE*20./fThicknessLeft[nCh20][nCh100];
 	Double_t Etotal = m_DSDX->GetValue()*par100_2 + par100_1 + dE;
 
 	fHistoMan->dE_E_Left->Fill(Etotal,dE);	
@@ -396,9 +404,6 @@ void UserProcTestMonitoring::filldE_E_Central(TGo4CompositeEvent* d_Event) {
 	}
 	if (nMax!=1) return;
 
-	// find Maximum
-
-	this->getSiPar(fParTest->fX_C_Name);
 	Double_t par100_1 = getSiPar(fParTest->fX_C_Name)->getPar1(nCh100);
 	Double_t par100_2 = getSiPar(fParTest->fX_C_Name)->getPar2(nCh100);
 
@@ -458,5 +463,55 @@ void UserProcTestMonitoring::FillAutoHistosCal(DetEventFull *v_input) {
 	// --------------------------	
 }
 //-----------------------------------------------------------------------
+void UserProcTestMonitoring::readThickness() {
+  cout << "thickness Left detector " << endl;
+  TFile *f = new TFile("/media/user/work/software/fork/useranalysis/calibration/parameters/thicknessLeft.root","READ");
+  if (f->IsZombie()) {
+    for(Int_t i = 0; i<16; i++) {
+      for(Int_t j = 0; j<16; j++) {
+        fThicknessLeft[i][j] = 20.;
+        cout << fThicknessLeft[i][j] << " ";
+      }
+      cout << endl;
+    }
+
+  }
+  else {
+	  TH2F *hThick = (TH2F*)f->Get("hTh");
+	  for(Int_t i = 0; i<16; i++) {
+	    for(Int_t j = 0; j<16; j++) {
+	      fThicknessLeft[i][j] = hThick->GetBinContent(i+1,j+1);
+	      cout << fThicknessLeft[i][j] << " ";
+	    }
+	    cout << endl;
+	  }
+  }
+  delete f;
+
+  cout << "thickness Right detector " << endl;
+  TFile *f1 = new TFile("/media/user/work/software/fork/useranalysis/calibration/parameters/thicknessRight.root","READ");
+  if (f1->IsZombie()) {
+    for(Int_t i = 0; i<16; i++) {
+      for(Int_t j = 0; j<16; j++) {
+        fThicknessRight[i][j] = 20.;
+        cout << fThicknessRight[i][j] << " ";
+      }
+      cout << endl;
+    }
+  }
+  else {
+	  TH2F *hThick = (TH2F*)f1->Get("hTh");
+	  for(Int_t i = 0; i<16; i++) {
+	    for(Int_t j = 0; j<16; j++) {
+	      fThicknessRight[i][j] = hThick->GetBinContent(i+1,j+1);
+	      cout << fThicknessRight[i][j] << " ";
+	    }
+	    cout << endl;
+	  }
+  }
+  delete f1;
+  return;
+}
+//-----------------------------------------------------------------------s
 
 ClassImp(UserProcTestMonitoring)

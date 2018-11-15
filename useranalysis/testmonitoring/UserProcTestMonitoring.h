@@ -42,6 +42,8 @@ private: // methods
 	void FillAutoHistosCal(DetEventFull *v_input);
 	// reading .cal files into TGo4Parameter objects
 	void InitPars();
+	// reading thin detectors thickness map
+  void readThickness();
 
 	void calibSi(TGo4CompositeEvent* p_message,std::pair <TString,Int_t> pair);
 
@@ -82,6 +84,10 @@ private: // data members
 	SiCalibPars** fParSi;
 	std::pair <TString,Int_t>* fstPair;
 	const Int_t fnPars = 9;
+
+  // Thickness distribution for thin detectors
+  Double_t fThicknessRight[16][16];
+  Double_t fThicknessLeft[16][16];
 	/**
 	 * Summary stream
 	 */
