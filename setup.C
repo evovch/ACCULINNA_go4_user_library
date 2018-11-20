@@ -21,7 +21,7 @@ void setup()
 	stepRepacking->SetProcessEnabled(kTRUE);
 	stepLearn->SetProcessEnabled(kFALSE);
 	stepRawMonitoring->SetProcessEnabled(kFALSE);
-	stepAdvMonitoring->SetProcessEnabled(kFALSE);
+	stepAdvMonitoring->SetProcessEnabled(kTRUE);
 	stepBeamDetMonitoring->SetProcessEnabled(kFALSE);
 	stepBeamDetMonitoring2->SetProcessEnabled(kFALSE);
 	stepTestMonitoring->SetProcessEnabled(kTRUE);

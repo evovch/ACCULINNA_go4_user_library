@@ -24,7 +24,7 @@ OUTPUTROOTDIR=/media/user/work/data/exp201810/workdir
 # TODO check that ${OUTPUTROOTDIR} exists ???
 
 # Please specify the input XML configuration file
-SETUPFILE=./usr/setup2_exp201811.xml
+SETUPFILE=./usr/myXML.xml
 
 # TODO check that ${SETUPFILE} exists
 
@@ -32,7 +32,7 @@ SETUPFILE=./usr/setup2_exp201811.xml
 INPUTFILENAME=he8_05_0002.lmd
 
 # Please specify number of events to process
-NEVENTS=100 # Specify 0 to process the full file
+NEVENTS=1000 # Specify 0 to process the full file
 
 TEXTERRFILE=textoutput/err.txt  # Default: textoutput/err.txt
 #TEXTERRFILE=/dev/null    # suppress error stream. Saves a little bit of hdd space
@@ -83,9 +83,9 @@ echo -e "\e[1m\e[34m${ANARUNINFO}\e[0m"
 echo -e "\e[1m\e[32m"`date` "Analysis started.\e[0m"
 
 if [ ${NEVENTS} -eq 0 ]; then
-	${GO4SYS}/bin/go4analysis -v -lib libAccDaqUserAnalysis.so -asf ${AUTOSAVEFILE} -file ${INPUTFILE} -args ${OUTPUTFILE} ${SETUPFILE} #>> ${TEXTOUTFILE} 2> ${TEXTERRFILE}
+	${GO4SYS}/bin/go4analysis -v -lib libAccDaqUserAnalysis.so -asf ${AUTOSAVEFILE} -file ${INPUTFILE} -args ${OUTPUTFILE} ${SETUPFILE} >> ${TEXTOUTFILE} 2> ${TEXTERRFILE}
 else
-	${GO4SYS}/bin/go4analysis -v -lib libAccDaqUserAnalysis.so -number ${NEVENTS} -asf ${AUTOSAVEFILE} -file ${INPUTFILE} -args ${OUTPUTFILE} ${SETUPFILE} #>> ${TEXTOUTFILE} 2> ${TEXTERRFILE}
+	${GO4SYS}/bin/go4analysis -v -lib libAccDaqUserAnalysis.so -number ${NEVENTS} -asf ${AUTOSAVEFILE} -file ${INPUTFILE} -args ${OUTPUTFILE} ${SETUPFILE} >> ${TEXTOUTFILE} 2> ${TEXTERRFILE}
 fi
 
 echo -e "\e[1m\e[32m"`date` "Analysis finished.\e[0m"

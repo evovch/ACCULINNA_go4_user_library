@@ -22,7 +22,7 @@ UserParameterTest::UserParameterTest(const char* name) :
   f1_L_Name = "DSDX_L";
 
   f20_R_Name = "SSD20_R";  
-  f1_R_Name = "SSDY_R";
+  f1_R_Name = "DSDY_R";
 
   fX_C_Name = "DSDX_C";
   fY_C_Name = "DSDY_C";

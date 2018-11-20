@@ -189,7 +189,7 @@ void UserProcTestMonitoring::InitPars() {
 	fstPair[3] = make_pair((TString)"SSD_L",16);
 
 	fstPair[4] = make_pair((TString)"SSD20_R",16);	
-	fstPair[5] = make_pair((TString)"SSDY_R",16);	
+	fstPair[5] = make_pair((TString)"DSDY_R",16);	
 	fstPair[6] = make_pair((TString)"SSD_R",16);
 
 	fstPair[7] = make_pair((TString)"DSDX_C",32);
