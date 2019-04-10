@@ -6,7 +6,7 @@ using std::endl;
 
 UserParamBeamDetMonitoring::UserParamBeamDetMonitoring(const char* name) :
 	TGo4Parameter(name),
-	fBeamDetName("Beam_detector_MWPC"),
+	fBeamDetName("Beam_detector"),
 	fMWPCx1Name("MWPC1"),
 	fMWPCy1Name("MWPC2"),
 	fMWPCx2Name("MWPC3"),
