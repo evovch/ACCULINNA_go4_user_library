@@ -43,7 +43,7 @@ rm -fv ${INPUTLMDDIR}/${PREFIX}*.lml
 
 # =============================================================================
 
-FILES=${INPUTLMDDIR}/*.lmd
+FILES=${INPUTLMDDIR}/${PREFIX}*.lmd
 
 # Count input data files
 NFILES=`ls -1q ${FILES} | wc -l`
