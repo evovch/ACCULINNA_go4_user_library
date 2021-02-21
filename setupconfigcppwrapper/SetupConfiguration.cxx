@@ -408,7 +408,7 @@ std::map<TString, unsigned short> const SetupConfiguration::GetStationList(TStri
 	} else {
 		//ERROR
 		cerr << "SetupConfiguration::GetStationList: ERROR" << endl;
-		//TODO return ?
+		return {};
 	}
 }
 

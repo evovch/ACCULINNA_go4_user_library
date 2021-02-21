@@ -9,18 +9,22 @@ void setup()
 
 	TGo4AnalysisStep* stepUnpacking = go4->GetAnalysisStep("stepUnpacking");
 	TGo4AnalysisStep* stepRepacking = go4->GetAnalysisStep("stepRepacking");
+	TGo4AnalysisStep* stepOutputRootStreamer = go4->GetAnalysisStep("stepOutputRootStreamer");
 	TGo4AnalysisStep* stepLearn = go4->GetAnalysisStep("stepLearn");
 	TGo4AnalysisStep* stepRawMonitoring = go4->GetAnalysisStep("stepRawMonitoring");
 	TGo4AnalysisStep* stepAdvMonitoring = go4->GetAnalysisStep("stepAdvMonitoring");
-	TGo4AnalysisStep* stepBeamDetMonitoring = go4->GetAnalysisStep("stepBeamDetMonitoring");
+	//TGo4AnalysisStep* stepBeamDetMonitoring = go4->GetAnalysisStep("stepBeamDetMonitoring");
 
 	//TODO enable/disable certain steps
 	stepUnpacking->SetProcessEnabled(kTRUE);
 	stepRepacking->SetProcessEnabled(kTRUE);
+	stepRepacking->SetStoreEnabled(kFALSE);
+	stepOutputRootStreamer->SetProcessEnabled(kTRUE);
+	stepOutputRootStreamer->SetStoreEnabled(kFALSE);
 	stepLearn->SetProcessEnabled(kFALSE);
 	stepRawMonitoring->SetProcessEnabled(kFALSE);
 	stepAdvMonitoring->SetProcessEnabled(kFALSE);
-	stepBeamDetMonitoring->SetProcessEnabled(kFALSE);
+	//stepBeamDetMonitoring->SetProcessEnabled(kFALSE);
 
 	//TODO enable/disable autosave
 	//go4->SetAutoSaveFile("asf.root");

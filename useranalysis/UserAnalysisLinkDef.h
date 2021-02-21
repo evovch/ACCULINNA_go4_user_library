@@ -44,4 +44,8 @@
 #pragma link C++ class UserEventDigiBuilding+;
 #pragma link C++ class UserProcDigiBuilding+;
 
+// Output root streamer step
+#pragma link C++ class OutputRootStreamer+;
+#pragma link C++ class OutputRootStore+;
+
 #endif // __CINT__
