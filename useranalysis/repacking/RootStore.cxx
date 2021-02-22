@@ -12,6 +12,7 @@
 #include "data/DetEventDetector.h"
 #include "data/DetEventStation.h"
 #include "data/DetMessage.h"
+#include "data/DetEventCommon.h"
 
 RootStore::RootStore(TGo4UserStoreParameter* store_parameter)
   : TGo4EventStore(store_parameter->GetName()),
@@ -23,7 +24,17 @@ Int_t RootStore::Store(TGo4EventElement* event) {
   if (!output_structure_created_)
     CreateOutputStructure();
   ResetEventData();
-  DetEventFull* full_event = dynamic_cast<DetEventFull*>(event);
+  auto* full_event = dynamic_cast<DetEventFull*>(event);
+  if (!full_event) {
+    std::cerr << "RootStore: Input event should be of type DetEventFull\n";
+    return 1;
+  }
+  auto* common = dynamic_cast<DetEventCommon*>(&((*full_event)[0]));
+  if (!common) {
+    std::cerr << "RootStore: DetEventFull object should contain DetEventCommon by index 0\n"; 
+    return 1;
+  }
+  event_common_.From(*common);
   auto& setup = SetupConfiguration::GetInstance();
   for (const auto& detector_name_and_id : setup.GetDetectorList()) {
     const auto detector_name = detector_name_and_id.first;
@@ -68,8 +79,10 @@ void RootStore::CreateOutputStructure() {
                    TString::Format("%s[%d]/S", station_name.Data(), channel_count));
     }
   }
+  tree_.Branch("common", &event_common_);
   file_.cd();
   tree_.Write();
+  setup.Write();
   output_structure_created_ = true;
 }
 
@@ -79,14 +92,35 @@ void RootStore::ResetEventData() {
     for (auto& station_data : detector_data.second) {
       const auto station_name = station_data.first;
       for (short i_channel = 0; i_channel < channels_counts_[detector_name][station_name]; i_channel++) {
-        station_data.second[i_channel] = -1;
+        station_data.second[i_channel] = consts::no_signal;
       }
     }
   }
+  event_common_.Reset();
 }
 
 RootStore::~RootStore() {
   auto* file = tree_.GetCurrentFile();
   file->cd();
   tree_.Write(0, TObject::kOverwrite);
+}
+
+EventCommon::EventCommon() {
+  Reset();
+}
+
+void EventCommon::From(const DetEventCommon& detector_event) {
+  trigger = detector_event.trigger;
+  std::copy(std::begin(detector_event.scaler), std::end(detector_event.scaler), std::begin(scaler));
+  std::copy(std::begin(detector_event.mtime), std::end(detector_event.mtime), std::begin(mtime));
+}
+
+void EventCommon::Reset() {
+  trigger = 0;
+  for(int i = 0; i < consts::scaler_size; ++i) {
+    scaler[i] = consts::no_signal;
+  }
+  for(int i = 0; i < consts::mtime_size; ++i) {
+    mtime[i] = consts::no_signal;
+  }
 }

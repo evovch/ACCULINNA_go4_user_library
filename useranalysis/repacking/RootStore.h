@@ -1,3 +1,11 @@
+/********************************************************************************
+ *              Copyright (C) Joint Institute for Nuclear Research              *
+ *                                                                              *
+ *              This software is distributed under the terms of the             *
+ *         GNU Lesser General Public Licence version 3 (LGPL) version 3,        *
+ *                  copied verbatim in the file "LICENSE"                       *
+ ********************************************************************************/
+
 #ifndef ROOTSTORE_H
 #define ROOTSTORE_H
 
@@ -8,7 +16,31 @@
 #include "TGo4EventStore.h"
 
 class TGo4UserStoreParameter;
+class DetEventCommon;
 
+namespace consts {
+  const unsigned short scaler_size = 16;
+  const unsigned short mtime_size = 2;
+  const unsigned short no_signal = 0;
+}
+
+/// Class to store in root file data from DetEventCommon without go4 dependencies.
+class EventCommon : public TObject {
+ public:
+  EventCommon();
+  void From(const DetEventCommon&);
+  void Reset();
+  unsigned int trigger = 0;
+  unsigned int scaler[consts::scaler_size];
+  unsigned short mtime[consts::mtime_size];
+  ClassDef(EventCommon, 1)
+};
+
+/** Class to store in output file results of Repacking step using raw C++ arrays.
+    Structure of data depends on SetupConfiguration.
+    Each branch contains data for one station( from DetEventStation object).
+    DetEventCommon stores as EventCommon.
+    SetupConfiguration is also store in output file to be used for reading. **/ 
 class RootStore : public TGo4EventStore {
  public:
   RootStore();
@@ -21,10 +53,13 @@ class RootStore : public TGo4EventStore {
   void ResetEventData();
   TFile file_; //!
   TTree tree_; //!
-  std::map<TString, std::map<TString, short*>> event_data_;
-  std::map<TString, std::map<TString, unsigned short>> channels_counts_;
-  bool output_structure_created_ = false;
+  std::map<TString, std::map<TString, short*>> event_data_; //!
+  std::map<TString, std::map<TString, unsigned short>> channels_counts_; //!
+  EventCommon event_common_; //!
+  bool output_structure_created_ = false; //!
   ClassDef(RootStore, 1)
 };
+
+
 
 #endif // ROOTSTORE_H

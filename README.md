@@ -59,6 +59,13 @@ Tune the run.sh script to your needs and run it:
 
 > ./run.sh
 
+Output formats
+==============
+
+Two formats of output are provided. In the default, data is stored using raw data arrays. 
+Setup configuration is stored as object in root file. With a flag ```--native-output```,
+you can save data using ```TGo4CompositeEvent```. This storage format is very demanding on IO operations. 
+
 Cleanup
 =======
 

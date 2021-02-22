@@ -206,19 +206,19 @@ private: // data members
 	/**
 	 * Filled during the Link() method.
 	 */
-	std::map<unsigned int, stc_mapping*> mMappings; //! key - unique channel ID, see GetChUID()
+	std::map<unsigned int, stc_mapping*> mMappings; // key - unique channel ID, see GetChUID()
 
 	/**
 	 * List of detectors.
 	 * Filled during the Link() method.
 	 */
-	std::map<TString, unsigned short> mDetectors; //! key - detector ID
+	std::map<TString, unsigned short> mDetectors; // key - detector ID
 
 	/**
 	 * List of stations per detector.
 	 * Filled during the Link() method.
 	 */
-	std::map< TString, std::map<TString, unsigned short> > mStationsPerDet; //! TODO probably, we don't need to stream this
+	std::map< TString, std::map<TString, unsigned short> > mStationsPerDet; // TODO probably, we don't need to stream this
 
 // ------------------------------------------------------------------------------------------------
 // MWPC specific
