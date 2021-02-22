@@ -417,4 +417,16 @@ std::map<TString, unsigned short> const SetupConfiguration::GetStationList2(TStr
 	return this->mStationsPerDet.at(detector);
 }
 
+short SetupConfiguration::GetChannelCount(const TString& detector, const TString& station) const {
+  for (unsigned short i_mapping=0; i_mapping < mConfiguration.fNmappings; i_mapping++) {
+		stc_mapping* mapping = &(mConfiguration.fMappingsList[i_mapping]);
+    if (TString(mapping->fDetector) == detector && TString(mapping->fStation) == station) {
+      return mapping->fNelectrch;
+    }
+  }
+  cerr << "GetChannelCount: Could not find channel count for station " << station 
+       << " of detector " << detector << " in configuration file" << endl;
+  return -1;
+}
+
 ClassImp(SetupConfiguration)

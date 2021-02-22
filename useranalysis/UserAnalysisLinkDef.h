@@ -24,6 +24,7 @@
 #pragma link C++ class DetEventFull+;
 #pragma link C++ class UserProcRepacking+;
 #pragma link C++ class UserHistosRepacking+;
+#pragma link C++ class RootStore+;
 
 // Advanced monitoring step
 #pragma link C++ class UserEventAdvMonitoring+;
@@ -43,9 +44,5 @@
 // DigiBuilding step
 #pragma link C++ class UserEventDigiBuilding+;
 #pragma link C++ class UserProcDigiBuilding+;
-
-// Output root streamer step
-#pragma link C++ class OutputRootStreamer+;
-#pragma link C++ class OutputRootStore+;
 
 #endif // __CINT__

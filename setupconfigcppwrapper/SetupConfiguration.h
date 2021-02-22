@@ -188,6 +188,8 @@ public:
 	 */
 	std::map<unsigned int, stc_mapping*> const GetMappings(void) const { return mMappings; }
 
+	short GetChannelCount(const TString& detector, const TString& station) const;
+
 private: // methods
 	/**
 	 * The most importatnd method. Goes through the imported structure and
