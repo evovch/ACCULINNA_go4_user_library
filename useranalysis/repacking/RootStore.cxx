@@ -34,7 +34,7 @@ Int_t RootStore::Store(TGo4EventElement* event) {
     std::cerr << "RootStore: DetEventFull object should contain DetEventCommon by index 0\n"; 
     return 1;
   }
-  event_common_.From(*common);
+  FillCommonData(*common);
   auto& setup = SetupConfiguration::GetInstance();
   for (const auto& detector_name_and_id : setup.GetDetectorList()) {
     const auto detector_name = detector_name_and_id.first;
@@ -64,6 +64,12 @@ Int_t RootStore::Store(TGo4EventElement* event) {
   }
   tree_.Fill();
   return 0;
+}
+
+void RootStore::FillCommonData(const DetEventCommon& common) {
+  event_common_.trigger = common.trigger;
+  std::copy(std::begin(common.scaler), std::end(common.scaler), std::begin(event_common_.scaler));
+  std::copy(std::begin(common.mtime), std::end(common.mtime), std::begin(event_common_.mtime));
 }
 
 void RootStore::CreateOutputStructure() {
@@ -105,22 +111,5 @@ RootStore::~RootStore() {
   tree_.Write(0, TObject::kOverwrite);
 }
 
-EventCommon::EventCommon() {
-  Reset();
-}
 
-void EventCommon::From(const DetEventCommon& detector_event) {
-  trigger = detector_event.trigger;
-  std::copy(std::begin(detector_event.scaler), std::end(detector_event.scaler), std::begin(scaler));
-  std::copy(std::begin(detector_event.mtime), std::end(detector_event.mtime), std::begin(mtime));
-}
 
-void EventCommon::Reset() {
-  trigger = 0;
-  for(int i = 0; i < consts::scaler_size; ++i) {
-    scaler[i] = consts::no_signal;
-  }
-  for(int i = 0; i < consts::mtime_size; ++i) {
-    mtime[i] = consts::no_signal;
-  }
-}

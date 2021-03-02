@@ -233,4 +233,22 @@ public:
 	ClassDef(SetupConfiguration, 1);
 };
 
+
+namespace consts {
+  const unsigned short scaler_size = 16;
+  const unsigned short mtime_size = 2;
+  const unsigned short no_signal = 0;
+}
+
+/// Class to store in root file data from DetEventCommon without go4 dependencies.
+class EventCommon : public TObject {
+ public:
+  EventCommon();
+  void Reset();
+  unsigned int trigger = 0;
+  unsigned int scaler[consts::scaler_size];
+  unsigned short mtime[consts::mtime_size];
+  ClassDef(EventCommon, 1)
+};
+
 #endif // SETUPCONFIGURATION_H

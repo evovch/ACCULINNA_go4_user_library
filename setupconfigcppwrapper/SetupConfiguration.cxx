@@ -430,3 +430,18 @@ short SetupConfiguration::GetChannelCount(const TString& detector, const TString
 }
 
 ClassImp(SetupConfiguration)
+
+EventCommon::EventCommon() {
+  Reset();
+}
+
+void EventCommon::Reset() {
+  trigger = 0;
+  for(int i = 0; i < consts::scaler_size; ++i) {
+    scaler[i] = consts::no_signal;
+  }
+  for(int i = 0; i < consts::mtime_size; ++i) {
+    mtime[i] = consts::no_signal;
+  }
+}
+

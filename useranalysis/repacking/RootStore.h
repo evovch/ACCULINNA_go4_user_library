@@ -9,32 +9,15 @@
 #ifndef ROOTSTORE_H
 #define ROOTSTORE_H
 
-#include "TObject.h"
 #include "TFile.h"
 #include "TTree.h"
 
 #include "TGo4EventStore.h"
 
+#include "setupconfigcppwrapper/SetupConfiguration.h"
+
 class TGo4UserStoreParameter;
 class DetEventCommon;
-
-namespace consts {
-  const unsigned short scaler_size = 16;
-  const unsigned short mtime_size = 2;
-  const unsigned short no_signal = 0;
-}
-
-/// Class to store in root file data from DetEventCommon without go4 dependencies.
-class EventCommon : public TObject {
- public:
-  EventCommon();
-  void From(const DetEventCommon&);
-  void Reset();
-  unsigned int trigger = 0;
-  unsigned int scaler[consts::scaler_size];
-  unsigned short mtime[consts::mtime_size];
-  ClassDef(EventCommon, 1)
-};
 
 /** Class to store in output file results of Repacking step using raw C++ arrays.
     Structure of data depends on SetupConfiguration.
@@ -51,6 +34,7 @@ class RootStore : public TGo4EventStore {
  private:
   void CreateOutputStructure();
   void ResetEventData();
+  void FillCommonData(const DetEventCommon&);
   TFile file_; //!
   TTree tree_; //!
   std::map<TString, std::map<TString, short*>> event_data_; //!
@@ -59,7 +43,5 @@ class RootStore : public TGo4EventStore {
   bool output_structure_created_ = false; //!
   ClassDef(RootStore, 1)
 };
-
-
 
 #endif // ROOTSTORE_H

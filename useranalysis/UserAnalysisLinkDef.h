@@ -25,7 +25,6 @@
 #pragma link C++ class UserProcRepacking+;
 #pragma link C++ class UserHistosRepacking+;
 #pragma link C++ class RootStore+;
-#pragma link C++ class EventCommon+;
 
 // Advanced monitoring step
 #pragma link C++ class UserEventAdvMonitoring+;
