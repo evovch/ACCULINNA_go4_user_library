@@ -6,6 +6,10 @@ Environment
 
 ROOT and Go4 are required for this library.
 
+Special version of go4 is required for current library state:
+> git clone https://github.com/linev/go4
+> git checkout 48a9d1317ff6c7ba471ec8b792a8385e28680066
+
 First execute your go4login script in the corresponding directory:
 
 > . ./go4login
