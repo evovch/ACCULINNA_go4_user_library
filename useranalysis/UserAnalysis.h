@@ -21,7 +21,7 @@ public:
 	UserAnalysis(int argc, char** argv);
 	virtual ~UserAnalysis();
 
-	void Construct(TString p_outfilename, TString p_setupfilename);
+	void Construct(TString p_outfilename, TString p_setupfilename, bool native_ouput = false);
 
 	virtual Int_t UserPreLoop();
 	virtual Int_t UserEventFunc();
@@ -29,12 +29,11 @@ public:
 
 private:
 	unsigned long int mEventCounter;
-
 	/**
 	 * Analysis parameters object, accessible by all steps
 	 */
 	UserParameter* mParams;
-
+    
 	ClassDef(UserAnalysis, 1);
 };
 

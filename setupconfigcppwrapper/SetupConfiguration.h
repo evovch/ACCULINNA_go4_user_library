@@ -188,6 +188,8 @@ public:
 	 */
 	std::map<unsigned int, stc_mapping*> const GetMappings(void) const { return mMappings; }
 
+	short GetChannelCount(const TString& detector, const TString& station) const;
+
 private: // methods
 	/**
 	 * The most importatnd method. Goes through the imported structure and
@@ -204,19 +206,19 @@ private: // data members
 	/**
 	 * Filled during the Link() method.
 	 */
-	std::map<unsigned int, stc_mapping*> mMappings; //! key - unique channel ID, see GetChUID()
+	std::map<unsigned int, stc_mapping*> mMappings; // key - unique channel ID, see GetChUID()
 
 	/**
 	 * List of detectors.
 	 * Filled during the Link() method.
 	 */
-	std::map<TString, unsigned short> mDetectors; //! key - detector ID
+	std::map<TString, unsigned short> mDetectors; // key - detector ID
 
 	/**
 	 * List of stations per detector.
 	 * Filled during the Link() method.
 	 */
-	std::map< TString, std::map<TString, unsigned short> > mStationsPerDet; //! TODO probably, we don't need to stream this
+	std::map< TString, std::map<TString, unsigned short> > mStationsPerDet; // TODO probably, we don't need to stream this
 
 // ------------------------------------------------------------------------------------------------
 // MWPC specific
@@ -229,6 +231,24 @@ public:
 // ------------------------------------------------------------------------------------------------
 
 	ClassDef(SetupConfiguration, 1);
+};
+
+
+namespace consts {
+  const unsigned short scaler_size = 16;
+  const unsigned short mtime_size = 2;
+  const unsigned short no_signal = 0;
+}
+
+/// Class to store in root file data from DetEventCommon without go4 dependencies.
+class EventCommon : public TObject {
+ public:
+  EventCommon();
+  void Reset();
+  unsigned int trigger = 0;
+  unsigned int scaler[consts::scaler_size];
+  unsigned short mtime[consts::mtime_size];
+  ClassDef(EventCommon, 1)
 };
 
 #endif // SETUPCONFIGURATION_H

@@ -45,18 +45,18 @@ UserAnalysis::UserAnalysis(int argc, char** argv) :
 		exit(EXIT_FAILURE);
 	}
 
-	if (argc != 3) {
+	if (argc < 3 || argc > 5) {
 		TGo4Log::Error("Wrong number of arguments for the UserAnalysis constructor!\n"
 		               "Please supply the output and the setup configuration files' names.\n"
-		               "go4analysis ... -args output.root setup.xml");
+		               "go4analysis ... -args output.root setup.xml [--native-output]");
 		exit(EXIT_FAILURE);
 	}
 
 	/*for (int i=0; i<argc; i++) {
 		cout << "argv[" << i << "]=" << argv[i] << endl;
 	}*/
-
-	this->Construct(argv[1], argv[2]);
+  const bool native_output = argc == 4 && (TString(argv[3]) == TString("--native-output"));
+	this->Construct(argv[1], argv[2], native_output);
 	cout << "UserAnalysis constructed 2." << endl;
 
 	//TODO check that 'setup.C' exists!
@@ -73,7 +73,7 @@ UserAnalysis::~UserAnalysis()
 	cout << "UserAnalysis destructed." << endl;
 }
 
-void UserAnalysis::Construct(TString p_outfilename, TString p_setupfilename)
+void UserAnalysis::Construct(TString p_outfilename, TString p_setupfilename, const bool native_output)
 {
 	//cout << "UserAnalysis::Construct()" << endl;
 
@@ -130,15 +130,17 @@ void UserAnalysis::Construct(TString p_outfilename, TString p_setupfilename)
 	//factoryRepacking->DefInputEvent("UserEventUnpacking1", "UserEventUnpacking"); // object name, class name
 	factoryRepacking->DefEventProcessor("UserProcRepacking1", "UserProcRepacking"); // object name, class name
 	factoryRepacking->DefOutputEvent("DetEventFull1", "DetEventFull"); // object name, class name
-
+  if (!native_output)
+    factoryRepacking->DefUserEventStore("RootStore");
 	TGo4AnalysisStep* stepRepacking = new TGo4AnalysisStep("stepRepacking", factoryRepacking);
 
 	stepRepacking->SetSourceEnabled(kFALSE);
 	stepRepacking->SetProcessEnabled(kTRUE);
 	stepRepacking->SetErrorStopEnabled(kTRUE); //TODO probably for repacking this should be false
 
-	TGo4FileStoreParameter* storeRepacking = new TGo4FileStoreParameter(p_outfilename); // "outputRepacking.root"
-	stepRepacking->SetEventStore(storeRepacking);
+	stepRepacking->SetEventStore(
+    native_output ? dynamic_cast<TGo4EventStoreParameter*>(new TGo4FileStoreParameter(p_outfilename))
+                  : dynamic_cast<TGo4EventStoreParameter*>(new TGo4UserStoreParameter(p_outfilename)));
 	stepRepacking->SetStoreEnabled(kTRUE);
 
 	AddAnalysisStep(stepRepacking);

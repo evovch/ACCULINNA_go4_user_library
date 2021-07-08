@@ -6,6 +6,10 @@ Environment
 
 ROOT and Go4 are required for this library.
 
+Special version of go4 is required for current library state:
+> git clone https://github.com/linev/go4
+> git checkout 48a9d1317ff6c7ba471ec8b792a8385e28680066
+
 First execute your go4login script in the corresponding directory:
 
 > . ./go4login
@@ -58,6 +62,13 @@ LMD file analysis
 Tune the run.sh script to your needs and run it:
 
 > ./run.sh
+
+Output formats
+==============
+
+Two formats of output are provided. In the default, data is stored using raw data arrays. 
+Setup configuration is stored as object in root file. With a flag ```--native-output```,
+you can save data using ```TGo4CompositeEvent```. This storage format is very demanding on IO operations. 
 
 Cleanup
 =======

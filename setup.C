@@ -17,6 +17,7 @@ void setup()
 	//TODO enable/disable certain steps
 	stepUnpacking->SetProcessEnabled(kTRUE);
 	stepRepacking->SetProcessEnabled(kTRUE);
+	stepRepacking->SetStoreEnabled(kTRUE);
 	stepLearn->SetProcessEnabled(kFALSE);
 	stepRawMonitoring->SetProcessEnabled(kFALSE);
 	stepAdvMonitoring->SetProcessEnabled(kFALSE);

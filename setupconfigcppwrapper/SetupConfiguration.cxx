@@ -408,7 +408,7 @@ std::map<TString, unsigned short> const SetupConfiguration::GetStationList(TStri
 	} else {
 		//ERROR
 		cerr << "SetupConfiguration::GetStationList: ERROR" << endl;
-		//TODO return ?
+		return {};
 	}
 }
 
@@ -417,4 +417,31 @@ std::map<TString, unsigned short> const SetupConfiguration::GetStationList2(TStr
 	return this->mStationsPerDet.at(detector);
 }
 
+short SetupConfiguration::GetChannelCount(const TString& detector, const TString& station) const {
+  for (unsigned short i_mapping=0; i_mapping < mConfiguration.fNmappings; i_mapping++) {
+		stc_mapping* mapping = &(mConfiguration.fMappingsList[i_mapping]);
+    if (TString(mapping->fDetector) == detector && TString(mapping->fStation) == station) {
+      return mapping->fNelectrch;
+    }
+  }
+  cerr << "GetChannelCount: Could not find channel count for station " << station 
+       << " of detector " << detector << " in configuration file" << endl;
+  return -1;
+}
+
 ClassImp(SetupConfiguration)
+
+EventCommon::EventCommon() {
+  Reset();
+}
+
+void EventCommon::Reset() {
+  trigger = 0;
+  for(int i = 0; i < consts::scaler_size; ++i) {
+    scaler[i] = consts::no_signal;
+  }
+  for(int i = 0; i < consts::mtime_size; ++i) {
+    mtime[i] = consts::no_signal;
+  }
+}
+

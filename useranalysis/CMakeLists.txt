@@ -22,6 +22,7 @@ set(ROOTCLING_HEADERS UserAnalysis.h
                       rawmonitoring/UserHistosRawMonitoring.h
                       repacking/UserProcRepacking.h
                       repacking/UserHistosRepacking.h
+                      repacking/RootStore.h
                       advmonitoring/UserEventAdvMonitoring.h
                       advmonitoring/UserProcAdvMonitoring.h
                       advmonitoring/UserHistosAdvMonitoring.h
@@ -65,6 +66,7 @@ set(SOURCE_LIB G__${COMPNAME}.cxx
                learn/UserProcLearn.cxx
                digibuilding/UserEventDigiBuilding.cxx
                digibuilding/UserProcDigiBuilding.cxx
+               repacking/RootStore.cxx
                )
 
 add_library(${COMPNAME} SHARED ${SOURCE_LIB})
